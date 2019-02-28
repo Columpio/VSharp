@@ -295,10 +295,11 @@ module internal Interpreter =
         __notImplemented__())
 
     and reduceIndexerCallExpression state (ast : IIndexerCallExpression) k =
+        let reduceTarget state k = reduceExpressionToRef state true ast.Target k
+        let reduceArg arg = fun state k -> reduceExpression state arg k
+        let reduceArgs = ast.Arguments |> List.ofSeq |> List.map reduceArg
         let state, k = reduceTypeVariablesSubsitution state ast.PropertySpecification.OwnerType k
-        let qualifiedTypeName = ast.PropertySpecification.Property.DeclaringType.AssemblyQualifiedName
-        initializeStaticMembersIfNeed ast state qualifiedTypeName (fun (result, state) ->
-        __notImplemented__())
+        reduceMethodCall ast state reduceTarget ast.PropertySpecification.Property.Getter reduceArgs k
 
     and reduceMethodCall (caller : locationBinding) state target (metadataMethod : JetBrains.Metadata.Reader.API.IMetadataMethod) arguments k =
         let qualifiedTypeName = metadataMethod.DeclaringType.AssemblyQualifiedName
