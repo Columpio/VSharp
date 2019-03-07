@@ -39,12 +39,15 @@ module API =
         val Constant : string -> ISymbolicConstantSource -> termType -> term
         val Expression : operation -> term list -> termType -> term
         val Struct : heap<string, term, fql> -> termType -> term
+        val HeapRef : term -> termType -> termType -> pathSegment list -> term
+        val StaticRef : termType -> pathSegment list -> term
         val Union : (term * term) list -> term
 
         val True : term
         val False : term
 
         val MakeNullRef : unit -> term
+        val MakeZeroAddress : unit -> term
         val MakeDefault : termType -> term
         val MakeNumber : 'a -> term
         val MakeLambda : 'a symbolicLambda -> termType -> term
@@ -52,7 +55,10 @@ module API =
         val TypeOf : term -> termType
         val (|Lambda|_|) : termNode -> 'a symbolicLambda option
         val (|LazyInstantiation|_|) : ISymbolicConstantSource -> (term * 'a generalizedHeap option * bool) option
+        val (|LazyInstantiationEpsilon|_|) : ISymbolicConstantSource -> term option
         val (|RecursionOutcome|_|) : ISymbolicConstantSource -> (IFunctionIdentifier * state * term option * bool) option
+        val (|KeyInitializedSource|_|) : ISymbolicConstantSource -> (termType generalizedHeap * termType) option
+        val (|SymbolicSubtypeSource|_|) : ISymbolicConstantSource -> (termType * termType) option
         val (|Conjunction|_|) : term -> term list option
         val (|Disjunction|_|) : term -> term list option
 

@@ -71,12 +71,15 @@ module API =
         let Constant name source typ = Constant m.Value name source typ
         let Expression op args typ = Expression m.Value op args typ
         let Struct fields typ = Struct m.Value fields typ
+        let HeapRef addr baseType sightType path = HeapRef m.Value addr baseType sightType path
+        let StaticRef typ path = StaticRef m.Value typ path
         let Union gvs = Union m.Value gvs
 
         let True = True
         let False = False
 
         let MakeNullRef () = makeNullRef m.Value
+        let MakeZeroAddress () = makeZeroAddress m.Value
         let MakeDefault typ = Memory.mkDefault m.Value typ None
         let MakeNumber n = makeNumber n m.Value
         let MakeLambda body signature = Lambdas.make m.Value body signature
@@ -84,7 +87,10 @@ module API =
         let TypeOf term = typeOf term
         let (|Lambda|_|) t = Lambdas.(|Lambda|_|) t
         let (|LazyInstantiation|_|) s = Memory.(|LazyInstantiation|_|) s
+        let (|LazyInstantiationEpsilon|_|) s = Memory.(|LazyInstantiationEpsilon|_|) s
         let (|RecursionOutcome|_|) s = Explorer.(|RecursionOutcome|_|) s
+        let (|KeyInitializedSource|_|) s = Memory.(|KeyInitializedSource|_|) s
+        let (|SymbolicSubtypeSource|_|) s = Common.(|SymbolicSubtypeSource|_|) s
         let (|Conjunction|_|) term = Terms.(|Conjunction|_|) term.term
         let (|Disjunction|_|) term = Terms.(|Disjunction|_|) term.term
 

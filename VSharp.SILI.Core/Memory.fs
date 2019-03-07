@@ -841,6 +841,11 @@ module internal Memory =
         interface IStatedSymbolicConstantSource with
             override x.SubTerms = seq []
 
+    let (|KeyInitializedSource|_|) (src : ISymbolicConstantSource) =
+        match src with
+        | :? (termType keyInitializedSource) as li -> Some(li.heap, li.key)
+        | _ -> None
+
     let private mkKeyGuard mtd fillHolesInKey getter heap (key : 'a) =
         Constant mtd (IdGenerator.startingWith "hasKey#") ({ heap = heap; key = key; getter = {v=getter}; fillHolesInKey = {v=fillHolesInKey} } : 'a keyInitializedSource) Bool
 

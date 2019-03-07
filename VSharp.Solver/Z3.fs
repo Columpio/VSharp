@@ -10,6 +10,11 @@ module internal Z3 =
 
 // ------------------------------- Cache -------------------------------
 
+    type private relation = foRelation
+    type private relationalApplication = foRelationalApplication
+    type private CHC = FOCHC
+    type private CHCSystem = FOCHCSystem
+
     type private encodingCache = {
         sorts : IDictionary<termType, Sort>
         e2t : IDictionary<Expr, term>
@@ -61,6 +66,8 @@ module internal Z3 =
             | Numeric _ as t when Types.IsInteger t -> (ctx()).MkIntSort() :> Sort
             | Numeric _ as t when Types.IsReal t -> (ctx()).MkRealSort() :> Sort
             | Numeric t -> (ctx()).MkEnumSort(t.FullName, t.GetEnumNames()) :> Sort
+            | Reference _
+            | Pointer _ -> (ctx()).MkIntSort() :> Sort  // TODO
             | ArrayType _
             | Func _
             | Void
@@ -69,9 +76,7 @@ module internal Z3 =
             | StructType _
             | ClassType _
             | InterfaceType _
-            | TypeVariable _
-            | Reference _
-            | Pointer _ -> __notImplemented__())
+            | TypeVariable _ -> __notImplemented__())
 
     let private encodeConcrete (obj : obj) typ =
         match typ with
@@ -157,6 +162,8 @@ module internal Z3 =
         | Concrete(obj, typ) -> encodeConcrete obj typ :?> 'a
         | Constant(name, _, typ) -> encodeConstant name.v typ t :?> 'a
         | Expression(op, args, typ) -> encodeExpression stopper t op args typ :?> 'a
+        | Ref(TopLevelHeap(tl, _, _), _) -> encodeTermExt stopper tl
+        | Ref(NullAddress, []) -> encodeTermExt stopper (MakeZeroAddress ())
         | _ -> __notImplemented__()
 
     let private encodeTerm<'a when 'a :> Expr> (t : term) : 'a =
@@ -231,7 +238,9 @@ module internal Z3 =
             let result = (ctx()).FP.Query(failRel)
             printLog Trace "SOLVER: got %O" result
             match result with
-            | Status.SATISFIABLE -> SmtSat null
+            | Status.SATISFIABLE ->
+                printfn "CEX: %O" ((ctx()).FP.GetAnswer())
+                SmtSat null
             | Status.UNSATISFIABLE -> SmtUnsat
             | Status.UNKNOWN -> printLog Trace "SOLVER: reason: %O" <| (ctx()).FP.GetReasonUnknown(); SmtUnknown ((ctx()).FP.GetReasonUnknown())
             | _ -> __unreachable__()

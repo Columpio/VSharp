@@ -64,6 +64,11 @@ module internal Common =
         interface IStatedSymbolicConstantSource with
             override x.SubTerms = Seq.empty
 
+    let (|SymbolicSubtypeSource|_|) (src : ISymbolicConstantSource) =
+        match src with
+        | :? symbolicSubtypeSource as li -> Some(li.left, li.right)
+        | _ -> None
+
     let rec is metadata leftType rightType =
         let makeSubtypeBoolConst leftTermType rightTermType =
             let subtypeName = sprintf "(%O <: %O)" leftTermType rightTermType
