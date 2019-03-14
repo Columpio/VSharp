@@ -622,6 +622,12 @@ module internal Memory =
         | Defined _, RecursiveApplication _
         | Composition _, HigherOrderApplication _
         | Composition _, RecursiveApplication _
+        | RecursiveApplication _, Composition _
+        | HigherOrderApplication _, Composition _
+        | RecursiveApplication _, HigherOrderApplication _
+        | HigherOrderApplication _, RecursiveApplication _
+        | Mutation _, RecursiveApplication _
+        | Mutation _, HigherOrderApplication _
         | RecursiveApplication _, RecursiveApplication _
         | HigherOrderApplication _, HigherOrderApplication _ ->
             Composition(s, ctx, h')
@@ -644,12 +650,6 @@ module internal Memory =
             // TODO: this is probably wrong!
             assert(not r)
             Mutation(h, composeDefinedHeaps (writer fillHolesInKey ctx) false s h' h'')
-        | RecursiveApplication _, Composition _ -> __notImplemented__()
-        | HigherOrderApplication _, Composition _ -> __notImplemented__()
-        | RecursiveApplication _, HigherOrderApplication _ -> __notImplemented__()
-        | HigherOrderApplication _, RecursiveApplication _ -> __notImplemented__()
-        | Mutation _, RecursiveApplication _ -> __notImplemented__()
-        | Mutation _, HigherOrderApplication _ -> __notImplemented__()
 
     and composeStacksOf ctx state state' =
         (foldStackLocations (fillAndMutateStack ctx state) state state'.stack).stack
