@@ -640,7 +640,7 @@ module internal Memory =
                 composeGeneralizedHeaps writer fillHolesInKey readHeap ctx' getter setter s' h
             | _ ->
                 let h'' = fillHolesInHeap fillHolesInKey ctx s h''
-                Mutation(h, h'')
+                if Heap.isEmpty h'' then h else Mutation(h, h'')
         | (HigherOrderApplication _ as h), Defined(r, h')
         | (RecursiveApplication _ as h), Defined(r, h') ->
             assert(not r)

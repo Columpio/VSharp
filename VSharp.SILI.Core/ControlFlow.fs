@@ -38,10 +38,15 @@ module internal ControlFlow =
 
     let rec merge2Results condition1 condition2 thenRes elseRes =
         let metadata = Metadata.combine thenRes.metadata elseRes.metadata
+        let merge2 thenVal elseVal ctor =
+            let merged = Merging.merge2Terms condition1 condition2 thenVal elseVal
+            match merged.term with
+            | Union gvs -> gvs |> List.map (mapsnd ctor) |> Guarded metadata
+            | _ -> ctor merged
         match thenRes.result, elseRes.result with
         | _, _ when thenRes = elseRes -> thenRes
-        | Return thenVal, Return elseVal -> Return metadata (Merging.merge2Terms condition1 condition2 thenVal elseVal)
-        | Throw thenVal, Throw elseVal -> Throw metadata (Merging.merge2Terms condition1 condition2 thenVal elseVal)
+        | Return thenVal, Return elseVal -> merge2 thenVal elseVal (Return metadata)
+        | Throw thenVal, Throw elseVal -> merge2 thenVal elseVal (Throw metadata)
         | Guarded gvs1, Guarded gvs2 ->
             gvs1
                 |> List.collect (fun (g1, v1) -> mergeGuarded gvs2 condition1 condition2 ((&&&) g1) v1 fst snd)
