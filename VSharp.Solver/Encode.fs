@@ -38,7 +38,7 @@ module internal Encode =
         let private generateKey funcId loc : recursionOutcomeKey = { funcId = funcId; location = loc }
 
         let private generateBody funcId loc =
-            let summary = Database.QuerySummary funcId
+            let summary = Explore funcId id
             match loc with
             | None -> summary.result
             | Some loc -> Memory.DereferenceWithoutValidation summary.state loc
@@ -142,7 +142,7 @@ module internal Encode =
             | Composition(_, _, h) ->
                 Memory.DereferenceWithoutValidation (mkState h) location
             | RecursiveApplication(f, _, _) ->
-                let summary = Database.QuerySummary f
+                let summary = Explore f id
                 Memory.DereferenceWithoutValidation (selectHeap summary.state |> mkState) location
             | HigherOrderApplication _ -> __notImplemented__()
             | Merged _ -> __unreachable__()
