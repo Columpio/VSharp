@@ -101,11 +101,11 @@ module internal Arrays =
         let bound = { value = Concrete metadata 0 lengthTermType; created = Timestamp.zero; modified = Timestamp.zero }
         Seq.fold (fun h l -> Heap.add l bound h) Heap.empty (Seq.init dimension (fun i -> makePathNumericKey fql ArrayLowerBound i metadata))
 
-    let length = Merging.map (function
+    let length = Merging.guardedErroredApply (function
         | {term = Array(_, l, _, _, _, _, _)} -> l
         | t -> internalfailf "extracting length of non-array object %O" t)
 
-    let rank = Merging.map (function
+    let rank = Merging.guardedErroredApply (function
         | {term = Array(d, _, _, _, _, _, _)} -> d
         | t -> internalfailf "extracting rank of non-array object %O" t)
 
