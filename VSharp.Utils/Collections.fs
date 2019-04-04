@@ -95,6 +95,9 @@ module public Dict =
         if dict.ContainsKey(key) then dict.[key]
         else defaultValue
 
+    let public tryGetOptionValue (dict : IDictionary<'a, 'b>) key =
+        if dict.ContainsKey(key) then Some dict.[key] else None
+
     let public tryGetValue2 (dict : System.Collections.Generic.IDictionary<'a, 'b>) key defaultValue =
         if dict.ContainsKey(key) then dict.[key]
         else defaultValue()

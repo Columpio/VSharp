@@ -477,3 +477,372 @@ module internal Encode =
                 foRels.Restore()
                 result
             encodeQueryToSchema terms k
+
+
+    module internal OCaml =
+        let private artificialVariableNamePrefix = "g"
+        let private codeVariableNamePrefix = "x"
+
+        type internal VariableNamer (funcDeclarations) =
+            let variableNames = new Dictionary<obj, string>()
+            let funcDecls = new Dictionary<OCamlVar, _>()
+            let initFunction (name, (soargs : OCamlVar list, foargs : OCamlVar list, parameters), _) =
+                funcDecls.Add(name, ([soargs], [foargs], parameters))
+
+            let splitParamater fsign_arg (argSet : ISet<OCamlVar>) =
+                let fsign_arg = fsign_arg |> List.map (List.partition (argSet.Contains))
+                List.mapFold (fun wasFound (l, r) -> if wasFound then assert (l = []); [], wasFound elif r = [] then [l], false else [l; r], true) false fsign_arg
+                |> fst
+                |> List.concat
+            let rec fixArgumentOrder = function
+                | OConstant _
+                | Var _ -> ()
+                | UnOp(_, x) -> fixArgumentOrder x
+                | BinOp(_, xs) -> List.iter fixArgumentOrder xs
+                | Call(f, soargs, foargs, parameters) when funcDecls.ContainsKey f ->
+                    let fsign_so, fsign_fo, fsign_params = funcDecls.[f]
+                    let fsign_so_size = fsign_so |> List.sumBy List.length
+                    let fsign_fo_size = fsign_fo |> List.sumBy List.length
+                    let soSet = new HashSet<_>(List.map fst soargs)
+                    let foSet = new HashSet<_>(List.map fst foargs)
+                    let fsign_so, fsign_fo =
+                        if soSet.Count <> fsign_so_size then
+                            if not (foSet.Count = 0 && List.length parameters = 0) then __unreachable__()
+                            splitParamater fsign_so soSet, []
+                        elif foSet.Count <> fsign_fo_size then
+                            if not (List.length parameters = 0) then __unreachable__()
+                            fsign_so, splitParamater fsign_fo foSet
+                        else
+                            if List.length parameters > List.length fsign_params then __unreachable__()
+                            fsign_so, fsign_fo
+
+                    funcDecls.[f] <- (fsign_so, fsign_fo, fsign_params)
+                    soargs @ foargs |> List.map snd |> List.append parameters |> List.iter fixArgumentOrder
+                | Call _ -> () // TODO: partial applications =(
+                | Assert(g, e) -> fixArgumentOrder g; fixArgumentOrder e
+                | Tuple ts -> List.iter fixArgumentOrder ts
+                | Let(_, body, expr) -> fixArgumentOrder body; fixArgumentOrder expr
+                | IfThenElse(cond, thenExpr, elseExpr) ->
+                    fixArgumentOrder cond
+                    fixArgumentOrder thenExpr
+                    fixArgumentOrder elseExpr
+            do List.iter initFunction funcDeclarations
+            do List.iter (thd3 >> fixArgumentOrder) funcDeclarations
+            let funcDecls' = new Dictionary<OCamlVar, _>()
+            do for kvp in funcDecls do
+                let name, (soargs, foargs, parameters) = kvp.Key, kvp.Value
+                funcDecls'.Add(name, List.concat (soargs @ foargs) @ parameters)
+            member private x.variableNames = variableNames
+            member private x.funcDeclarations = funcDecls'
+
+            static member private namePattern =
+                if Options.ReadableOCamlCode()
+                    then fun o -> sprintf "%O_%d" (System.Text.RegularExpressions.Regex.Replace(toString o, "(^[^a-z_]|[^a-zA-Z0-9]+)", "_"))
+                    else always (sprintf "%s%d" codeVariableNamePrefix)
+
+            member x.GetName(o : obj) =
+                Dict.getValueOrUpdate x.variableNames o (fun () -> VariableNamer.namePattern o x.variableNames.Count)
+
+            member x.OrderFunctionDeclaration(funcName) = x.funcDeclarations.[funcName]
+
+            member x.OrderFunctionArgs(funcName, soargs, foargs, parameters) =
+                if x.funcDeclarations.ContainsKey funcName then
+                    let funcDeclArgs = x.funcDeclarations.[funcName]
+                    let oargsD = new Dictionary<OCamlVar, OCamlExpr>()
+                    List.iter oargsD.Add (soargs @ foargs)
+                    let oargs =
+                        funcDeclArgs
+                        |> List.takeWhile oargsD.ContainsKey
+                        |> List.map (fun arg -> oargsD.[arg])
+                    oargs @ parameters
+                else
+                    if not (List.length soargs = 0 && List.length foargs = 0) then __notImplemented__()
+                    else parameters
+
+        and OCamlVar =
+            | OVar of obj
+            member internal x.ToString(variableNamer : VariableNamer) =
+                match x with
+                | OVar s ->
+                    match s with
+                    | :? string as s when s <> "()" -> s
+                    | _ -> variableNamer.GetName(s)
+
+        and OCamlExpr =
+            | OConstant of string
+            | Var of OCamlVar
+            | Let of OCamlVar * OCamlExpr * OCamlExpr
+            | IfThenElse of OCamlExpr * OCamlExpr * OCamlExpr
+            | BinOp of OperationType * OCamlExpr list
+            | UnOp of OperationType * OCamlExpr
+            | Call of OCamlVar * (OCamlVar * OCamlExpr) list * (OCamlVar * OCamlExpr) list * OCamlExpr list
+            | Assert of OCamlExpr * OCamlExpr                                 // assert (firstexpr) ; secondexpr
+            | Tuple of OCamlExpr list
+            member internal x.ToString(variableNamer) =
+                let toStringE (s : OCamlExpr) = s.ToString(variableNamer)
+                let toStringV (s : OCamlVar) = s.ToString(variableNamer)
+                match x with
+                | OConstant s -> s
+                | Var s -> toStringV s
+                | UnOp(op, x) ->
+                    let op =
+                        match op with
+                        | OperationType.LogicalNeg -> "not"
+                        | _ -> __notImplemented__()
+                    sprintf "(%s %s)" op (toStringE x)
+                | BinOp(op, xs) ->
+                    let op =
+                        match op with
+                        | OperationType.LogicalAnd -> "&&"
+                        | OperationType.LogicalOr -> "||"
+                        | OperationType.Add -> "+"
+                        | OperationType.Multiply -> "*"
+                        | OperationType.Less -> "<"
+                        | OperationType.LessOrEqual -> "<="
+                        | OperationType.Greater -> ">"
+                        | OperationType.GreaterOrEqual -> ">="
+                        | OperationType.Equal -> "="
+                        | _ -> __notImplemented__()
+                    xs |> List.map toStringE |> List.reduce (fun x y -> sprintf "%s %s %s" x op y)
+                    |> sprintf "(%s)"
+                | Call(f, [], [], []) -> toStringV f
+                | Call(f, soargs, foargs, parameters) ->
+                    variableNamer.OrderFunctionArgs(f, soargs, foargs, parameters)
+                    |> List.map toStringE |> join " "
+                    |> sprintf "(%s %s)" (toStringV f)
+                | Assert(g, e) -> sprintf "(assert (%s); %s)" (toStringE g) (toStringE e)
+                | Tuple [t] -> toStringE t // sprintf "(%s)" <| (ts |> List.map toStringE |> join ", ")
+                | Tuple ts -> internalfailf "Tuples are not widely supported: %O" ts
+                | Let(var, body, expr) ->
+                    sprintf "let %s = %s in %s" (toStringV var) (toStringE body) (toStringE expr)
+                | IfThenElse(cond, thenExpr, elseExpr) ->
+                    sprintf "(if %s then %s else %s)" (toStringE cond) (toStringE thenExpr) (toStringE elseExpr)
+                | _ -> __notImplemented__()
+        and OCamlProgram =
+            | LetRecursive of (OCamlVar * (OCamlVar list * OCamlVar list * OCamlVar list) * OCamlExpr * termType option) list // function name * arguments * body * return type
+            static member GenerateVariableNamer lts =
+                new VariableNamer(List.map (fun (name, args, body, _) -> name, args, body) lts)
+
+            override x.ToString() =
+                match x with
+                | LetRecursive lts ->
+                    let variableNamer = OCamlProgram.GenerateVariableNamer lts
+                    let toStringE (s : OCamlExpr) = s.ToString(variableNamer)
+                    let toStringV (s : OCamlVar) = s.ToString(variableNamer)
+
+                    let functionToString (name, _, body, _) =
+                        let args = variableNamer.OrderFunctionDeclaration(name)
+                        sprintf "%s %s =\n%s" (toStringV name) (args |> List.map toStringV |> join " ") ("\t" + toStringE body)
+                    lts
+                    |> List.rev
+                    |> List.map functionToString
+                    |> join "\nand "
+                    |> (+) "let rec "
+//                    |> List.map (sprintf "let rec %s\n")
+//                    |> join "\n"
+//                    match List.map functionToString (List.rev lts) with
+//                    | [] -> ""
+//                    | lt::lts ->
+//                        sprintf "let rec %s\n%s" lt (lts |> List.map ((+) "and ") |> join "\n")
+
+        let private gensym =
+            let mutable n = -1
+            let pat = sprintf "%s%d" artificialVariableNamePrefix
+            fun () ->
+                n <- n + 1
+                OVar (pat n)
+
+        let private undefinedBehaviorName = OVar "ub"
+        let private undefinedBehaviorBody =
+            let arg = OVar (Constant "x" ({id = "x"} : emptySource) (Numeric typeof<int>))
+            undefinedBehaviorName,
+            ([], [], [arg]),
+            Assert(BinOp(OperationType.Equal, [OConstant "0"; OConstant "1"]), Var arg),
+            None
+        let private undefinedBehaviorCall arg = Call(undefinedBehaviorName, [], [], [arg])
+
+        let private makeBinary op = function
+            | [] -> __unreachable__()
+            | xs -> BinOp(op, xs)
+
+        let private makeStrictBinary op = function
+            | [_; _] as xs -> BinOp(op, xs)
+            | _ -> __unreachable__()
+
+        let private makeUnary op = function
+            | [x] -> UnOp(op, x)
+            | _ -> __unreachable__()
+
+        let private encodeConcrete (obj : obj) = function
+            | Bool -> OConstant (if (obj :?> bool) then "true" else "false")
+            | Numeric t when t = typeof<char> -> __notImplemented__()
+            | Numeric _ ->
+                match obj with
+                | :? concreteHeapAddress as addr ->
+                    match addr with
+                    | [addr] -> OConstant (addr.ToString())
+                    | _ -> __notImplemented__()
+                | _ -> OConstant (obj.ToString())
+            | _ -> __notImplemented__()
+
+        let private encodeExpression op args =
+            match op with
+            | Operator(op, _) ->
+                match op with
+                | OperationType.LogicalAnd
+                | OperationType.LogicalOr -> makeBinary op args
+                | OperationType.Add
+                | OperationType.Multiply
+                | OperationType.Less
+                | OperationType.LessOrEqual
+                | OperationType.Greater
+                | OperationType.GreaterOrEqual
+                | OperationType.Equal -> makeStrictBinary op args
+                | OperationType.LogicalNeg -> makeUnary op args
+                | _ -> __notImplemented__()
+            | _ -> __notImplemented__()
+
+        let private consSet x (s : ISet<'a>) =
+            let s' = new HashSet<'a>(s)
+            s'.Add x |> ignore
+            s' :> ISet<'a>
+
+        let private encodeSchema schema =
+            let exploredSchemas = new HashSet<schema>()
+            let schemaQueue = new Queue<schema>()
+            let schemaQueueEnqueue s = if exploredSchemas.Add s then schemaQueue.Enqueue s
+
+            let processSchema schema =
+                let makeFOKeysList s = s.foinputs |> List.ofSeq
+                let makeSOKeysList s = s.soinputs |> List.ofSeq |> List.map fst3
+
+                let makeArgs argsKeys argsDictionary =
+                    let argsVars = List.map (fun s -> OVar s) argsKeys
+                    let argsValues = List.map (Dict.tryGetOptionValue argsDictionary) argsKeys
+                    let argsVars', argsValues =
+                        List.zip argsVars argsValues
+                        |> List.choose (function (k, Some v) -> Some (k, v) | _ -> None)
+                        |> List.unzip
+                    let isPartialApply = List.length argsVars <> List.length argsVars'
+                    isPartialApply, argsVars', argsValues
+
+                let rec encodeSchemaApp dbs app k =
+                    if app.constant = Nop && app.foArgs.Count = 0 && app.soArgs.Count = 0 && app.parameterValues.Length = 0 && not (schemas.Value.ContainsKey app.schema)
+                        then k (Var (OVar app.schema), dbs)
+                        else
+                            let callSchema = schemas.Value.[app.schema]
+                            schemaQueueEnqueue callSchema
+
+                            let soIsPartialApply, soArgsVars', soArgsValues = makeArgs (makeSOKeysList callSchema) app.soArgs
+                            Cps.List.mapFoldk encodeSchemaApp dbs soArgsValues (fun (soArgsValues, dbs) ->
+
+                            let foIsPartialApply, foArgsVars', foArgsValues = makeArgs (makeFOKeysList callSchema) app.foArgs
+                            encodeList dbs foArgsValues (fun (foArgsValues, dbs) ->
+
+                            encodeList dbs app.parameterValues (fun (parameterInputs, dbs) ->
+                            if soIsPartialApply then
+                                assert (foArgsValues = [] && parameterInputs = [])
+                            elif foIsPartialApply then
+                                assert (parameterInputs = [])
+                            let soArgs = List.zip soArgsVars' soArgsValues
+                            let foArgs = List.zip foArgsVars' foArgsValues
+                            let call = Call(OVar app.schema, soArgs, foArgs, parameterInputs)
+                            k (call, dbs))))
+
+                and encodeConstant src typ t ((definedVars : ISet<term>, _) as dbs) k =
+                    let ovar = OVar t
+                    let var = Var ovar
+
+//                    let isDefinedFast = // should be faster than definedVars.Contains
+//                        let srcType = src.GetType()
+//                        let isEqualToT c =
+//                            match c.term with
+//                            | Constant(_, src', typ') when typ = typ' && src'.GetType() = srcType -> Some src'
+//                            | _ -> None
+//                        let similarVars = definedVars |> List.ofSeq |> List.choose isEqualToT
+//                        List.exists ((=) src) similarVars
+                    if definedVars.Contains t// isDefinedFast
+                        then k (var, dbs)
+                        else
+                            let funcApp = schema.apps |> Seq.tryFind (fun sapp -> sapp.constant = t)
+                            match funcApp with
+                            | Some app ->
+                                encodeSchemaApp dbs app (fun (call, (definedVars, bodyGenerator)) ->
+                                k (var, (consSet t definedVars, fun restBody -> bodyGenerator (Let(ovar, call, restBody)))))
+                            | None ->
+                                match schema.sosubsts |> Seq.tryFind (thd3 >> ((=) t)) with
+                                | None -> __unreachable__()
+                                | Some (argFuncName, argFuncArgs, _) ->
+                                    encodeList dbs argFuncArgs (fun (argFuncArgs, (definedVars, bodyGenerator)) ->
+                                    let call = Call(OVar argFuncName, [], [], argFuncArgs)
+                                    k (var, (consSet t definedVars, fun restBody -> bodyGenerator (Let(ovar, call, restBody)))))
+
+                and encodeTerm dbs t k =
+                    match t.term with
+                    | Concrete(obj, typ) -> k (encodeConcrete obj typ, dbs)
+                    | Constant(name, src, typ) -> encodeConstant src typ t dbs k
+                    | Expression(op, args, typ) ->
+                        encodeList dbs args (fun (args, dbs) ->
+                        k (encodeExpression op args, dbs))
+                    | Union gvs ->
+                        let ite (cond, thenBranch) elseBranch = IfThenElse(cond, thenBranch, elseBranch)
+                        let gs, vs = List.unzip gvs
+                        let ubDefaultValue =
+                            match List.head vs |> TypeOf with
+                            | Bool -> OConstant "true"
+                            | _ -> OConstant "0" // TODO: it's not always int
+                        encodeList dbs gs (fun (gs, (definedVars, bodyGenerator)) ->
+                        Cps.List.mapk (encodeTerm (definedVars, id)) vs (fun vs ->
+                        let unionAsAValue =
+                            vs
+                            |> List.map (fun (v, (_, body)) -> body v)
+                            |> List.zip gs
+                            |> fun gvs -> List.foldBack ite gvs (undefinedBehaviorCall ubDefaultValue)
+                        let unionGenName = gensym ()
+                        k (Var unionGenName, (definedVars, fun restBody -> bodyGenerator (Let(unionGenName, unionAsAValue, restBody))))))
+                    | Ref(TopLevelHeap(tl, _, _), _) -> encodeTerm dbs tl k
+                    | Ref(NullAddress, []) -> encodeTerm dbs (MakeZeroAddress ()) k
+                    | _ -> __notImplemented__()
+
+                and encodeList (definedVars, definitions) ts k =
+                    Cps.List.mapFoldk encodeTerm (definedVars, definitions) ts k
+
+                let foKeysList = makeFOKeysList schema
+                let foArgsVars = List.map (fun s -> OVar s) foKeysList
+                let definedVars = new HashSet<term>(foKeysList @ schema.parameterInputs) // we don't need to include soinputs here because there is a check for .sosubsts in encodeConstant
+                let soKeysList = makeSOKeysList schema
+                let soArgsVars = List.map (fun s -> OVar s) soKeysList
+                let returnType =
+                    match schema.results with
+                    | [result] -> Some(TypeOf result)
+                    | _::_ -> None // multiple results are not supported due to weak Tuple support in OCaml verifiers
+                    | [] -> __unreachable__()
+                encodeList (definedVars, id) schema.results (fun (results, (_, bodyGenerator)) ->
+                encodeList (definedVars, id) schema.parameterInputs (fun (parameters, _) ->
+                let parameters = parameters |> List.map (function Var v -> v | _ -> __unreachable__())
+                (OVar schema.id, (soArgsVars, foArgsVars, parameters), results, bodyGenerator, returnType)))
+
+            schemaQueueEnqueue schema
+            seq {
+                while schemaQueue.Count <> 0 do
+                    yield processSchema (schemaQueue.Dequeue())
+            } |> List.ofSeq
+
+        let encodeQuery terms =
+            let k (querySchema : schema) =
+                match encodeSchema querySchema with
+                | [] -> __unreachable__()
+                | (_, mainArgs, queries, mainBody, _)::functions ->
+                    let functions =
+                        let substituteResult = function
+                            | (name, args, [result], body, returnType) -> name, args, body result, returnType
+                            | _ -> __unreachable__()
+                        List.map substituteResult functions
+                    let query =
+                        let okReturnCode = OConstant "0"
+                        IfThenElse(BinOp(OperationType.LogicalAnd, queries), undefinedBehaviorCall okReturnCode, okReturnCode)
+                    let main = OVar "main", mainArgs, mainBody query, None
+//                    let main = OVar "main", mainArgs, Call(OVar "main2", [], List.map Var mainArgs), None
+                    LetRecursive (main::functions @ [undefinedBehaviorBody])
+
+            encodeQueryToSchema terms k
