@@ -62,6 +62,7 @@
     <Compile Include="CHC.fs" />
     <Compile Include="Encode.fs" />
     <Compile Include="Z3.fs" />
+    <Compile Include="SOSolver.fs" />
     <Compile Include="Solver.fs" />
   </ItemGroup>
   <ItemGroup>

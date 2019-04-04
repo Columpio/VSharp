@@ -35,6 +35,12 @@ module public Prelude =
     let inline public (|??) lhs rhs = Option.defaultValue rhs lhs
     let inline public (||??) (lhs : 'a option) (rhs : 'a Lazy) = Option.defaultWith rhs.Force lhs
 
+    type MaybeBuilder() =
+        member this.Bind(m, f) = Option.bind f m
+        member this.Return(x) = Some x
+
+    let maybe = new MaybeBuilder()
+
     let safeGenericTypeDefinition (t : System.Type) =
         if t.IsGenericType && not t.IsGenericTypeDefinition then t.GetGenericTypeDefinition() else t
 

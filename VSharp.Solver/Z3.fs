@@ -229,24 +229,34 @@ module internal Z3 =
 
 // ------------------------------- Solving, etc. -------------------------------
 
-    let solve (system : CHCSystem) =
+    let private callWithContext f =
         let context = new EncodingContext()
         ctxs.Push(context)
-        try
-            printLog Trace "SOLVER: got CHC system:\n%O" (system |> List.map toString |> join "\n")
-            let failRel = encodeSystem system
-            let result = (ctx()).FP.Query(failRel)
-            printLog Trace "SOLVER: got %O" result
-            match result with
-            | Status.SATISFIABLE ->
-                printfn "CEX: %O" ((ctx()).FP.GetAnswer())
-                SmtSat null
-            | Status.UNSATISFIABLE -> SmtUnsat
-            | Status.UNKNOWN -> printLog Trace "SOLVER: reason: %O" <| (ctx()).FP.GetReasonUnknown(); SmtUnknown ((ctx()).FP.GetReasonUnknown())
-            | _ -> __unreachable__()
+        try f()
         finally
             ctxs.Pop() |> ignore
             context.Dispose()
+
+    let private solveBoolExpr (failRel : BoolExpr) =
+        let result = (ctx()).FP.Query(failRel)
+        printLog Trace "SOLVER: got %O" result
+        match result with
+        | Status.SATISFIABLE ->
+            printfn "CEX: %O" ((ctx()).FP.GetAnswer())
+            SmtSat null
+        | Status.UNSATISFIABLE -> SmtUnsat
+        | Status.UNKNOWN -> printLog Trace "SOLVER: reason: %O" <| (ctx()).FP.GetReasonUnknown(); SmtUnknown ((ctx()).FP.GetReasonUnknown())
+        | _ -> __unreachable__()
+
+    let solve (system : CHCSystem) =
+        let solve () =
+            printLog Trace "SOLVER: got CHC system:\n%O" (system |> List.map toString |> join "\n")
+            let failRel = encodeSystem system
+            solveBoolExpr failRel
+        callWithContext solve
+
+    let solveSMTlib2 s =
+        __notImplemented__()
 
     let simplifyPropositional t =
         let stopper op args =
