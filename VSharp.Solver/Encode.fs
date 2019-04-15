@@ -195,14 +195,14 @@ module internal Encode =
     let rec private generateSchema key generate =
         if schemas.Value.ContainsKey key then ()
         else
-            let terms, parameters = generate ()
+            let results, parameters = generate ()
             let schema = {
-                id = key; results = terms; apps = HashSet<_>(); apptmp = new HashSet<_>(); parameterInputs = parameters
+                id = key; results = results; apps = new HashSet<_>(); apptmp = new HashSet<_>(); parameterInputs = parameters
                 soinputs = new HashSet<_>(); sotmp1 = new HashSet<_>(); sotmp2 = new HashSet<_>(); sosubsts = new HashSet<_>();
                 foinputs = new HashSet<_>(); fotmp1 = new HashSet<_>(); fotmp2 = new HashSet<_>()
             }
             schemas.Value.[key] <- schema
-            terms |> ConstantsOf |> Seq.iter (processConstant schema.apps schema.sotmp1 schema.sosubsts schema.fotmp1)
+            results |> ConstantsOf |> Seq.iter (processConstant schema.apps schema.sotmp1 schema.sosubsts schema.fotmp1)
 
     and private processConstant apps soargs sosubsts foargs constant =
         match constant.term with
@@ -211,6 +211,10 @@ module internal Encode =
             | LazyInstantiationEpsilon { term = Ref(TopLevelStack _, _) }
             | KeyInitializedSource _ ->
                 foargs.Add constant |> ignore
+            | LazyInstantiationEpsilon location ->
+                let argId, subst = LazyInstantiations.generateSoArg location
+                soargs.Add(argId, List.map (fst >> TypeOf) subst, typ) |> ignore
+                sosubsts.Add(argId, List.map snd subst, constant) |> ignore
             | RecursionOutcome(funcId, state, location, _) ->
                 let key, generate = RecursionOutcomes.generate funcId location
                 let app = {
@@ -219,10 +223,6 @@ module internal Encode =
                 }
                 apps.Add app |> ignore
                 generateSchema key generate
-            | LazyInstantiationEpsilon location ->
-                let argId, subst = LazyInstantiations.generateSoArg location
-                soargs.Add(argId, List.map (fst >> TypeOf) subst, typ) |> ignore
-                sosubsts.Add(argId, List.map snd subst, constant) |> ignore
             | LazyInstantiation({ term = Ref(TopLevelHeap _, _) } as location, Some heap, _)
             | LazyInstantiation({ term = Ptr(TopLevelHeap _, _, _, _) } as location, Some heap, _) ->
                 let getter (state : state) = state.heap
