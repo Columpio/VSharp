@@ -480,6 +480,7 @@ module internal Encode =
 
 
     module internal OCaml =
+
         let private artificialVariableNamePrefix = "g"
         let private codeVariableNamePrefix = "x"
 
@@ -679,9 +680,12 @@ module internal Encode =
             | Numeric _ ->
                 match obj with
                 | :? concreteHeapAddress as addr ->
-                    match addr with
-                    | [addr] -> OConstant (addr.ToString())
-                    | _ -> __notImplemented__()
+                    addr
+                    |> Seq.zip Seq.primes
+                    |> Seq.map bigint.Pow
+                    |> Seq.fold (*) bigint.One
+                    |> toString
+                    |> OConstant
                 | _ -> OConstant (obj.ToString())
             | _ -> __notImplemented__()
 

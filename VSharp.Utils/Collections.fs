@@ -13,6 +13,15 @@ module public Seq =
         if Seq.isEmpty s then Empty
         else Cons (Seq.head s, Seq.tail s)
 
+    let public primes =
+        let rec filterPrimes = function
+            | Empty as s -> s
+            | Cons(p, xs) -> seq {
+                yield p
+                yield! xs |> Seq.filter (fun x -> x % p <> bigint.Zero) |> filterPrimes
+            }
+        filterPrimes (Seq.initInfinite (fun n -> bigint(n + 2)))
+
 module public List =
     let rec private mappedPartitionAcc f left right = function
         | [] -> (List.rev left, List.rev right)

@@ -90,9 +90,12 @@ module internal Z3 =
         | Numeric _ ->
             match obj with
             | :? concreteHeapAddress as addr ->
-                match addr with
-                | [addr] -> (ctx()).MkNumeral(addr.ToString(), type2Sort typ)
-                | _ -> __notImplemented__()
+                let addr =
+                    addr
+                    |> Seq.zip Seq.primes
+                    |> Seq.map bigint.Pow
+                    |> Seq.fold (*) bigint.One
+                (ctx()).MkNumeral(addr.ToString(), type2Sort typ)
             | _ -> (ctx()).MkNumeral(obj.ToString(), type2Sort typ)
         | _ -> __notImplemented__()
 
