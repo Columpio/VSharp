@@ -768,6 +768,7 @@ module internal Interpreter =
         | :? IAddressOfExpression as expression -> reduceAddressOfExpressionToRef state expression k
         | :? IAbstractBinaryOperationExpression
         | :? ITryCastExpression
+        | :? IMethodCallExpression
         | :? IAbstractTypeCastExpression -> reduceExpression state ast k
         | :? IPropertyAccessExpression as expression-> reducePropertyAccessExpression state expression k
         | _ -> __notImplemented__()
