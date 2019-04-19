@@ -73,7 +73,11 @@ module internal Encode =
             | RecursiveApplication(f, _, _) -> toString f
             | Composition(s, _, h) -> sprintf "[%s ⚪ %s]" (idOfState s) (idOfHeap h)
             | Mutation(h1, h2) -> sprintf "write(%s, %s)" (idOfHeap h1) (idOfDefinedHeap h2)
-            | Merged _ -> __unreachable__()
+            | Merged ghs ->
+                ghs
+                |> List.map (fun (g, h) -> sprintf "\t%O -> %s" g (idOfHeap h))
+                |> join ",,"
+                |> sprintf "merge(\n%s\n)"
 
         and private idOfState s =
             sprintf "state(%s, %s, %s)" (idOfStack s.stack) (idOfHeap s.heap) (idOfHeap s.statics)
@@ -137,6 +141,7 @@ module internal Encode =
             refTarget, reference, typ, List.rev subst
 
         let private generateHeapAccess location selectHeap mkState = function
+            | Merged _
             | Defined _
             | Mutation _ as h
             | Composition(_, _, h) ->
