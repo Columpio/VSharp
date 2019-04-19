@@ -7,6 +7,7 @@ open VSharp.Core
 open Logger
 
 module internal Z3 =
+    open System.IO
 
 // ------------------------------- Cache -------------------------------
 
@@ -255,8 +256,31 @@ module internal Z3 =
             solveBoolExpr failRel
         callWithContext solve
 
-    let solveSMTlib2 s =
-        __notImplemented__()
+    let solveSMTlib2 (s : string list) =
+//        printLog Trace "SMTlib2 query:\n%s" s
+        let path = System.IO.Path.GetTempFileName()
+        File.WriteAllLines(path, s)
+        use p = new System.Diagnostics.Process()
+        let toolpath = "/usr/bin/z3"
+        p.StartInfo.FileName <- toolpath
+        p.StartInfo.Arguments <- path
+        p.StartInfo.RedirectStandardOutput <- true
+        p.StartInfo.UseShellExecute <- false
+        p.Start() |> ignore
+        if not (p.WaitForExit(30 * 1000)) then p.Kill()
+        let res =
+            let res = p.StandardOutput.ReadLine()
+            if res = null then printfn "debug"
+            if res.StartsWith "sat" then SmtSat null
+            elif res.StartsWith "unsat" then SmtUnsat
+            else SmtUnknown (sprintf "z3: %s\t%s" res path)
+//        System.IO.File.Delete(path)
+        res
+
+//        let solve () = // TODO: ParseSMTLIB2 only gets asserts from string!
+//            printLog Trace "SOLVER: got SMTlib2 CHC system:\n%s" s
+//            s |> fun s -> (ctx()).ParseSMTLIB2String(s, [||], [||], [||], [||]) |> solveBoolExpr
+//        callWithContext solve
 
     let simplifyPropositional t =
         let stopper op args =
