@@ -278,8 +278,8 @@ module internal Encode =
             smthChanged ||
             app.schema <> schema.id &&
                 let other = schemas.Value.[app.schema]
-                let pushSO = Seq.fold (fun acc i -> schema.soinputs.Contains i || schema.sotmp1.Add i || acc) false other.sotmp1
-                let pushFO = Seq.fold (fun acc i -> schema.foinputs.Contains i || schema.fotmp1.Add i || acc) false other.fotmp1
+                let pushSO = Seq.fold (fun acc i -> (not (schema.soinputs.Contains i) && schema.sotmp1.Add i) || acc) false other.sotmp1
+                let pushFO = Seq.fold (fun acc i -> (not (schema.foinputs.Contains i) && schema.fotmp1.Add i) || acc) false other.fotmp1
                 pushSO || pushFO  // Do not change to Seq.fold ... || Seq.fold ...! Both must be evaluated.
         while traverseApps foldSchemaApp false rootKey do ()
 
