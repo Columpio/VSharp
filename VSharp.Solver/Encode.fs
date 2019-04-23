@@ -261,7 +261,7 @@ module internal Encode =
         traverseSchemaDependencies visited foldSchema foldApp acc app.schema
 
     and private traverseSchemaDependencies visited foldSchema foldApp acc key =
-        if visited.Add key then
+        if visited.Add key && schemas.Value.ContainsKey key then
             let schema = schemas.Value.[key]
             let acc = foldSchema acc schema
             Seq.fold (traverseAppDependencies visited foldSchema foldApp schema) acc schema.apps
@@ -276,41 +276,56 @@ module internal Encode =
     let private pushFreshDependencies rootKey =
         let foldSchemaApp smthChanged (schema : schema) (app : schemaApp) =
             smthChanged ||
-            app.schema <> schema.id &&
+            app.schema <> schema.id && schemas.Value.ContainsKey app.schema &&
                 let other = schemas.Value.[app.schema]
                 let pushSO = Seq.fold (fun acc i -> (not (schema.soinputs.Contains i) && schema.sotmp1.Add i) || acc) false other.sotmp1
                 let pushFO = Seq.fold (fun acc i -> (not (schema.foinputs.Contains i) && schema.fotmp1.Add i) || acc) false other.fotmp1
                 pushSO || pushFO  // Do not change to Seq.fold ... || Seq.fold ...! Both must be evaluated.
         while traverseApps foldSchemaApp false rootKey do ()
 
-    let private generateArgs (schema : schema) (app : schemaApp) =
+    let private generateFOArgs (schema : schema) (app : schemaApp) =
         let tmp2 =
-            match app.state with
-            | None -> schema.fotmp1 :> seq<_>
-            | Some state ->
-                seq {
-                    for i in schema.fotmp1 do
-                        let value = compose state i
-                        app.foArgs.[i] <- value
-                        yield value
-                }
+            if not (schemas.Value.ContainsKey app.schema)
+                then schema.fotmp1 :> seq<_> // TODO: redundant
+                else
+                    let other = schemas.Value.[app.schema]
+                    let schemaFO = new HashSet<_>(other.fotmp1)
+                    schemaFO.UnionWith other.foinputs
+                    let schemaFOKeys = List.filter (not << app.foArgs.ContainsKey) <| List.ofSeq schemaFO
+                    let schemaFOValues =
+                        match app.state with
+                        | None -> schemaFOKeys
+                        | Some state -> List.map (compose state) schemaFOKeys
+                    List.iter2 (fun k v -> app.foArgs.Add(k, v)) schemaFOKeys schemaFOValues
+                    schemaFOValues :> seq<_>
             |> ConstantsOf
         tmp2.ExceptWith schema.fotmp1
         tmp2.ExceptWith schema.foinputs
         Seq.iter (processConstant schema.apptmp schema.sotmp2 schema.sosubsts schema.fotmp2) tmp2
 
     let private flushFreshDependencies rootKey =
+        let schemaIdToSchemaApp key =
+            { schema = key; constant = Nop; resultNum = 0; state = None; parameterValues = []; soArgs = new Dictionary<_, _>(); foArgs = new Dictionary<_,_>() }
+
         let foldSchemaApp () (schema : schema) (app : schemaApp) =
-            generateArgs schema app
+            generateFOArgs schema app
             match app.state with
             | Some state ->
                 let other = schemas.Value.[app.schema]
-                for i, _, _ in other.sotmp1 do
-                    let key, genSchema = i.GeneratePartialApplication state
-                    generateSchema key genSchema
-                    let hoapp = { schema = key; constant = Nop; resultNum = 0; state = None; parameterValues = []; soArgs = new Dictionary<_, _>(); foArgs = new Dictionary<_,_>() }
-                    app.soArgs.Add(i, hoapp)
-                    generateArgs schema hoapp
+                for i, _, _ in Seq.append other.soinputs other.sotmp1 do
+                    if not (app.soArgs.ContainsKey i)
+                    then
+                        let key, genSchema = i.GeneratePartialApplication state
+                        generateSchema key genSchema
+                        let hoapp = schemaIdToSchemaApp key
+                        app.soArgs.Add(i, hoapp)
+                        generateFOArgs schema hoapp
+            | None when schemas.Value.ContainsKey app.schema ->
+                let other = schemas.Value.[app.schema]
+                for ((soname, _, _) as soarg) in Seq.append other.soinputs other.sotmp1 do
+                    if not (schema.sotmp1.Contains soarg) && not (schema.soinputs.Contains soarg) then schema.sotmp2.Add(soarg) |> ignore
+                    if not (app.soArgs.ContainsKey soname) then
+                        app.soArgs.Add(soname, schemaIdToSchemaApp soname)
             | None -> ()
 
         traverseApps foldSchemaApp () rootKey
