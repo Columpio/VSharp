@@ -236,3 +236,14 @@ type internal MochiSolver() =
     member x.Solve (program : OCamlProgram) =
         let code = toString program
         x.SolveCode code
+
+type internal HumanSolver() =
+    member x.SolveNumber n =
+        let answer_filepath = Path.Combine(__SOURCE_DIRECTORY__, "benchmarks_gold", sprintf "%d.gold" n)
+        if File.Exists answer_filepath
+            then
+                let answer = File.ReadAllText answer_filepath
+                if answer.StartsWith "sat" then SmtSat null
+                elif answer.StartsWith "unsat" then SmtUnsat
+                else SmtUnknown (sprintf "Invalid gold file (%s) format:\n%s" answer_filepath answer)
+            else SmtUnknown "No gold file specified by user!"

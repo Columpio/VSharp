@@ -35,7 +35,6 @@ type public Z3Solver() =
         | AllSolversOption ->
             let ocamlProgram = Encode.OCaml.encodeQuery terms
             let sochcs = Encode.Relations.encodeQuery terms
-            let horus_result = Z3.solve (CHCs.toFirstOrder sochcs)
 
             match ocamlProgram with
             | Encode.OCaml.LetRecursive lts when List.length lts > 2 ->
@@ -58,17 +57,17 @@ type public Z3Solver() =
 
                 let results =
                     [
-                        "HORUS", horus_result;
-    //                    "r_type", R_typeSolver().Solve ocamlProgram;
-    //                    "DefMono", DefMonoSolver().Solve ocamlProgram;
-                        "DOrder", DOrderSolver().SolveCode code;
+                        "HORUS", Z3.solve (CHCs.toFirstOrder sochcs);
+                        "r_type", R_typeSolver().Solve ocamlProgram;
+    //                    "DefMono", DefMonoSolver().Solve ocamlProgram; // Not fully supported: no `not` operator
+//                        "DOrder", DOrderSolver().SolveCode code; // Doesn't work due to function reordering
                         "Mochi", MochiSolver().SolveCode code;
+                        "Human", HumanSolver().SolveNumber nextNamePrefix;
                     ]
-                let results = results |> List.map (fun (name, res) -> sprintf "%s\t%O" name res) |> Array.ofList
-                System.IO.File.WriteAllLines(System.IO.Path.ChangeExtension(termFile, "results"), results)
-            | _ -> ()
-
-            horus_result
+                let resultsS = results |> List.map (fun (name, res) -> sprintf "%s\t%O" name res) |> Array.ofList
+                System.IO.File.WriteAllLines(System.IO.Path.ChangeExtension(termFile, "results"), resultsS)
+                results |> List.last |> snd
+            | _ -> MochiSolver().Solve ocamlProgram
 
 
     interface IZ3Solver with
