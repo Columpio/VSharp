@@ -411,14 +411,14 @@ module internal Encode =
             { symbol = rel; relArgs = soArgs; args = List.append3 (List.ofSeq schema.foinputs) schema.parameterInputs schema.results }
 
         let private schemaArg2RelArg sourceSchemaId (soArgs : IDictionary<_, _>) (argId, _, _) =
-            if soArgs.ContainsKey argId then
-                let schemaApp = soArgs.[argId]
-                let schema = schemas.Value.[schemaApp.schema]
+            maybe {
+                let! schemaApp = Dict.tryGetOptionValue soArgs argId
+                let! schema = Dict.tryGetOptionValue schemas.Value schemaApp.schema
                 let rel = soRels.Value.[schemaApp.schema]
                 let soArgs = schema.soinputs |> Seq.map (fun (argId, _, _) -> foRels.Value.[sourceSchemaId, argId]) |> List.ofSeq
                 let foArgs = schema.foinputs |> Seq.map (fun i -> if schemaApp.foArgs.ContainsKey i then schemaApp.foArgs.[i] else i) |> List.ofSeq
-                SoArg(rel, soArgs, foArgs)
-            else FoArg foRels.Value.[sourceSchemaId, argId]
+                return SoArg(rel, soArgs, foArgs)
+            } |> Option.defaultWith (fun () -> FoArg foRels.Value.[sourceSchemaId, argId])
 
         let private soSubst2RelApp schemaId (argId, args, constant) : soRelationalApplication =
             let soRel = { foRel = foRels.Value.[schemaId, argId]; relArgs = [] }
