@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System;
 
 namespace VSharp.Test.Tests
@@ -11,54 +12,64 @@ namespace VSharp.Test.Tests
 //        }
 //    }
 
+    [TestSvmFixture]
     public sealed class Strings
     {
         // Expecting HeapRef on empty string
+        [TestSvm]
         public static string EmptyString(int n, int m)
         {
             return String.Empty;
         }
 
+        [TestSvm]
         public static int GetConcreteHash()
         {
             String str = "sample string";
             return str.GetHashCode();
         }
 
+        [TestSvm]
         public static int GetSymbolicHash(string a)
         {
             return a.GetHashCode();
         }
 
+        [TestSvm]
         public static string SymbolicString(string s)
         {
             var len = s.Length;
             return s;
         }
 
+        [TestSvm]
         public static int NullLength()
         {
             string s = null;
             return s.Length;
         }
 
+        [TestSvm]
         public static string HopHeyCharArray(char[] a)
         {
             return new string(a);
         }
 
+        [TestSvm]
         public static string ConcreteIsInterned()
         {
             String a = "interned";
             return String.IsInterned(a);
         }
 
+        [TestSvm]
         public static string ConcreteIntern()
         {
             string a = new string(new char[] {'a', 'b', 'c'});
             return String.Intern(a);
         }
 
+        [TestSvm]
         public static Object NotInterned()
         {
             string a = new string(new char[] {'a', 'b', 'c'});
