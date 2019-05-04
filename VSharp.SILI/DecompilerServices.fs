@@ -15,7 +15,7 @@ module internal DecompilerServices =
 
     let rec internal loadAssemblyByName (name : string) =
         let path = System.Reflection.Assembly.Load(name).Location
-        if not(assemblies.ContainsKey(path)) then
+        if not(assemblies.ContainsKey(path)) && not(name.Contains "JetBrains") then
             let jbPath = JetBrains.Util.FileSystemPath.Parse(path)
             loadAssembly jbPath |> ignore
 
