@@ -1,0 +1,6 @@
+METHOD: System.Int32 VSharp.Test.Tests.Typecast.Typecast.CheckCastNullWithTrick()
+RESULT: 20
+HEAP:
+{ heap = <empty>, statics = s0, pool = <empty> } where
+---------- s0 = ----------
+VSharp.Test.Tests.Typecast.Typecast ==> STRUCT VSharp.Test.Tests.Typecast.Typecast[]

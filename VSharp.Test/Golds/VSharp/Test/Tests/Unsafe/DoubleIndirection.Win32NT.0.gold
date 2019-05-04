@@ -1,0 +1,6 @@
+METHOD: System.Int32 VSharp.Test.Tests.Unsafe.DoubleIndirection()
+RESULT: 428999
+HEAP:
+{ heap = <empty>, statics = s0, pool = <empty> } where
+---------- s0 = ----------
+VSharp.Test.Tests.Unsafe ==> STRUCT VSharp.Test.Tests.Unsafe[]

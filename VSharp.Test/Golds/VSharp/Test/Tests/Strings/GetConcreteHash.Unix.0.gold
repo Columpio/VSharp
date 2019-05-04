@@ -1,0 +1,45 @@
+METHOD: System.Int32 VSharp.Test.Tests.Strings.GetConcreteHash()
+RESULT: -54803865
+HEAP:
+{ heap = h0, statics = s1, pool = p2 } where
+---------- h0 = ----------
+sample string ==> STRUCT System.String[
+	| System.String.m_FirstChar ~> [|
+		0: 's';
+		10: 'i';
+		11: 'n';
+		12: 'g';
+		13: '\000';
+		1: 'a';
+		2: 'm';
+		3: 'p';
+		4: 'l';
+		5: 'e';
+		6: ' ';
+		7: 's';
+		8: 't';
+		9: 'r';
+		 ... 14 ... |]
+	| System.String.m_StringLength ~> 13]
+---------- s1 = ----------
+System.Object ==> STRUCT System.Object[]
+VSharp.Test.Tests.Strings ==> STRUCT VSharp.Test.Tests.Strings[]
+---------- p2 = ----------
+STRUCT System.String[
+	| System.String.m_FirstChar ~> [|
+		0: 's';
+		10: 'i';
+		11: 'n';
+		12: 'g';
+		13: '\000';
+		1: 'a';
+		2: 'm';
+		3: 'p';
+		4: 'l';
+		5: 'e';
+		6: ' ';
+		7: 's';
+		8: 't';
+		9: 'r';
+		 ... 14 ... |]
+	| System.String.m_StringLength ~> 13] ==> (HeapRef sample string)
