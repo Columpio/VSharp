@@ -377,14 +377,13 @@ System.Convert ==> STRUCT System.Convert[
 		| !(0 == System.DBNull.Value) & !hasKey#2 & hasKey#3 ~> (HeapRef System.DBNull.Value)
 		| !hasKey#2 & !hasKey#3 ~> (HeapRef 5)
 		| !hasKey#2 & 0 == System.DBNull.Value & hasKey#3 ~> null
-		| (!(0 == System.DBNull.Value) | !hasKey#3) & hasKey#2 ~> (HeapRef System.Convert.DBNull)
-		| 0 == System.DBNull.Value & hasKey#2 & hasKey#3 ~> (HeapRef System.Convert.DBNull)]
+		| hasKey#2 ~> (HeapRef System.Convert.DBNull)]
 	| System.Convert.EncodingPad ~> UNION[
 		| !hasKey#2 ~> 61
 		| hasKey#2 ~> System.Convert.EncodingPad]
 	| System.Convert.EnumType ~> UNION[
 		| !hasKey#2 ~> System.Enum
-		| hasKey#2 ~> STRUCT TypeVariable{System.Convert.EnumType}{System.Type}[]]
+		| hasKey#2 ~> (HeapRef System.Convert.EnumType)]
 	| System.Convert.base64LineBreakPosition ~> UNION[
 		| !hasKey#2 ~> 76
 		| hasKey#2 ~> System.Convert.base64LineBreakPosition]
