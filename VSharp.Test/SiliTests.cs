@@ -12,6 +12,7 @@ using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Builders;
 using NUnit.Framework.Internal.Commands;
+using VSharp.Core;
 using VSharp.Interpreter;
 
 namespace VSharp.Test
@@ -235,6 +236,8 @@ namespace VSharp.Test
             _idealValuePath = GetIdealValuePath(currentFolder, methodInfo);
             ExpectedValue = ReadIdealValue(_idealValuePath);
             _methodName = MethodInfoToString(methodInfo);
+            Options.CurrentMethodName = Path.Combine(Path.GetDirectoryName(_idealValuePath),
+                Path.GetFileNameWithoutExtension(_idealValuePath));
         }
 
         private static string GetIdealValuePath(string currentFolder, MethodInfo methodInfo)

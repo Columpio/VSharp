@@ -1,6 +1,7 @@
 namespace VSharp
 
 open Microsoft.Z3
+open System.IO
 open VSharp.Core
 
 type public ISolver<'TAst, 'TResult> =
@@ -38,7 +39,9 @@ type public Z3Solver() =
 
             match ocamlProgram with
             | Encode.OCaml.LetRecursive lts when List.length lts > 2 ->
-                let bench_path = System.IO.Path.Combine(__SOURCE_DIRECTORY__, "benchmarks")
+//                let bench_path = System.IO.Path.Combine(__SOURCE_DIRECTORY__, "benchmarks")
+                Directory.CreateDirectory(Options.CurrentMethodName) |> ignore
+                let bench_path = Options.CurrentMethodName
                 let benchmarks =
                     System.IO.Directory.GetFiles bench_path
                     |> List.ofArray

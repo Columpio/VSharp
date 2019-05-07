@@ -239,7 +239,8 @@ type internal MochiSolver() =
 
 type internal HumanSolver() =
     member x.SolveNumber n =
-        let answer_filepath = Path.Combine(__SOURCE_DIRECTORY__, "benchmarks_gold", sprintf "%d.gold" n)
+//        let answer_filepath = Path.Combine(__SOURCE_DIRECTORY__, "benchmarks_gold", sprintf "%d.gold" n)
+        let answer_filepath = Path.Combine(Options.CurrentMethodName, sprintf "%d.gold" n)
         if File.Exists answer_filepath
             then
                 let answer = File.ReadAllText answer_filepath

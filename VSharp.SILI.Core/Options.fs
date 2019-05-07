@@ -18,3 +18,5 @@ module public Options =
 
     let mutable private readableOCamlCode = false
     let public ReadableOCamlCode () = readableOCamlCode
+
+    let mutable CurrentMethodName = ""
