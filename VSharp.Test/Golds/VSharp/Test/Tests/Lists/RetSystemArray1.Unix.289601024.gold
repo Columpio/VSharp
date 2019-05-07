@@ -231,7 +231,7 @@ HEAP:
 	| System.Runtime.Serialization.SafeSerializationManager.m_realType ~> null
 	| System.Runtime.Serialization.SafeSerializationManager.m_savedSerializationInfo ~> null
 	| System.Runtime.Serialization.SafeSerializationManager.m_serializedStates ~> null]
-arr ==> TypeVariable{arr}{System.Object}: [|
+arr ==> TypeVariable{arr}{<Reference to System.Object>}: [|
 	1, 1: UNION[
 		| !(0 == arr) & !(ArrayTypeVariable{arr} <: System.Int32[]) & (ArrayTypeVariable{arr} <: System.Int32[,]) & 1 < arr.0_Length & 1 < arr.1_Length ~> 7
 		| !(0 == arr) & (ArrayTypeVariable{arr} <: System.Int32[]) | (!(1 < arr.0_Length) | !(1 < arr.1_Length) | !(ArrayTypeVariable{arr} <: System.Int32[,]) | 0 == arr) & (!(ArrayTypeVariable{arr} <: System.Int32[]) | 0 == arr) ~> arr.[1, 1]];
