@@ -1,0 +1,3 @@
+!(n <= 1) & (!(1.2 == μ[CreateList]_1) | n <= 0) & (!(μ[CreateList]_1.VSharp.Test.Tests.ListNode.Key <= 0) | n <= 0)
+!(n <= 0)
+!(n <= 1)

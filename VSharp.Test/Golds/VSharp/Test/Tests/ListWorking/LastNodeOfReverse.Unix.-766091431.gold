@@ -1,0 +1,29 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.LastNodeOfReverse(VSharp.Test.Tests.ListNode)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next) & (!(l == l.VSharp.Test.Tests.ListNode.Next) | !(l.VSharp.Test.Tests.ListNode.Next == μ[Reverse]_1)) & (!(l == μ[Reverse]_1) | l == l.VSharp.Test.Tests.ListNode.Next), { heap = write({ heap = <empty>, statics = s0 } ⚪ recapp(Reverse), h1), statics = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, s0),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s0 } ⚪ recapp(Reverse), s2))] } ⚪ recapp(LastNode)),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next) & (!(l == l.VSharp.Test.Tests.ListNode.Next) & l == μ[Reverse]_1 | l == l.VSharp.Test.Tests.ListNode.Next & l.VSharp.Test.Tests.ListNode.Next == μ[Reverse]_1), write({ heap = <empty>, statics = s0 } ⚪ recapp(Reverse), h1)),
+	((0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next | 0 == μ[Reverse]_1.VSharp.Test.Tests.ListNode.Next) & (0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next), <empty>)], statics = merge[
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next) & (!(l == l.VSharp.Test.Tests.ListNode.Next) | !(l.VSharp.Test.Tests.ListNode.Next == μ[Reverse]_1)) & (!(l == μ[Reverse]_1) | l == l.VSharp.Test.Tests.ListNode.Next), { heap = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, <empty>),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s0 } ⚪ recapp(Reverse), h1))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(Reverse), s2) } ⚪ recapp(LastNode)),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next) & (!(l == l.VSharp.Test.Tests.ListNode.Next) & l == μ[Reverse]_1 | l == l.VSharp.Test.Tests.ListNode.Next & l.VSharp.Test.Tests.ListNode.Next == μ[Reverse]_1), write({ heap = <empty>, statics = s0 } ⚪ recapp(Reverse), s2)),
+	((!(l == l.VSharp.Test.Tests.ListNode.Next) & l == μ[Reverse]_1 | 0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next | l == l.VSharp.Test.Tests.ListNode.Next & l.VSharp.Test.Tests.ListNode.Next == μ[Reverse]_1) & (0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next), s0)] } where
+---------- s0 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- h1 = ----------
+l ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Next ~> UNION[
+		| !(l == l.VSharp.Test.Tests.ListNode.Next) ~> null
+		| l == l.VSharp.Test.Tests.ListNode.Next ~> (HeapRef l.VSharp.Test.Tests.ListNode.Next)]]
+l.VSharp.Test.Tests.ListNode.Next ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Next ~> UNION[
+		| !(l == l.VSharp.Test.Tests.ListNode.Next) ~> (HeapRef l)
+		| l == l.VSharp.Test.Tests.ListNode.Next ~> null]]
+---------- s2 = ----------
+VSharp.Test.Tests.ListNode ==> STRUCT VSharp.Test.Tests.ListNode[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]

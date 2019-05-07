@@ -1,0 +1,21 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.CreateLength(System.Int32)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(n <= 0, <empty>),
+	(!(n <= 0), { heap = write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateList), h1), statics = merge[
+	(n <= 0, s0),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateList), s2))] } ⚪ recapp(Length))], statics = merge[
+	(n <= 0, s0),
+	(!(n <= 0), { heap = merge[
+	(n <= 0, <empty>),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateList), h1))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateList), s2) } ⚪ recapp(Length))] } where
+---------- s0 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- h1 = ----------
+1.2 ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Key ~> 0
+	| VSharp.Test.Tests.ListNode.Next ~> (HeapRef μ[CreateList]_1)]
+---------- s2 = ----------
+System.Object ==> STRUCT System.Object[]

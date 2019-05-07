@@ -1,0 +1,22 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.StrangeSumTest(VSharp.Test.Tests.A)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(0 == a | a.VSharp.Test.Tests.A.OtherField <= 0, h0),
+	(!(0 == a) & !(a.VSharp.Test.Tests.A.OtherField <= 0), { heap = h1, statics = s2 } ⚪ recapp(StrangeSum))], statics = merge[
+	(0 == a | a.VSharp.Test.Tests.A.OtherField <= 0, s2),
+	(!(0 == a) & !(a.VSharp.Test.Tests.A.OtherField <= 0), { heap = h1, statics = s2 } ⚪ recapp(StrangeSum))] } where
+---------- h0 = ----------
+a ==> UNION[
+	| 0 == a | a.VSharp.Test.Tests.A.OtherField <= 0 ~> STRUCT VSharp.Test.Tests.A[
+		| VSharp.Test.Tests.A.Field ~> UNION[
+			| !(0 == a) & a.VSharp.Test.Tests.A.OtherField <= 0 ~> 0
+			| 0 == a ~> a.VSharp.Test.Tests.A.Field]]]
+---------- h1 = ----------
+a ==> STRUCT VSharp.Test.Tests.A[
+	| VSharp.Test.Tests.A.Field ~> a.VSharp.Test.Tests.A.OtherField
+	| VSharp.Test.Tests.A.OtherField ~> -1 + a.VSharp.Test.Tests.A.OtherField]
+---------- s2 = ----------
+VSharp.Test.Tests.A ==> STRUCT VSharp.Test.Tests.A[]
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]

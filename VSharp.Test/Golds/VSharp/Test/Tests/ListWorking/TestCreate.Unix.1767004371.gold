@@ -1,0 +1,152 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.TestCreate(System.Int32)
+RESULT: UNION[
+	| !(n <= 0) ~> <VOID>
+	| n <= 0 ~> <ERROR: (HeapRef 2)>]
+HEAP:
+{ heap = merge[
+	(n <= 0, h0),
+	(!(n <= 0), write({ heap = <empty>, statics = s1 } ⚪ recapp(CreateList), h2))], statics = merge[
+	(n <= 0, s3),
+	(!(n <= 0), write({ heap = <empty>, statics = s1 } ⚪ recapp(CreateList), s4))] } where
+---------- h0 = ----------
+2 ==> STRUCT System.NullReferenceException[
+	| System.Exception._HResult ~> -2147467261
+	| System.Exception._className ~> null
+	| System.Exception._data ~> null
+	| System.Exception._dynamicMethods ~> null
+	| System.Exception._helpURL ~> null
+	| System.Exception._innerException ~> null
+	| System.Exception._message ~> (HeapRef 3.1)
+	| System.Exception._remoteStackIndex ~> 0
+	| System.Exception._remoteStackTraceString ~> null
+	| System.Exception._safeSerializationManager ~> (HeapRef 3.2.3.2.2)
+	| System.Exception._source ~> null
+	| System.Exception._stackTrace ~> null
+	| System.Exception._stackTraceString ~> null
+	| System.Exception.captured_traces ~> null
+	| System.Exception.native_trace_ips ~> null]
+3.1 ==> STRUCT System.String[
+	| System.String.m_FirstChar ~> System.Char: [|
+		0: 'O';
+		10: 'e';
+		11: 'r';
+		12: 'e';
+		13: 'n';
+		14: 'c';
+		15: 'e';
+		16: ' ';
+		17: 'n';
+		18: 'o';
+		19: 't';
+		1: 'b';
+		20: ' ';
+		21: 's';
+		22: 'e';
+		23: 't';
+		24: ' ';
+		25: 't';
+		26: 'o';
+		27: ' ';
+		28: 'a';
+		29: 'n';
+		2: 'j';
+		30: ' ';
+		31: 'i';
+		32: 'n';
+		33: 's';
+		34: 't';
+		35: 'a';
+		36: 'n';
+		37: 'c';
+		38: 'e';
+		39: ' ';
+		3: 'e';
+		40: 'o';
+		41: 'f';
+		42: ' ';
+		43: 'a';
+		44: 'n';
+		45: ' ';
+		46: 'o';
+		47: 'b';
+		48: 'j';
+		49: 'e';
+		4: 'c';
+		50: 'c';
+		51: 't';
+		52: '.';
+		53: '\000';
+		5: 't';
+		6: ' ';
+		7: 'r';
+		8: 'e';
+		9: 'f';
+		 ... 3.1.System.String.m_FirstChar.0_Length ... |]
+	| System.String.m_StringLength ~> 53]
+3.2.3.2.2 ==> STRUCT System.Runtime.Serialization.SafeSerializationManager[
+	| System.Runtime.Serialization.SafeSerializationManager.m_realObject ~> null
+	| System.Runtime.Serialization.SafeSerializationManager.m_realType ~> null
+	| System.Runtime.Serialization.SafeSerializationManager.m_savedSerializationInfo ~> null
+	| System.Runtime.Serialization.SafeSerializationManager.m_serializedStates ~> null]
+3.2.3.2.3 ==> STRUCT System.String[
+	| System.String.m_FirstChar ~> System.Char: [|
+		0: 'C';
+		10: 'r';
+		11: 'i';
+		12: 'a';
+		13: 'l';
+		14: 'i';
+		15: 'z';
+		16: 'a';
+		17: 't';
+		18: 'i';
+		19: 'o';
+		1: 'L';
+		20: 'n';
+		21: 'M';
+		22: 'a';
+		23: 'n';
+		24: 'a';
+		25: 'g';
+		26: 'e';
+		27: 'r';
+		28: '_';
+		29: 'R';
+		2: 'R';
+		30: 'e';
+		31: 'a';
+		32: 'l';
+		33: 'T';
+		34: 'y';
+		35: 'p';
+		36: 'e';
+		37: '\000';
+		3: '_';
+		4: 'S';
+		5: 'a';
+		6: 'f';
+		7: 'e';
+		8: 'S';
+		9: 'e';
+		 ... UNION[] ... |]
+	| System.String.m_StringLength ~> 37]
+---------- s1 = ----------
+VSharp.Test.Tests.ListNode ==> STRUCT VSharp.Test.Tests.ListNode[]
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- h2 = ----------
+1.2 ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Key ~> 0
+	| VSharp.Test.Tests.ListNode.Next ~> (HeapRef μ[CreateList]_1)]
+---------- s3 = ----------
+System.Exception ==> STRUCT System.Exception[
+	| System.Exception._COMPlusExceptionCode ~> -532462766
+	| System.Exception.s_EDILock ~> (HeapRef 3.2.1)]
+System.NullReferenceException ==> STRUCT System.NullReferenceException[]
+System.Runtime.Serialization.SafeSerializationManager ==> STRUCT System.Runtime.Serialization.SafeSerializationManager[
+	| System.Runtime.Serialization.SafeSerializationManager.RealTypeSerializationName ~> (HeapRef 3.2.3.2.3)]
+VSharp.Test.Tests.ListNode ==> STRUCT VSharp.Test.Tests.ListNode[]
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s4 = ----------
+System.Object ==> STRUCT System.Object[]

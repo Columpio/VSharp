@@ -1,0 +1,17 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.JustCallTest(VSharp.Test.Tests.A)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(0 == a, <empty>),
+	(!(0 == a), { heap = h0, statics = s1 } ⚪ recapp(JustSetField))], statics = merge[
+	(0 == a, s2),
+	(!(0 == a), { heap = h0, statics = s1 } ⚪ recapp(JustSetField))] } where
+---------- h0 = ----------
+a ==> STRUCT VSharp.Test.Tests.A[
+	| VSharp.Test.Tests.A.Field ~> 5
+	| VSharp.Test.Tests.A.OtherField ~> 5]
+---------- s1 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s2 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]

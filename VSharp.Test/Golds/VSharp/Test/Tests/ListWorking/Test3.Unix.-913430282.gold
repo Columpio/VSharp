@@ -1,0 +1,24 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.Test3(VSharp.Test.Tests.A)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(0 == a | a.VSharp.Test.Tests.A.Field < 2, h0),
+	(!(0 == a) & !(a.VSharp.Test.Tests.A.Field < 2), write({ heap = h1, statics = s2 } ⚪ recapp(Fact), h3))], statics = merge[
+	(0 == a | a.VSharp.Test.Tests.A.Field < 2, s2),
+	(!(0 == a) & !(a.VSharp.Test.Tests.A.Field < 2), { heap = h1, statics = s2 } ⚪ recapp(Fact))] } where
+---------- h0 = ----------
+a ==> UNION[
+	| 0 == a | a.VSharp.Test.Tests.A.Field < 2 ~> STRUCT VSharp.Test.Tests.A[
+		| VSharp.Test.Tests.A.OtherField ~> UNION[
+			| !(0 == a) & a.VSharp.Test.Tests.A.Field < 2 ~> 1
+			| 0 == a ~> a.VSharp.Test.Tests.A.OtherField]]]
+---------- h1 = ----------
+a ==> STRUCT VSharp.Test.Tests.A[
+	| VSharp.Test.Tests.A.Field ~> -1 + a.VSharp.Test.Tests.A.Field]
+---------- s2 = ----------
+VSharp.Test.Tests.A ==> STRUCT VSharp.Test.Tests.A[]
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- h3 = ----------
+a ==> STRUCT VSharp.Test.Tests.A[
+	| VSharp.Test.Tests.A.OtherField ~> a.VSharp.Test.Tests.A.Field * a.VSharp.Test.Tests.A.OtherField]

@@ -1,0 +1,69 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.TestLastInc(VSharp.Test.Tests.ListNode)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next) & 0 == l.VSharp.Test.Tests.ListNode.Next, { heap = { heap = h0, statics = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, s1),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), s2))] } ⚪ recapp(IncN), statics = merge[
+	(!(0 == l) & 0 == l.VSharp.Test.Tests.ListNode.Next, write({ heap = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, h0),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), h0))], statics = s1 } ⚪ recapp(IncN), s2)),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, h0),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), h0))], statics = write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), s2) } ⚪ recapp(IncN), s2)),
+	(0 == l, s1)] } ⚪ recapp(Last)),
+	(!(0 == l) & 0 == l.VSharp.Test.Tests.ListNode.Next & 0 == l.VSharp.Test.Tests.ListNode.Next, { heap = h0, statics = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, s1),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), s2))] } ⚪ recapp(IncN)),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next) & !(0 == l.VSharp.Test.Tests.ListNode.Next), { heap = { heap = write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), h0), statics = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, s1),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), s2))] } ⚪ recapp(IncN), statics = merge[
+	(!(0 == l) & 0 == l.VSharp.Test.Tests.ListNode.Next, write({ heap = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, h0),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), h0))], statics = s1 } ⚪ recapp(IncN), s2)),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, h0),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), h0))], statics = write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), s2) } ⚪ recapp(IncN), s2)),
+	(0 == l, s1)] } ⚪ recapp(Last)),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next) & 0 == l.VSharp.Test.Tests.ListNode.Next, { heap = write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), h0), statics = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, s1),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), s2))] } ⚪ recapp(IncN)),
+	(0 == l, <empty>)], statics = merge[
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next) & 0 == l.VSharp.Test.Tests.ListNode.Next, { heap = merge[
+	(!(0 == l) & 0 == l.VSharp.Test.Tests.ListNode.Next, { heap = h0, statics = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, s1),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), s2))] } ⚪ recapp(IncN)),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), { heap = write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), h0), statics = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, s1),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), s2))] } ⚪ recapp(IncN)),
+	(0 == l, <empty>)], statics = write({ heap = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, h0),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), h0))], statics = s1 } ⚪ recapp(IncN), s2) } ⚪ recapp(Last)),
+	(!(0 == l) & (!(0 == l.VSharp.Test.Tests.ListNode.Next) & 0 == l.VSharp.Test.Tests.ListNode.Next | 0 == l.VSharp.Test.Tests.ListNode.Next & 0 == l.VSharp.Test.Tests.ListNode.Next) & 0 == l.VSharp.Test.Tests.ListNode.Next, write({ heap = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, h0),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), h0))], statics = s1 } ⚪ recapp(IncN), s2)),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next) & !(0 == l.VSharp.Test.Tests.ListNode.Next), { heap = merge[
+	(!(0 == l) & 0 == l.VSharp.Test.Tests.ListNode.Next, { heap = h0, statics = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, s1),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), s2))] } ⚪ recapp(IncN)),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), { heap = write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), h0), statics = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, s1),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), s2))] } ⚪ recapp(IncN)),
+	(0 == l, <empty>)], statics = write({ heap = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, h0),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), h0))], statics = write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), s2) } ⚪ recapp(IncN), s2) } ⚪ recapp(Last)),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next) & (!(0 == l.VSharp.Test.Tests.ListNode.Next) & 0 == l.VSharp.Test.Tests.ListNode.Next | 0 == l.VSharp.Test.Tests.ListNode.Next & 0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, h0),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), h0))], statics = write({ heap = <empty>, statics = s1 } ⚪ recapp(Last), s2) } ⚪ recapp(IncN), s2)),
+	(0 == l, s3)] } where
+---------- h0 = ----------
+l ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Key ~> 1 + l.VSharp.Test.Tests.ListNode.Key]
+---------- s1 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s2 = ----------
+VSharp.Test.Tests.ListNode ==> STRUCT VSharp.Test.Tests.ListNode[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s3 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]

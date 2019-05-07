@@ -1,0 +1,67 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.TestDecreasingIncIsDecreasing(VSharp.Test.Tests.ListNode, System.Int32)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(!(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key <= n) & l.VSharp.Test.Tests.ListNode.Key <= 1 + n, { heap = { heap = h0, statics = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, s1),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), s2))] } ⚪ recapp(IncN), statics = merge[
+	(!(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key <= n), write({ heap = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, h0),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), h0))], statics = s1 } ⚪ recapp(IncN), s2)),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, h0),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), h0))], statics = write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), s2) } ⚪ recapp(IncN), s2)),
+	(0 == l, s1)] } ⚪ recapp(IsDecreasingFrom)),
+	(!(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key <= 1 + n) & !(l.VSharp.Test.Tests.ListNode.Key <= n), { heap = h0, statics = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, s1),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), s2))] } ⚪ recapp(IncN)),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= 1 + n & l.VSharp.Test.Tests.ListNode.Key <= n, { heap = { heap = write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), h0), statics = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, s1),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), s2))] } ⚪ recapp(IncN), statics = merge[
+	(!(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key <= n), write({ heap = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, h0),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), h0))], statics = s1 } ⚪ recapp(IncN), s2)),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, h0),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), h0))], statics = write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), s2) } ⚪ recapp(IncN), s2)),
+	(0 == l, s1)] } ⚪ recapp(IsDecreasingFrom)),
+	(!(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key <= 1 + n) & l.VSharp.Test.Tests.ListNode.Key <= n, { heap = write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), h0), statics = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, s1),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), s2))] } ⚪ recapp(IncN)),
+	(0 == l, <empty>)], statics = merge[
+	(!(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key <= n) & (!(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key <= n) & l.VSharp.Test.Tests.ListNode.Key <= 1 + n | !(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= 1 + n & l.VSharp.Test.Tests.ListNode.Key <= n | 0 == l & l.VSharp.Test.Tests.ListNode.Key <= 1 + n), { heap = merge[
+	(!(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key <= n), { heap = h0, statics = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, s1),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), s2))] } ⚪ recapp(IncN)),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, { heap = write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), h0), statics = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, s1),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), s2))] } ⚪ recapp(IncN)),
+	(0 == l, <empty>)], statics = write({ heap = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, h0),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), h0))], statics = s1 } ⚪ recapp(IncN), s2) } ⚪ recapp(IsDecreasingFrom)),
+	(!(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key <= 1 + n) & !(l.VSharp.Test.Tests.ListNode.Key <= n), write({ heap = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, h0),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), h0))], statics = s1 } ⚪ recapp(IncN), s2)),
+	(!(0 == l) & (!(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key <= n) & l.VSharp.Test.Tests.ListNode.Key <= 1 + n | !(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= 1 + n & l.VSharp.Test.Tests.ListNode.Key <= n | 0 == l & l.VSharp.Test.Tests.ListNode.Key <= 1 + n) & l.VSharp.Test.Tests.ListNode.Key <= n, { heap = merge[
+	(!(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key <= n), { heap = h0, statics = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, s1),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), s2))] } ⚪ recapp(IncN)),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, { heap = write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), h0), statics = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, s1),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), s2))] } ⚪ recapp(IncN)),
+	(0 == l, <empty>)], statics = write({ heap = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, h0),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), h0))], statics = write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), s2) } ⚪ recapp(IncN), s2) } ⚪ recapp(IsDecreasingFrom)),
+	(!(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key <= 1 + n) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, h0),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), h0))], statics = write({ heap = <empty>, statics = s1 } ⚪ recapp(IsDecreasingFrom), s2) } ⚪ recapp(IncN), s2)),
+	(0 == l, s1)] } where
+---------- h0 = ----------
+l ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Key ~> 1 + l.VSharp.Test.Tests.ListNode.Key]
+---------- s1 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s2 = ----------
+VSharp.Test.Tests.ListNode ==> STRUCT VSharp.Test.Tests.ListNode[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]

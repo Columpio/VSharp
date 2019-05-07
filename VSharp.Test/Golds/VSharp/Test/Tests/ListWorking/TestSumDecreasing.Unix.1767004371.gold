@@ -1,0 +1,33 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.TestSumDecreasing(System.Int32)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(n <= 0, <empty>),
+	(!(n <= 0), { heap = { heap = write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), h1), statics = merge[
+	(n <= 0, s0),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), s2))] } ⚪ recapp(Sum), statics = merge[
+	(n <= 0, s0),
+	(!(n <= 0), write({ heap = merge[
+	(n <= 0, <empty>),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), h1))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), s2) } ⚪ recapp(Sum), s3))] } ⚪ recapp(Mult))], statics = merge[
+	(n <= 0, s4),
+	(!(n <= 0), { heap = merge[
+	(n <= 0, <empty>),
+	(!(n <= 0), { heap = write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), h1), statics = merge[
+	(n <= 0, s0),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), s2))] } ⚪ recapp(Sum))], statics = write({ heap = merge[
+	(n <= 0, <empty>),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), h1))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), s2) } ⚪ recapp(Sum), s3) } ⚪ recapp(Mult))] } where
+---------- s0 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- h1 = ----------
+1.2 ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Key ~> n
+	| VSharp.Test.Tests.ListNode.Next ~> (HeapRef μ[CreateDecreasingList]_1)]
+---------- s2 = ----------
+System.Object ==> STRUCT System.Object[]
+---------- s3 = ----------
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s4 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]

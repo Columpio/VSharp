@@ -1,0 +1,98 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.TestSumOnes(System.Int32)
+RESULT: VOID
+HEAP:
+{ heap = merge[
+	(!(1 + μ[Sum]_1 == n) & !(n <= 0), write({ heap = write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateOnes), h1), statics = merge[
+	(n <= 0, s0),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateOnes), s2))] } ⚪ recapp(Sum), h3)),
+	(!(n <= 0) & 1 + μ[Sum]_1 == n, { heap = write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateOnes), h1), statics = merge[
+	(n <= 0, s0),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateOnes), s2))] } ⚪ recapp(Sum)),
+	(n <= 0, <empty>)], statics = merge[
+	(!(1 + μ[Sum]_1 == n) & !(n <= 0), write({ heap = merge[
+	(n <= 0, <empty>),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateOnes), h1))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateOnes), s2) } ⚪ recapp(Sum), s4)),
+	(!(n <= 0) & 1 + μ[Sum]_1 == n, { heap = merge[
+	(n <= 0, <empty>),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateOnes), h1))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateOnes), s2) } ⚪ recapp(Sum)),
+	(n <= 0, s0)] } where
+---------- s0 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- h1 = ----------
+1.2 ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Key ~> 1
+	| VSharp.Test.Tests.ListNode.Next ~> (HeapRef μ[CreateOnes]_1)]
+---------- s2 = ----------
+System.Object ==> STRUCT System.Object[]
+---------- h3 = ----------
+3 ==> STRUCT System.Exception[
+	| System.Exception._HResult ~> -2146233088
+	| System.Exception._className ~> null
+	| System.Exception._data ~> null
+	| System.Exception._dynamicMethods ~> null
+	| System.Exception._helpURL ~> null
+	| System.Exception._innerException ~> null
+	| System.Exception._message ~> null
+	| System.Exception._remoteStackIndex ~> 0
+	| System.Exception._remoteStackTraceString ~> null
+	| System.Exception._safeSerializationManager ~> (HeapRef 6.2.2)
+	| System.Exception._source ~> null
+	| System.Exception._stackTrace ~> null
+	| System.Exception._stackTraceString ~> null
+	| System.Exception.captured_traces ~> null
+	| System.Exception.native_trace_ips ~> null]
+4 ==> STRUCT System.Object[]
+6.2.2 ==> STRUCT System.Runtime.Serialization.SafeSerializationManager[
+	| System.Runtime.Serialization.SafeSerializationManager.m_realObject ~> null
+	| System.Runtime.Serialization.SafeSerializationManager.m_realType ~> null
+	| System.Runtime.Serialization.SafeSerializationManager.m_savedSerializationInfo ~> null
+	| System.Runtime.Serialization.SafeSerializationManager.m_serializedStates ~> null]
+6.2.3 ==> STRUCT System.String[
+	| System.String.m_FirstChar ~> System.Char: [|
+		0: 'C';
+		10: 'r';
+		11: 'i';
+		12: 'a';
+		13: 'l';
+		14: 'i';
+		15: 'z';
+		16: 'a';
+		17: 't';
+		18: 'i';
+		19: 'o';
+		1: 'L';
+		20: 'n';
+		21: 'M';
+		22: 'a';
+		23: 'n';
+		24: 'a';
+		25: 'g';
+		26: 'e';
+		27: 'r';
+		28: '_';
+		29: 'R';
+		2: 'R';
+		30: 'e';
+		31: 'a';
+		32: 'l';
+		33: 'T';
+		34: 'y';
+		35: 'p';
+		36: 'e';
+		37: '\000';
+		3: '_';
+		4: 'S';
+		5: 'a';
+		6: 'f';
+		7: 'e';
+		8: 'S';
+		9: 'e';
+		 ... UNION[] ... |]
+	| System.String.m_StringLength ~> 37]
+---------- s4 = ----------
+System.Exception ==> STRUCT System.Exception[
+	| System.Exception._COMPlusExceptionCode ~> -532462766
+	| System.Exception.s_EDILock ~> (HeapRef 4)]
+System.Runtime.Serialization.SafeSerializationManager ==> STRUCT System.Runtime.Serialization.SafeSerializationManager[
+	| System.Runtime.Serialization.SafeSerializationManager.RealTypeSerializationName ~> (HeapRef 6.2.3)]

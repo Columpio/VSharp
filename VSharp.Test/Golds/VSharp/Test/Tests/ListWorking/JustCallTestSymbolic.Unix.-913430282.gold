@@ -1,0 +1,15 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.JustCallTestSymbolic(VSharp.Test.Tests.A)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(0 == a | a.VSharp.Test.Tests.A.Field == a.VSharp.Test.Tests.A.OtherField, <empty>),
+	(!(0 == a) & !(a.VSharp.Test.Tests.A.Field == a.VSharp.Test.Tests.A.OtherField), { heap = h0, statics = s1 } ⚪ recapp(JustSetField))], statics = merge[
+	(0 == a | a.VSharp.Test.Tests.A.Field == a.VSharp.Test.Tests.A.OtherField, s1),
+	(!(0 == a) & !(a.VSharp.Test.Tests.A.Field == a.VSharp.Test.Tests.A.OtherField), { heap = h0, statics = s1 } ⚪ recapp(JustSetField))] } where
+---------- h0 = ----------
+a ==> STRUCT VSharp.Test.Tests.A[
+	| VSharp.Test.Tests.A.Field ~> a.VSharp.Test.Tests.A.OtherField]
+---------- s1 = ----------
+VSharp.Test.Tests.A ==> STRUCT VSharp.Test.Tests.A[]
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]

@@ -1,0 +1,20 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.TestItemContains(VSharp.Test.Tests.ListNode, System.Int32)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(!(0 == i) & !(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key == μ[Item]_1), { heap = { heap = <empty>, statics = s0 } ⚪ recapp(Item), statics = merge[
+	(0 == i | 0 == l, s0),
+	(!(0 == i) & !(0 == l), write({ heap = <empty>, statics = s0 } ⚪ recapp(Item), s1))] } ⚪ recapp(Contains)),
+	(!(0 == i) & !(0 == l) & l.VSharp.Test.Tests.ListNode.Key == μ[Item]_1, { heap = <empty>, statics = s0 } ⚪ recapp(Item)),
+	((0 == i | 0 == l | l.VSharp.Test.Tests.ListNode.Key == μ[Item]_1) & (0 == i | 0 == l), <empty>)], statics = merge[
+	(!(0 == i) & !(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key == μ[Item]_1), { heap = merge[
+	(0 == i | 0 == l, <empty>),
+	(!(0 == i) & !(0 == l), { heap = <empty>, statics = s0 } ⚪ recapp(Item))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(Item), s1) } ⚪ recapp(Contains)),
+	(!(0 == i) & !(0 == l) & l.VSharp.Test.Tests.ListNode.Key == μ[Item]_1, write({ heap = <empty>, statics = s0 } ⚪ recapp(Item), s1)),
+	((0 == i | 0 == l | l.VSharp.Test.Tests.ListNode.Key == μ[Item]_1) & (0 == i | 0 == l), s0)] } where
+---------- s0 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s1 = ----------
+VSharp.Test.Tests.ListNode ==> STRUCT VSharp.Test.Tests.ListNode[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]

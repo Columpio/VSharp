@@ -1,0 +1,4 @@
+!(0 == a) & !(a.VSharp.Test.Tests.A.OtherField <= 0) & a.VSharp.Test.Tests.A.Field < 0
+!(a.VSharp.Test.Tests.A.OtherField <= 0)
+!(0 == a)
+!(0 == a)

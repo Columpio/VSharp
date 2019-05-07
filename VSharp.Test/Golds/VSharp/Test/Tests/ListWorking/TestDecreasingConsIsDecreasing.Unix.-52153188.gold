@@ -1,0 +1,29 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.TestDecreasingConsIsDecreasing(VSharp.Test.Tests.ListNode, System.Int32)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, { heap = write({ heap = <empty>, statics = s0 } ⚪ recapp(IsDecreasingFrom), h1), statics = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, s2),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s0 } ⚪ recapp(IsDecreasingFrom), s3))] } ⚪ recapp(IsDecreasingFrom)),
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, { heap = h1, statics = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, s2),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s0 } ⚪ recapp(IsDecreasingFrom), s3))] } ⚪ recapp(IsDecreasingFrom))], statics = merge[
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, { heap = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, h1),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s0 } ⚪ recapp(IsDecreasingFrom), h1))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(IsDecreasingFrom), s3) } ⚪ recapp(IsDecreasingFrom)),
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, { heap = merge[
+	(!(l.VSharp.Test.Tests.ListNode.Key <= n) | 0 == l, h1),
+	(!(0 == l) & l.VSharp.Test.Tests.ListNode.Key <= n, write({ heap = <empty>, statics = s0 } ⚪ recapp(IsDecreasingFrom), h1))], statics = s2 } ⚪ recapp(IsDecreasingFrom))] } where
+---------- s0 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- h1 = ----------
+2 ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Key ~> n
+	| VSharp.Test.Tests.ListNode.Next ~> (HeapRef l)]
+---------- s2 = ----------
+VSharp.Test.Tests.ListNode ==> STRUCT VSharp.Test.Tests.ListNode[]
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s3 = ----------
+System.Object ==> STRUCT System.Object[]

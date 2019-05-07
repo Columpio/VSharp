@@ -1,0 +1,2 @@
+!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next) & !(l.VSharp.Test.Tests.ListNode.Key == μ[Last]_1) & !μ[Contains]_1
+!(0 == l)

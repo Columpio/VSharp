@@ -1,0 +1,28 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.ContainsDecreasing(System.Int32, System.Int32)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(UNION[], { heap = <empty>, statics = merge[
+	(n <= 0, s0),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), s1))] } ⚪ recapp(Contains)),
+	(!(k == n) & !(n <= 0), { heap = write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), h2), statics = merge[
+	(n <= 0, s0),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), s1))] } ⚪ recapp(Contains)),
+	(!(n <= 0) & k == n, write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), h2)),
+	(UNION[], <empty>)], statics = merge[
+	(!(k == n) & !(n <= 0), { heap = merge[
+	(n <= 0, <empty>),
+	(!(n <= 0), write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), h2))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), s1) } ⚪ recapp(Contains)),
+	(!(n <= 0) & k == n, write({ heap = <empty>, statics = s0 } ⚪ recapp(CreateDecreasingList), s1)),
+	(n <= 0, s3)] } where
+---------- s0 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s1 = ----------
+System.Object ==> STRUCT System.Object[]
+---------- h2 = ----------
+1.2 ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Key ~> n
+	| VSharp.Test.Tests.ListNode.Next ~> (HeapRef μ[CreateDecreasingList]_1)]
+---------- s3 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]

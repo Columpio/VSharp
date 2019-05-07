@@ -1,0 +1,28 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.EqualLength(VSharp.Test.Tests.ListNode, VSharp.Test.Tests.ListNode)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(!(0 == l2) & 0 == l1, { heap = <empty>, statics = merge[
+	(0 == l1, s0),
+	(!(0 == l1), write({ heap = <empty>, statics = s0 } ⚪ recapp(Length), s1))] } ⚪ recapp(Length)),
+	(!(0 == l1) & !(0 == l2), { heap = { heap = <empty>, statics = s0 } ⚪ recapp(Length), statics = merge[
+	(0 == l1, s0),
+	(!(0 == l1), write({ heap = <empty>, statics = s0 } ⚪ recapp(Length), s1))] } ⚪ recapp(Length)),
+	(!(0 == l1) & 0 == l2, { heap = <empty>, statics = s0 } ⚪ recapp(Length)),
+	(0 == l1 & 0 == l2, <empty>)], statics = merge[
+	(!(0 == l2) & 0 == l1, { heap = merge[
+	(0 == l1, <empty>),
+	(!(0 == l1), { heap = <empty>, statics = s0 } ⚪ recapp(Length))], statics = s0 } ⚪ recapp(Length)),
+	(!(0 == l1) & !(0 == l2), { heap = merge[
+	(0 == l1, <empty>),
+	(!(0 == l1), { heap = <empty>, statics = s0 } ⚪ recapp(Length))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(Length), s1) } ⚪ recapp(Length)),
+	(!(0 == l1) & 0 == l2, write({ heap = <empty>, statics = s0 } ⚪ recapp(Length), s2)),
+	(0 == l1 & 0 == l2, s0)] } where
+---------- s0 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s1 = ----------
+VSharp.Test.Tests.ListNode ==> STRUCT VSharp.Test.Tests.ListNode[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s2 = ----------
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]

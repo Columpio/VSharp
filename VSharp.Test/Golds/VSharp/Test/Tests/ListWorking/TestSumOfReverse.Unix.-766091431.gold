@@ -1,0 +1,49 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.TestSumOfReverse(VSharp.Test.Tests.ListNode)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), { heap = write({ heap = { heap = <empty>, statics = s0 } ⚪ recapp(Sum), statics = merge[
+	(0 == l, s0),
+	(!(0 == l), write({ heap = <empty>, statics = s0 } ⚪ recapp(Sum), s1))] } ⚪ recapp(Reverse), h2), statics = merge[
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = merge[
+	(0 == l, <empty>),
+	(!(0 == l), { heap = <empty>, statics = s0 } ⚪ recapp(Sum))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(Sum), s1) } ⚪ recapp(Reverse), s1)),
+	(!(0 == l) & 0 == l.VSharp.Test.Tests.ListNode.Next, write({ heap = <empty>, statics = s0 } ⚪ recapp(Sum), s1)),
+	(0 == l, s0)] } ⚪ recapp(Sum)),
+	(!(0 == l) & 0 == l.VSharp.Test.Tests.ListNode.Next, { heap = { heap = <empty>, statics = s0 } ⚪ recapp(Sum), statics = merge[
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = merge[
+	(0 == l, <empty>),
+	(!(0 == l), { heap = <empty>, statics = s0 } ⚪ recapp(Sum))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(Sum), s1) } ⚪ recapp(Reverse), s1)),
+	(!(0 == l) & 0 == l.VSharp.Test.Tests.ListNode.Next, write({ heap = <empty>, statics = s0 } ⚪ recapp(Sum), s1)),
+	(0 == l, s0)] } ⚪ recapp(Sum)),
+	(0 == l, <empty>)], statics = merge[
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), { heap = merge[
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = { heap = <empty>, statics = s0 } ⚪ recapp(Sum), statics = merge[
+	(0 == l, s0),
+	(!(0 == l), write({ heap = <empty>, statics = s0 } ⚪ recapp(Sum), s1))] } ⚪ recapp(Reverse), h2)),
+	(!(0 == l) & 0 == l.VSharp.Test.Tests.ListNode.Next, { heap = <empty>, statics = s0 } ⚪ recapp(Sum)),
+	(0 == l, <empty>)], statics = write({ heap = merge[
+	(0 == l, <empty>),
+	(!(0 == l), { heap = <empty>, statics = s0 } ⚪ recapp(Sum))], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(Sum), s1) } ⚪ recapp(Reverse), s1) } ⚪ recapp(Sum)),
+	(!(0 == l) & 0 == l.VSharp.Test.Tests.ListNode.Next, { heap = merge[
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = { heap = <empty>, statics = s0 } ⚪ recapp(Sum), statics = merge[
+	(0 == l, s0),
+	(!(0 == l), write({ heap = <empty>, statics = s0 } ⚪ recapp(Sum), s1))] } ⚪ recapp(Reverse), h2)),
+	(!(0 == l) & 0 == l.VSharp.Test.Tests.ListNode.Next, { heap = <empty>, statics = s0 } ⚪ recapp(Sum)),
+	(0 == l, <empty>)], statics = write({ heap = <empty>, statics = s0 } ⚪ recapp(Sum), s1) } ⚪ recapp(Sum)),
+	(0 == l, s0)] } where
+---------- s0 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s1 = ----------
+VSharp.Test.Tests.ListNode ==> STRUCT VSharp.Test.Tests.ListNode[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- h2 = ----------
+l ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Next ~> UNION[
+		| !(l == l.VSharp.Test.Tests.ListNode.Next) ~> null
+		| l == l.VSharp.Test.Tests.ListNode.Next ~> (HeapRef l.VSharp.Test.Tests.ListNode.Next)]]
+l.VSharp.Test.Tests.ListNode.Next ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Next ~> UNION[
+		| !(l == l.VSharp.Test.Tests.ListNode.Next) ~> (HeapRef l)
+		| l == l.VSharp.Test.Tests.ListNode.Next ~> null]]

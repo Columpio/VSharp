@@ -10,14 +10,147 @@ namespace VSharp.Test.Tests
         public ListNode Next;
     }
 
+
+    public sealed class BinTreeNode
+    {
+        public int Key;
+        public BinTreeNode Left = null;
+        public BinTreeNode Right = null;
+
+        public BinTreeNode(int x)
+        {
+            Key = x;
+        }
+
+        public void Add(int x)
+        {
+            if (Key == x)
+                return;
+            if (x < Key)
+            {
+                if (Left == null)
+                    Left = new BinTreeNode(x);
+                else
+                    Left.Add(x);
+            }
+            else
+            {
+                if (Right == null)
+                    Right = new BinTreeNode(x);
+                else
+                    Right.Add(x);
+            }
+        }
+
+        public bool Contains(int x)
+        {
+            if (Key == x)
+                return true;
+            if (x < Key)
+            {
+                if (Left == null)
+                    return false;
+                else
+                    return Left.Contains(x);
+            }
+            else
+            {
+                if (Right == null)
+                    return false;
+                else
+                    return Right.Contains(x);
+            }
+        }
+    }
+
+    public sealed class BinTree
+    {
+        private BinTreeNode _root = null;
+        public int Key => _root.Key;
+
+        public void Add(int x)
+        {
+            if (_root == null)
+                _root = new BinTreeNode(x);
+            else
+                _root.Add(x);
+        }
+
+        public bool Contains(int x)
+        {
+            if (_root == null)
+                return false;
+            else
+                return _root.Contains(x);
+        }
+    }
+
     public sealed class A
     {
         public int Field;
         public int OtherField;
     }
 
+    internal static class SharedTree
+    {
+        public static BinTreeNode Add(BinTreeNode tree, int x)
+        {
+            if (tree == null)
+                return new BinTreeNode(x);
+            if (x < tree.Key)
+                tree.Left = Add(tree.Left, x);
+            else if (x > tree.Key)
+                tree.Right = Add(tree.Right, x);
+
+            return tree;
+        }
+
+        public static bool Contains(BinTreeNode tree, int x)
+        {
+            if (tree == null)
+                return false;
+            if (tree.Key == x)
+                return true;
+            if (x < tree.Key)
+                return Contains(tree.Left, x);
+            return Contains(tree.Right, x);
+        }
+
+        public static BinTreeNode FromList(ListNode list)
+        {
+            if (list == null)
+                return null;
+            var tree = FromList(list.Next);
+            if (tree == null)
+                return new BinTreeNode(list.Key);
+            Add(tree, list.Key);
+            return tree;
+        }
+    }
+
     internal static class SharedList
     {
+        public static ListNode RemoveOne(ListNode l, int x)
+        {
+            if (l == null)
+                return null;
+            if (l.Key == x)
+                return l.Next;
+            l.Next = RemoveOne(l.Next, x);
+            return l;
+        }
+
+        public static ListNode RemoveAll(ListNode l, int x)
+        {
+            if (l == null)
+                return null;
+            var tail = RemoveAll(l.Next, x);
+            if (l.Key == x)
+                return tail;
+            l.Next = tail;
+            return l;
+        }
+
         public static ListNode CreateList(int n)
         {
             if (n <= 0)
@@ -175,6 +308,48 @@ namespace VSharp.Test.Tests
                 return;
             a.Field += a.OtherField;
             AddOther(a, n - 1);
+        }
+
+        public static int Mult(int x, int y)
+        {
+            if (x <= 0)
+                return 0;
+            return y + Mult(x - 1, y);
+        }
+
+        public static ListNode CreateOnes(int n)
+        {
+            if (n <= 0)
+                return null;
+            ListNode tail = CreateOnes(n - 1);
+            return new ListNode {Key = 1, Next = tail};
+        }
+
+        public static bool IsDecreasingFrom(ListNode l, int n)
+        {
+            if (l == null)
+                return true;
+            if (l.Key > n)
+                return false;
+            return IsDecreasingFrom(l.Next, l.Key);
+        }
+
+        public static int MaxThan(ListNode l, int max)
+        {
+            if (l == null)
+                return max;
+            if (l.Key > max)
+                return MaxThan(l.Next, l.Key);
+            return MaxThan(l.Next, max);
+        }
+
+        public static int Item(ListNode l, int i)
+        {
+            if (l == null)
+                return -1;
+            if (i == 0)
+                return l.Key;
+            return Item(l.Next, i - 1);
         }
     }
 
@@ -423,7 +598,7 @@ namespace VSharp.Test.Tests
                 throw new Exception();
         }
 
-        [TestSvm]
+        [Ignore("Mono doesn't work =(")]
         public static void TestSumOfReverse(ListNode l)
         {
             if (SharedList.Sum(l) != SharedList.Sum(SharedList.Reverse(l)))
@@ -465,13 +640,202 @@ namespace VSharp.Test.Tests
                 return;
             var l = SharedList.CreateDecreasingList(n);
             var s = SharedList.Sum(l);
-            if (2 * s != n * (n + 1))
+            if (s + s != SharedList.Mult(n, n + 1))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestLastInc(ListNode l)
+        {
+            if (l == null)
+                return;
+            var x = SharedList.Last(l);
+            SharedList.IncN(l);
+            if (SharedList.Last(l) != x + 1)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestLastOnes(int n)
+        {
+            if (n <= 0)
+                return;
+            var l = SharedList.CreateOnes(n);
+            if (SharedList.Last(l) != 1)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestSumOnes(int n)
+        {
+            if (n <= 0)
+                return;
+            var l = SharedList.CreateOnes(n);
+            var s = SharedList.Sum(l);
+            if (s != n)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void ContainsDecreasingOne(int n)
+        {
+            if (n <= 0)
+                return;
+            var l = SharedList.CreateDecreasingList(n);
+            if (!SharedList.Contains(l, 1))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void ContainsDecreasing(int n, int k)
+        {
+            if (n <= 0)
+                return;
+            var l = SharedList.CreateDecreasingList(n);
+            if (1 <= k && k <= n && !SharedList.Contains(l, k))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestDecreasingIsDecreasing(int n)
+        {
+            var l = SharedList.CreateDecreasingList(n);
+            if (!SharedList.IsDecreasingFrom(l, n))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestDecreasingConsIsDecreasing(ListNode l, int n)
+        {
+            if (SharedList.IsDecreasingFrom(l, n))
+            {
+                var l2 = new ListNode {Key = n, Next = l};
+                if (!SharedList.IsDecreasingFrom(l2, n))
+                    throw new Exception();
+            }
+        }
+
+        [TestSvm]
+        public static void TestDecreasingIncIsDecreasing(ListNode l, int n)
+        {
+            if (!SharedList.IsDecreasingFrom(l, n))
+                return;
+            SharedList.IncN(l);
+            if (!SharedList.IsDecreasingFrom(l, n + 1))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestDecreasingLast(ListNode l, int n)
+        {
+            if (l == null || !SharedList.IsDecreasingFrom(l, n))
+                return;
+            if (!(SharedList.Last(l) <= l.Key))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestContainsReverse(ListNode l, int n)
+        {
+            if (SharedList.Contains(l, n) && !SharedList.Contains(SharedList.Reverse(l), n))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestRemoveOneLength(ListNode l, int n)
+        {
+            var len1 = SharedList.Length(l);
+            var l2 = SharedList.RemoveOne(l, n);
+            var len2 = SharedList.Length(l2);
+            if (!(len1 == len2 + 1 || len1 == len2))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestRemoveAllContains(ListNode l, int x)
+        {
+            var l2 = SharedList.RemoveAll(l, x);
+            if (SharedList.Contains(l, x))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestMax(ListNode l)
+        {
+            if (l == null || !SharedList.IsDecreasingFrom(l, l.Key))
+                return;
+            if (SharedList.MaxThan(l, l.Key) != l.Key)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestItemContains(ListNode l, int i)
+        {
+            var x = SharedList.Item(l, i);
+            if (x != -1 && !SharedList.Contains(l, x))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestItemLast(ListNode l)
+        {
+            if (l == null)
+                return;
+            var last1 = SharedList.Last(l);
+            var last2 = SharedList.Item(l, SharedList.Length(l) - 1);
+            if (last1 != last2)
+                throw new Exception();
+        }
+
+        [Ignore("Ultimate Timelimit")]
+        public static void TestTreeAddContains(BinTreeNode tree, int x)
+        {
+            if (!SharedTree.Contains(SharedTree.Add(tree, x), x))
                 throw new Exception();
         }
     }
 
+    [TestSvmFixture]
     public static class WIP
     {
+        [TestSvm]
+        public static void TestFromListContains(ListNode list)
+        {
+            if (list == null)
+                return;
+            var tree = SharedTree.FromList(list);
+            if (!SharedTree.Contains(tree, list.Key))
+                throw new Exception();
+        }
+
+        [Ignore("TODO: wrong ML generated")]
+        public static void TestFromListNotNull(ListNode list)
+        {
+            if (list != null && SharedTree.FromList(list) == null)
+                throw new Exception();
+        }
+
+        [Ignore("Internal error: stack does not contain key (this, 600024B)!")]
+        public static void TestBinTree(BinTree tree, int x)
+        {
+            if (tree == null)
+                return;
+            tree.Add(x);
+            if (!tree.Contains(x))
+                throw new Exception();
+        }
+
+        [Ignore("Too many clauses (cartesianMap) in Encode.Relations")]
+        public static void TestRemoveAllDouble(ListNode l, int x)
+        {
+            var l1 = SharedList.RemoveAll(l, x);
+            var len1 = SharedList.Length(l1);
+            var l2 = SharedList.RemoveAll(l1, x);
+            var len2 = SharedList.Length(l2);
+            if (len1 != len2)
+                throw new Exception();
+        }
+
         //TODO: CORE
         static void SumTest1() // doesn't work: HeapRef(HeapRef); missing argument
         {

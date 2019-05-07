@@ -1,0 +1,35 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.TestCrop(VSharp.Test.Tests.ListNode, System.Int32)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(!(0 == l) & !(n <= 0) & 1 == n, { heap = h0, statics = merge[
+	(0 == l | 1 == n | n <= 0, s1),
+	(!(0 == l) & !(1 == n) & !(n <= 0), write({ heap = <empty>, statics = s1 } ⚪ recapp(Crop), s2))] } ⚪ recapp(Length)),
+	(!(0 == l) & !(1 == n) & !(n <= 0), { heap = { heap = <empty>, statics = s1 } ⚪ recapp(Crop), statics = merge[
+	(0 == l | 1 == n | n <= 0, s1),
+	(!(0 == l) & !(1 == n) & !(n <= 0), write({ heap = <empty>, statics = s1 } ⚪ recapp(Crop), s2))] } ⚪ recapp(Length)),
+	(0 == l | n <= 0, h3)], statics = merge[
+	(!(0 == l) & !(n <= 0) & 1 == n, { heap = merge[
+	(0 == l | 1 == n | n <= 0, h0),
+	(!(0 == l) & !(1 == n) & !(n <= 0), { heap = <empty>, statics = s1 } ⚪ recapp(Crop))], statics = s1 } ⚪ recapp(Length)),
+	(!(0 == l) & !(1 == n) & !(n <= 0), { heap = merge[
+	(0 == l | 1 == n | n <= 0, h0),
+	(!(0 == l) & !(1 == n) & !(n <= 0), { heap = <empty>, statics = s1 } ⚪ recapp(Crop))], statics = write({ heap = <empty>, statics = s1 } ⚪ recapp(Crop), s2) } ⚪ recapp(Length)),
+	(0 == l | n <= 0, s1)] } where
+---------- h0 = ----------
+l ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Next ~> UNION[
+		| !(0 == l) & !(n <= 0) & 1 == n ~> null
+		| 0 == l | n <= 0 ~> (HeapRef l.VSharp.Test.Tests.ListNode.Next)]]
+---------- s1 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s2 = ----------
+VSharp.Test.Tests.ListNode ==> STRUCT VSharp.Test.Tests.ListNode[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- h3 = ----------
+l ==> UNION[
+	| 0 == l | n <= 0 ~> STRUCT VSharp.Test.Tests.ListNode[
+		| VSharp.Test.Tests.ListNode.Next ~> UNION[
+			| !(n <= 0) & 0 == l ~> (HeapRef l.VSharp.Test.Tests.ListNode.Next)
+			| n <= 0 ~> (HeapRef l.VSharp.Test.Tests.ListNode.Next)]]]

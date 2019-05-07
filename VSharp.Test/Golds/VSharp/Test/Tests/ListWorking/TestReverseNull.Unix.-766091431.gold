@@ -1,0 +1,20 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.TestReverseNull(VSharp.Test.Tests.ListNode)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, <empty>),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), write({ heap = <empty>, statics = s0 } ⚪ recapp(Reverse), h1))], statics = merge[
+	(0 == l | 0 == l.VSharp.Test.Tests.ListNode.Next, s0),
+	(!(0 == l) & !(0 == l.VSharp.Test.Tests.ListNode.Next), { heap = <empty>, statics = s0 } ⚪ recapp(Reverse))] } where
+---------- s0 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- h1 = ----------
+l ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Next ~> UNION[
+		| !(l == l.VSharp.Test.Tests.ListNode.Next) ~> null
+		| l == l.VSharp.Test.Tests.ListNode.Next ~> (HeapRef l.VSharp.Test.Tests.ListNode.Next)]]
+l.VSharp.Test.Tests.ListNode.Next ==> STRUCT VSharp.Test.Tests.ListNode[
+	| VSharp.Test.Tests.ListNode.Next ~> UNION[
+		| !(l == l.VSharp.Test.Tests.ListNode.Next) ~> (HeapRef l)
+		| l == l.VSharp.Test.Tests.ListNode.Next ~> null]]

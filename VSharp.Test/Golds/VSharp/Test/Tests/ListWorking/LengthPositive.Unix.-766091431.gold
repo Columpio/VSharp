@@ -1,0 +1,11 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.LengthPositive(VSharp.Test.Tests.ListNode)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(0 == l, <empty>),
+	(!(0 == l), { heap = <empty>, statics = s0 } ⚪ recapp(Length))], statics = merge[
+	(0 == l, s0),
+	(!(0 == l), { heap = <empty>, statics = s0 } ⚪ recapp(Length))] } where
+---------- s0 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]

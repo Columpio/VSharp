@@ -1,0 +1,18 @@
+METHOD: System.Void VSharp.Test.Tests.ListWorking.Test2(VSharp.Test.Tests.A)
+RESULT: <VOID>
+HEAP:
+{ heap = merge[
+	(!(a.VSharp.Test.Tests.A.Field < 100) | 0 == a, <empty>),
+	(!(0 == a) & a.VSharp.Test.Tests.A.Field < 100, { heap = h0, statics = s1 } ⚪ recapp(AtLeastHundreed))], statics = merge[
+	(!(a.VSharp.Test.Tests.A.Field < 100) | 0 == a, s2),
+	(!(0 == a) & a.VSharp.Test.Tests.A.Field < 100, { heap = h0, statics = s1 } ⚪ recapp(AtLeastHundreed))] } where
+---------- h0 = ----------
+a ==> STRUCT VSharp.Test.Tests.A[
+	| VSharp.Test.Tests.A.Field ~> 1 + a.VSharp.Test.Tests.A.Field]
+---------- s1 = ----------
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
+---------- s2 = ----------
+VSharp.Test.Tests.A ==> STRUCT VSharp.Test.Tests.A[]
+VSharp.Test.Tests.ListWorking ==> STRUCT VSharp.Test.Tests.ListWorking[]
+VSharp.Test.Tests.SharedList ==> STRUCT VSharp.Test.Tests.SharedList[]
