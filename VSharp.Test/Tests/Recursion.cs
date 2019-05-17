@@ -58,7 +58,7 @@ namespace VSharp.Test.Tests
     [TestSvmFixture]
     public static class GCD
     {
-        private static int GcdRec(int n, int m)
+        public static int GcdRec(int n, int m)
         {
             if (n > m)
                 return GcdRec(m, n);
@@ -88,6 +88,7 @@ namespace VSharp.Test.Tests
             return n > 100 ? n - 10 : McCarthy(McCarthy(n + 11));
         }
 
+        [TestSvm]
         public static void CheckMc91Safe(int x)
         {
             if (x <= 96 && McCarthy(x + 5) != 91)

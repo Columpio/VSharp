@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using NUnit.Framework;
+using VSharp.Test;
 
 namespace VSharp.Test.Tests.Demo
 {
@@ -671,6 +673,7 @@ namespace VSharp.Test.Tests.Demo
         }
     }
 
+    [TestSvmFixture]
     public static class WorkingTests
     {
         // TODO: these two tests need new result constructor: ThrowOrVoid, Composition of results, ...
@@ -698,7 +701,7 @@ namespace VSharp.Test.Tests.Demo
                 return;
             RecInc(n, avl.RootNode);
             if (n > 0 && avl.RootNode.Value != 1)
-                throw new Exception("very bad");
+                throw new Exception();
         }
     }
 
@@ -728,47 +731,39 @@ namespace VSharp.Test.Tests.Demo
         }
     }
 
+    [TestSvmFixture]
     public static class IntTests
     {
-/*        public static void FullySymbolicCopy(IntTree avl, int[] arr)
+        [Ignore("Internal error: stack does not contain key (dimension, MethodParameter:774163403)")]
+        public static void FullySymbolicCopy(IntTree avl, int[] arr)
         {
             avl.CopyTo(arr, 0);
-        }*/
+        }
 
-/*        public static bool CallMethods(IntTree avl)
+        [Ignore("Internal error: stack does not contain key (item, MethodParameter:-247148947)")]
+        public static bool CallMethods(IntTree avl)
         {
             return avl.Contains(42);
-        }*/
+        }
 
-        // TODO: Smart: works  ;;  Never: typeOf (Union _)
-/*        public static int tryMishasClaim(bool b)
-        {
-            int n = 0;
-            if (b)
-            {
-                IntTree avl = new IntTree();
-                n += avl.Count;
-            }
-            return n;
-        }*/
-
-/*        public static bool RemoveTest(IntTree avl, int x)
+        [Ignore("HeapRef(Union ...)")]
+        public static bool RemoveTest(IntTree avl, int x)
         {
             return avl.Remove(x);
-        }*/
+        }
 
-        // TODO: Smart: notImpl reduceIndexerCallExpression ;;  Never: Encoding
-/*        public static int SimpleContains(IntTree avl, int x)
+        [Ignore("Internal error: stack does not contain key (index, MethodParameter:1839632078)!")]
+        public static int SimpleContains(IntTree avl, int x)
         {
             return avl[x];
-        }*/
+        }
 
-        // TODO: Smart: works long... ;
-/*        public static bool RemoveAfterAdd(IntTree avl, int x)
+        [Ignore("HeapRef(Union ...)")]
+        public static bool RemoveAfterAdd(IntTree avl, int x)
         {
             avl.Add(x);
             return true; //avl.Remove(x); // true
-        }*/
+        }
     }
 
     static class Tests

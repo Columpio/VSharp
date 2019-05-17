@@ -580,9 +580,9 @@ module internal Memory =
         let v = fillHoles ctx source cell.value
         mutateStack ctx.mtd target addr path time v
 
-    and private fillAndMutateCommon<'a when 'a : equality> mutateHeap (fillKey : compositionContext -> state -> 'a -> 'a) (ctx : compositionContext) restricted source (target : heap<'a, term, fql>) addr typ path cell : heap<'a, term, fql> =
+    and private fillAndMutateCommon<'a when 'a : equality> mutateHeap (fillKey : compositionContext -> state -> 'a -> 'a) (ctx : compositionContext) restricted source (target : heap<'a, term, fql>) addr1 typ path cell : heap<'a, term, fql> =
         let time = Timestamp.compose ctx.time cell.modified
-        let addr = fillKey ctx source addr
+        let addr = fillKey ctx source addr1
         let path = List.map (fillHolesInPathSegment ctx source) path
         let v = fillHoles ctx source cell.value
         mutateHeap restricted ctx.mtd target addr typ path time v
@@ -838,8 +838,8 @@ module internal Memory =
         | :? (termType keyInitializedSource) as li -> Some(li.heap, li.key)
         | _ -> None
 
-    let private mkKeyGuard mtd fillHolesInKey getter heap (key : 'a) =
-        Constant mtd (IdGenerator.startingWith "hasKey#") ({ heap = heap; key = key; getter = {v=getter}; fillHolesInKey = {v=fillHolesInKey} } : 'a keyInitializedSource) Bool
+    let private mkKeyGuard mtd fillHolesInKey getter heap (key : 'a) = False
+//        Constant mtd (IdGenerator.startingWith "hasKey#") ({ heap = heap; key = key; getter = {v=getter}; fillHolesInKey = {v=fillHolesInKey} } : 'a keyInitializedSource) Bool
 
     let private guardOfDefinedHeap mtd fillHolesInKey getter key r (h : heap<'key, term, fql>) =
         if Heap.contains key h then Merging.guardOf h.[key].value

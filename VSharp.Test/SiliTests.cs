@@ -31,7 +31,7 @@ namespace VSharp.Test
 
         public override void Fail(string message)
         {
-            Fail(message, String.Empty);
+            Fail(message, string.Empty);
         }
 
         public override void Fail(string message1, string message2)
@@ -224,7 +224,8 @@ namespace VSharp.Test
         private const string ResultSeparator = "RESULT: ";
         private const string GoldsDirectoryName = "Golds";
         private const string IdealTestFileExtension = ".gold";
-        private const string IdealTemporaryFileExtension = ".tmp";
+//        private const string IdealTemporaryFileExtension = ".tmp";
+        private const string IdealTemporaryFileExtension = "";
 
         private string _idealValuePath;
         public string ExpectedValue;

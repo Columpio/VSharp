@@ -137,6 +137,135 @@ namespace VSharp.Test.Tests
         }
     }
 
+    internal static class SharedA
+    {
+        public static int Positivise(A a)
+        {
+            if (a.Field >= a.OtherField)
+                return a.Field;
+            a.Field++;
+            return Positivise(a);
+        }
+
+        public static void IncField(A a, int n)
+        {
+            if (a == null || n <= 0)
+                return;
+            a.Field++;
+            IncField(a, n - 1);
+        }
+
+        public static void AtLeastHundred(A a)
+        {
+            if (a == null)
+                return;
+            if (a.Field >= 100)
+                return;
+            a.Field++;
+            AtLeastHundred(a);
+        }
+
+        public static void Fact(A a)
+        {
+            if (a == null)
+                return;
+            if (a.Field < 2)
+            {
+                a.OtherField = 1;
+                return;
+            }
+
+            var f = a.Field;
+            a.Field--;
+            Fact(a);
+            a.OtherField *= f;
+        }
+
+        public static void JustSetField(A a)
+        {
+            if (a == null || a.Field == a.OtherField)
+                return;
+            a.Field = a.OtherField;
+            JustSetField(a);
+        }
+
+        public static void StrangeSum(A a)
+        {
+            if (a == null)
+                return;
+            if (a.OtherField <= 0)
+                return;
+            a.Field += a.OtherField;
+            a.OtherField--;
+            StrangeSum(a);
+        }
+
+        public static void AddOther(A a, int n)
+        {
+            if (a == null)
+                return;
+            if (n <= 0)
+                return;
+            a.Field += a.OtherField;
+            AddOther(a, n - 1);
+        }
+
+        public static void MoveOtherToField(A a)
+        {
+            if (a == null)
+                return;
+            if (a.OtherField <= 0)
+                return;
+            a.Field++;
+            a.OtherField--;
+            MoveOtherToField(a);
+        }
+
+        public static bool IsFieldGreater(A a)
+        {
+            if (a == null || a.OtherField < 0)
+                return false;
+            if (a.OtherField == 0)
+                return a.Field > 0;
+            a.Field--;
+            a.OtherField--;
+            return IsFieldGreater(a);
+        }
+
+        public static void FibIter(A a, int n)
+        {
+            if (n <= 0)
+                return;
+            var tmp = a.Field;
+            a.Field += a.OtherField;
+            a.OtherField = tmp;
+            FibIter(a, n-1);
+        }
+
+        public static int AddFields(A a)
+        {
+            if (a == null || a.Field < 0 || a.OtherField < 0)
+                return 0;
+            if (a.Field == 0)
+                return a.OtherField;
+            a.Field--;
+            return 1 + AddFields(a);
+        }
+
+        public static bool FieldsAreEqual(A a)
+        {
+            if (a == null || a.Field < 0 || a.OtherField < 0)
+                return false;
+            if (a.Field == 0)
+                return a.OtherField == 0;
+            if (a.OtherField == 0)
+                return false;
+            a.Field--;
+            a.OtherField--;
+            return FieldsAreEqual(a);
+        }
+    }
+
     internal static class SharedList
     {
         public static ListNode RemoveOne(ListNode l, int x)
@@ -266,59 +395,6 @@ namespace VSharp.Test.Tests
             IncNwithN(l.Next, n - 1);
         }
 
-        public static void AtLeastHundred(A a)
-        {
-            if (a == null)
-                return;
-            if (a.Field >= 100)
-                return;
-            a.Field++;
-            AtLeastHundred(a);
-        }
-
-        public static void Fact(A a)
-        {
-            if (a == null)
-                return;
-            if (a.Field < 2)
-            {
-                a.OtherField = 1;
-                return;
-            }
-
-            var f = a.Field;
-            a.Field--;
-            Fact(a);
-            a.OtherField *= f;
-        }
-
-        public static void JustSetField(A a)
-        {
-            if (a == null || a.Field == a.OtherField)
-                return;
-            a.Field = a.OtherField;
-            JustSetField(a);
-        }
-
-        public static void StrangeSum(A a)
-        {
-            if (a == null)
-                return;
-            if (a.OtherField <= 0)
-                return;
-            a.Field += a.OtherField;
-            a.OtherField--;
-            StrangeSum(a);
-        }
-
-        public static void AddOther(A a, int n)
-        {
-            if (n <= 0)
-                return;
-            a.Field += a.OtherField;
-            AddOther(a, n - 1);
-        }
-
         public static int Mult(int x, int y)
         {
             if (x <= 0)
@@ -359,6 +435,203 @@ namespace VSharp.Test.Tests
             if (i == 0)
                 return l.Key;
             return Item(l.Next, i - 1);
+        }
+    }
+
+    [TestSvmFixture]
+    public static class LinearWorkingSafe
+    {
+        [TestSvm]
+        public static void TestMutateRecursive(int n)
+        {
+            if (n <= 0)
+                return;
+            var a = new A {Field = 0, OtherField = 0};
+            SharedA.IncField(a, n);
+            if (a.Field <= 0)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestEqualFields(int n, int m)
+        {
+            var a = new A {Field = n, OtherField = m};
+            if (n == m && !SharedA.FieldsAreEqual(a))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestFactorialIsGreater(A a)
+        {
+            if (a == null)
+                return;
+            var f = a.Field;
+            SharedA.Fact(a);
+            if (a.OtherField < f)
+            {
+                throw new Exception();
+            }
+        }
+
+        [TestSvm]
+        public static void TestFieldIsGreater(A a)
+        {
+            if (a == null || a.OtherField < 0)
+                return;
+            bool isgr1 = a.Field > a.OtherField;
+            bool isgr2 = SharedA.IsFieldGreater(a);
+            if (isgr1 != isgr2)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void JustCallTest()
+        {
+            var a = new A {Field = 42, OtherField = 5};
+            SharedA.JustSetField(a);
+            if (a.Field != 5)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void CheckMc91Safe(int x)
+        {
+            if (x <= 96 && McCarthy91.McCarthy(x + 5) != 91)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestGcdSame(int n)
+        {
+            if (GCD.GcdRec(n, n) != n)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestGcdEqual(int n, int m)
+        {
+            if (n == m && GCD.GcdRec(n, m) != n)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestGcdIsLess(int n, int m)
+        {
+            var gcd = GCD.GcdRec(n, m);
+            if (!(gcd <= n && gcd <= m))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestFieldsEqualRecursive(int x, int y)
+        {
+            if (x == y && !SharedA.FieldsAreEqual(new A {Field = x, OtherField = y}))
+                throw new Exception();
+        }
+    }
+
+    [TestSvmFixture]
+    public static class LinearWorkingUnsafeTest
+    {
+        [TestSvm]
+        public static void TestEqualFields(A a)
+        {
+            if (a != null && !SharedA.FieldsAreEqual(a))
+                throw new Exception();
+        }
+    }
+
+    [TestSvmFixture]
+    public static class LinearWorkingUnsafe
+    {
+        [TestSvm]
+        public static void TestMutateRecursive(int n)
+        {
+            if (n <= 0)
+                return;
+            var a = new A {Field = 0, OtherField = 0};
+            SharedA.IncField(a, n);
+            if (a.Field > 0)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestFactorialIsGreater(A a)
+        {
+            if (a == null)
+                return;
+            var f = a.Field;
+            SharedA.Fact(a);
+            if (a.OtherField > f)
+            {
+                throw new Exception();
+            }
+        }
+
+        [TestSvm]
+        public static void TestFieldIsGreater(A a)
+        {
+            if (a == null || a.OtherField < 0)
+                return;
+            bool isgr1 = a.Field == a.OtherField;
+            bool isgr2 = SharedA.IsFieldGreater(a);
+//            if (isgr1 || isgr2 || true)
+//                throw new Exception();
+            if (isgr1 || isgr2)
+                throw new Exception();
+//            if (!isgr2)
+//                throw new Exception();
+//            if (isgr2)
+//                throw new Exception();
+//            if (isgr1 && !isgr2 || !isgr1 && isgr2)
+//                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void JustCallTest()
+        {
+            var a = new A {Field = 42, OtherField = 5};
+            SharedA.JustSetField(a);
+            if (a.Field == 5)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void CheckMc91Unsafe(int x)
+        {
+            if (McCarthy91.McCarthy(x + 5) != 91)
+            {
+                throw new Exception();
+            }
+        }
+
+        [TestSvm]
+        public static void TestGcdSame(int n)
+        {
+            if (GCD.GcdRec(n, n) > n - 10)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestGcdEqual(int n, int m)
+        {
+            if (n > m && GCD.GcdRec(n, m) != n)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestGcdIsLess(int n, int m)
+        {
+            var gcd = GCD.GcdRec(n, m);
+            if (gcd > n - 100 && gcd <= m)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestFieldsEqualRecursive(int x, int y)
+        {
+            if (x == 0 && y == 0 && SharedA.FieldsAreEqual(new A {Field = x, OtherField = 0}))
+                throw new Exception();
         }
     }
 
@@ -404,20 +677,6 @@ namespace VSharp.Test.Tests
                 throw new Exception();
             }
         }
-
-        [TestSvm]
-        public static void Test3(A a)
-        {
-            if (a == null)
-                return;
-            var f = a.Field;
-            SharedList.Fact(a);
-            if (a.OtherField < f)
-            {
-                throw new Exception();
-            }
-        }
-
 
         [TestSvm]
         public static void LastTest(ListNode l)
@@ -639,6 +898,60 @@ namespace VSharp.Test.Tests
     public static class TooHardForSolvers
     {
         [TestSvm]
+        public static void TestMutateRecursive(int n)
+        {
+            if (n <= 0)
+                return;
+            var a = new A {Field = 0, OtherField = 0};
+            SharedA.IncField(a, n);
+            if (a.Field != n)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestMoveFieldConcrete()
+        {
+            var a = new A {Field = 0, OtherField = 57};
+            var other = a.OtherField;
+            SharedA.MoveOtherToField(a);
+            if (a.Field != other)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestAddFieldsConcrete()
+        {
+            var a = new A {Field = 42, OtherField = 57};
+            int sum1 = a.Field + a.OtherField;
+            int sum2 = SharedA.AddFields(a);
+            if (sum1 != sum2)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestAddFields(A a)
+        {
+            if (a == null || a.Field < 0 || a.OtherField < 0)
+                return;
+            int sum1 = a.Field + a.OtherField;
+            int sum2 = SharedA.AddFields(a);
+            if (sum1 != sum2)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestMoveField(A a)
+        {
+            if (a == null)
+                return;
+            a.Field = 0;
+            var other = a.OtherField;
+            SharedA.MoveOtherToField(a);
+            if (a.Field != other)
+                throw new Exception();
+        }
+
+        [TestSvm]
         public static void TestMaxContainsTree(BinTreeNode tree)
         {
             if (tree == null)
@@ -654,7 +967,7 @@ namespace VSharp.Test.Tests
                 return;
             if (a.OtherField > 0 && a.Field == 0)
             {
-                SharedList.AddOther(a, 3);
+                SharedA.AddOther(a, 3);
                 if (a.Field <= 0)
                     throw new Exception();
             }
@@ -681,7 +994,7 @@ namespace VSharp.Test.Tests
                 return;
             a.Field = 42;
             a.OtherField = 5;
-            SharedList.JustSetField(a);
+            SharedA.JustSetField(a);
             if (a.Field != 5)
                 throw new Exception();
         }
@@ -692,7 +1005,7 @@ namespace VSharp.Test.Tests
             if (a == null)
                 return;
             int x = a.OtherField;
-            SharedList.JustSetField(a);
+            SharedA.JustSetField(a);
             if (a.Field != x)
                 throw new Exception();
         }
@@ -705,7 +1018,7 @@ namespace VSharp.Test.Tests
             a.Field = 0;
             if (a.OtherField > 0)
             {
-                SharedList.StrangeSum(a);
+                SharedA.StrangeSum(a);
                 if (a.Field < 0)
                     throw new Exception();
             }
@@ -735,7 +1048,7 @@ namespace VSharp.Test.Tests
         {
             if (a == null)
                 return;
-            SharedList.AtLeastHundred(a);
+            SharedA.AtLeastHundred(a);
             if (a.Field < 100)
             {
                 throw new Exception();
@@ -821,6 +1134,34 @@ namespace VSharp.Test.Tests
     [TestSvmFixture]
     public static class WIP
     {
+        [Ignore("Error came to Encode")]
+        public static void TestPositiveRecursion(int n)
+        {
+            var a = new A {Field = 0, OtherField = n};
+            if (SharedA.Positivise(a) < 0)
+                throw new Exception();
+        }
+
+        [Ignore("Mono error")]
+        public static void StrangeSumTestConcrete()
+        {
+            var a = new A {Field = 0, OtherField = 30};
+            SharedA.StrangeSum(a);
+            if (a.Field < 0)
+                throw new Exception();
+        }
+
+        [Ignore("Internal error: stack does not contain key (num, LocalVariable:-1283898937)!")]
+        public static void TestFibA(int n)
+        {
+            if (n <= 0)
+                return;
+            var a = new A {Field = 1, OtherField = 1};
+            SharedA.FibIter(a, n);
+            if (!(a.Field >= n))
+                throw new Exception();
+        }
+
         [Ignore("Internal error: stack does not contain key (tree, LocalVariable:-1283898937)!")]
         public static void TestFromListContains(ListNode list)
         {
@@ -859,7 +1200,6 @@ namespace VSharp.Test.Tests
                 throw new Exception();
         }
 
-        //TODO: CORE
         static void SumTest1() // doesn't work: HeapRef(HeapRef); missing argument
         {
             if (SharedList.Sum(SharedList.CreateList(10)) > 0)

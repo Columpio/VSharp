@@ -32,8 +32,9 @@ module API =
         ControlFlow.composeStatements statements isContinueConsumer reduceStatement (fun state -> Memory.newScope m.Value state []) rs k
     let HigherOrderApply funcId state k = Explorer.higherOrderApplication m.Value funcId state k
     let BranchStatements state condition thenBranch elseBranch k =
-         Common.statedConditionalExecution state condition thenBranch elseBranch ControlFlow.mergeResults ControlFlow.merge2Results ControlFlow.throwOrIgnore k
-    let BranchExpressions state condition thenExpression elseExpression k = Common.statedConditionalExecution state condition thenExpression elseExpression Merging.merge Merging.merge2Terms id k
+        Common.statedConditionalExecution state condition thenBranch elseBranch ControlFlow.mergeResults ControlFlow.merge2Results ControlFlow.throwOrIgnore k
+    let BranchExpressions state condition thenExpression elseExpression k =
+        Common.statedConditionalExecution state condition thenExpression elseExpression Merging.merge Merging.merge2Terms id k
     let BranchStatementsOnNull state reference thenBranch elseBranch k =
         BranchStatements state (fun state k -> k (Pointers.isNull m.Value reference, state)) thenBranch elseBranch k
     let BranchExpressionsOnNull state reference thenExpression elseExpression k =

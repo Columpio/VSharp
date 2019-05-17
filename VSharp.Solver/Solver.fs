@@ -34,8 +34,11 @@ type public Z3Solver() =
             let ocamlProgram = Encode.OCaml.encodeQuery terms
             MochiSolver().Solve ocamlProgram
         | AllSolversOption ->
+//            System.IO.File.AppendAllText("/tmp/log1.txt", "\n\n" + "BEFORE OCAML ENCODE")
             let ocamlProgram = Encode.OCaml.encodeQuery terms
+//            System.IO.File.AppendAllText("/tmp/log1.txt", "\n\n" + "AFTER OCAML ENCODE")
             let sochcs = Encode.Relations.encodeQuery terms
+//            System.IO.File.AppendAllText("/tmp/log1.txt", "\n\n" + "AFTER ALL ENCODE")
 
             match ocamlProgram with
             | Encode.OCaml.LetRecursive lts when List.length lts > 2 ->
@@ -53,23 +56,29 @@ type public Z3Solver() =
                 let termFile = System.IO.Path.Combine(bench_path, nextNamePrefix.ToString() + ".terms")
                 System.IO.File.WriteAllLines(termFile, terms |> List.map toString |> Array.ofList)
 
+//                System.IO.File.AppendAllText("/tmp/log1.txt", "\n\n" + "BEFORE TOSTRING")
                 let code = toString ocamlProgram
+//                System.IO.File.AppendAllText("/tmp/log1.txt", "\n\n" + "AFTER TOSTRING")
                 System.IO.File.WriteAllText(System.IO.Path.ChangeExtension(termFile, "ml"), code)
 
                 System.IO.File.WriteAllText(System.IO.Path.ChangeExtension(termFile, "sochcs"), CHCs.dump sochcs)
 
                 let results =
                     [
-                        "HORUS", Z3.solve (CHCs.toFirstOrder sochcs);
-                        "r_type", R_typeSolver().Solve ocamlProgram;
+//                        "HORUS", Z3.solve (CHCs.toFirstOrder sochcs);
+                        "r_type", R_typeSolver().SolveWithTime ocamlProgram;
     //                    "DefMono", DefMonoSolver().Solve ocamlProgram; // Not fully supported: no `not` operator
 //                        "DOrder", DOrderSolver().SolveCode code; // Doesn't work due to function reordering
-                        "Mochi", MochiSolver().SolveCode code;
-                        "Human", HumanSolver().SolveNumber nextNamePrefix;
+                        "Mochi", MochiSolver().SolveWithTime ocamlProgram;
+                        "Human", (HumanSolver().SolveNumber nextNamePrefix, 0L);
                     ]
                 let resultsS = results |> List.map (fun (name, res) -> sprintf "%s\t%O" name res) |> Array.ofList
                 System.IO.File.WriteAllLines(System.IO.Path.ChangeExtension(termFile, "results"), resultsS)
-                results |> List.last |> snd
+                let human = results |> List.last |> snd |> fst
+                let best = results |> List.find (fst >> (=) "r_type") |> snd |> fst
+                match human with
+                | SmtUnknown _ -> best
+                | _ -> human
             | _ -> MochiSolver().Solve ocamlProgram
 
 

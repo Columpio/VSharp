@@ -54,8 +54,21 @@ module private TranslationUtils =
         | res, [] -> Some res
         | res, err -> internalfail (res @ err |> join "\n")
 
+[<AbstractClass>]
+type internal IOCamlSolver() =
+    abstract member Solve : OCamlProgram -> SmtResult
+    abstract member SolveWithTime : OCamlProgram -> SmtResult * int64
+
+    default x.SolveWithTime (program : OCamlProgram) =
+        let timer = new System.Diagnostics.Stopwatch()
+        timer.Start()
+        let result = x.Solve program
+        (result, timer.ElapsedMilliseconds)
+
 
 type internal R_typeSolver() =
+    inherit IOCamlSolver()
+
     member private x.OCamlToSMT (program : OCamlProgram) : SMTlib2Code option =
         let setup (si : System.Diagnostics.ProcessStartInfo) codePath =
             si.FileName <- Path.Combine(si.WorkingDirectory, "r_type")
@@ -63,7 +76,7 @@ type internal R_typeSolver() =
         let code = toString program
         TranslationUtils.runToolOnCode code setup
 
-    member x.Solve (program : OCamlProgram) =
+    override x.Solve (program : OCamlProgram) =
         maybe {
             let! smtlib2Code = x.OCamlToSMT program
             let result =
@@ -213,6 +226,8 @@ type internal DOrderSolver() =
         x.SolveCode code
 
 type internal MochiSolver() =
+    inherit IOCamlSolver()
+
     member x.SolveCode code =
         let setup (si : System.Diagnostics.ProcessStartInfo) codePath =
             si.FileName <- Path.Combine(si.WorkingDirectory, "mochi")
@@ -233,7 +248,7 @@ type internal MochiSolver() =
                 return SmtUnknown "Incompleteness of the refinement type system"
         } |> TranslationUtils.optionToSMTResult
 
-    member x.Solve (program : OCamlProgram) =
+    override x.Solve (program : OCamlProgram) =
         let code = toString program
         x.SolveCode code
 

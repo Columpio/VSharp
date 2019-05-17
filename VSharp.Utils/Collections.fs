@@ -13,13 +13,12 @@ module public Seq =
         if Seq.isEmpty s then Empty
         else Cons (Seq.head s, Seq.tail s)
 
-    let public primes =
-        let rec filterPrimes = function
-            | Empty as s -> s
-            | Cons(p, xs) -> seq {
-                yield p
-                yield! xs |> Seq.filter (fun x -> x % p <> bigint.Zero) |> filterPrimes
-            }
+    let public primes<'a> =
+        let rec filterPrimes s = seq {
+            let p = Seq.head s
+            yield p
+            yield! (s |> Seq.tail |> Seq.filter (fun x -> x % p <> bigint.Zero) |> filterPrimes)
+        }
         filterPrimes (Seq.initInfinite (fun n -> bigint(n + 2)))
 
 module public List =
@@ -73,7 +72,7 @@ module public List =
             }
         | [] -> Seq.empty
 
-    let public cartesianMap mapper = cartesian >> Seq.map mapper
+    let public cartesianMap mapper = cartesian >> Seq.map mapper >> List.ofSeq
 
 module public Map =
     let public add2 (map : Map<'a, 'b>) key value = map.Add(key, value)

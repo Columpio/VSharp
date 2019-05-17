@@ -279,13 +279,26 @@ module internal Terms =
     let Expression metadata op args typ = { term = Expression(op, args, typ); metadata = metadata }
     let Struct metadata fields typ = { term = Struct(fields, typ); metadata = metadata }
     let StackRef metadata key path = { term = Ref(TopLevelStack key, path); metadata = metadata }
-    let HeapRef metadata addr baseType sightType path = { term = Ref(TopLevelHeap(addr, baseType, sightType), path); metadata = metadata }
+    let HeapRef metadata addr baseType sightType path =
+        match addr.term with
+        | Ref _
+        | Union _ -> printfn "debug"
+        | _ -> ()
+        { term = Ref(TopLevelHeap(addr, baseType, sightType), path); metadata = metadata }
     let StaticRef metadata typ path = { term = Ref(TopLevelStatics typ, path); metadata = metadata }
     let StackPtr metadata key path typ = { term = Ptr(TopLevelStack key, path, typ, None); metadata = metadata }
     let HeapPtr metadata addr baseType sightType path ptrTyp = { term = Ptr(TopLevelHeap(addr, baseType, sightType), path, ptrTyp, None); metadata = metadata }
     let AnyPtr metadata topLevel path typ shift = { term = Ptr(topLevel, path, typ, shift); metadata = metadata }
     let IndentedPtr metadata topLevel path typ shift = { term = Ptr(topLevel, path, typ, Some shift); metadata = metadata }
-    let Ref metadata topLevel path = { term = Ref(topLevel, path); metadata = metadata }
+    let Ref metadata topLevel path =
+        match topLevel with
+        | TopLevelHeap(addr, _, _) ->
+            match addr.term with
+            | Ref _
+            | Union _ -> printfn "debug"
+            | _ -> ()
+        | _ -> ()
+        { term = Ref(topLevel, path); metadata = metadata }
     let Ptr metadata topLevel path typ = { term = Ptr(topLevel, path, typ, None); metadata = metadata }
     let Union metadata gvs = { term = Union gvs; metadata = metadata }
 

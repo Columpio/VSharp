@@ -19,4 +19,7 @@ module public Options =
     let mutable private readableOCamlCode = false
     let public ReadableOCamlCode () = readableOCamlCode
 
+    let mutable private inlineOCaml = false
+    let public InlineOCaml () = inlineOCaml
+
     let mutable CurrentMethodName = ""

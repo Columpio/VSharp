@@ -368,7 +368,7 @@ module internal Encode =
         let unguarded = List.map unguardTerm terms
         unguarded |> List.cartesianMap (fun gvs ->
             let gss, vs = List.unzip gvs
-            List.concat gss, mapper vs) |> List.ofSeq
+            List.concat gss, mapper vs)
 
     let private encodeQueryToSchema terms k =
         schemas.Reset()
@@ -386,8 +386,12 @@ module internal Encode =
         let private unguardRelApps mapper = function
             | [] -> [mapper ([], [])]
             | apps ->
+                let apps = new HashSet<_>(apps) |> List.ofSeq
                 let unguardedApps = List.map unguardRelApp apps
-                unguardedApps |> List.cartesianMap (List.unzip >> mapper) |> List.ofSeq
+                let xx = unguardedApps |> List.map List.length |> List.fold (*) 1
+                let allApps = unguardedApps |> List.cartesian
+                let allApps = allApps |> Seq.map (List.unzip >> mapper) |> List.ofSeq
+                allApps
 
         let private schema2FoRel (schema : schema) : foRelation =
             let args = List.append3 (List.ofSeq schema.foinputs) schema.parameterInputs schema.results
@@ -449,14 +453,14 @@ module internal Encode =
             | [] -> false
             | xs -> constants.Contains(List.last xs)
 
-        let private filterBody constraints body =
-            let rec loop acc apps terms =
+        let private filterBody (constraints : term list) (body : _ list) =
+            let rec loop acc (apps : _ seq) (terms : term seq) =
                 let constants = ConstantsOf terms
-                let passed, failed = apps |> List.partition (isApplicationFor constants)
+                let passed, failed = apps |> List.ofSeq |> List.partition (isApplicationFor constants)
                 match passed with
                 | [] -> acc
                 | _ -> loop (List.append acc passed) failed (passed |> List.collect (fun app -> List.append app.args (app.relArgs |> List.collect (fun relArg -> relArg.Args))))
-            loop [] body constraints
+            loop [] (new HashSet<_>(body)) (new HashSet<_>(constraints))
 
         let private encodeRuleSchema key =
             let schema = schemas.Value.[key]
@@ -489,7 +493,7 @@ module internal Encode =
                     querySchema.apps
                     |> schemaApps2RelApps querySchema.id
                     |> unguardRelApps (fun (gss, body) ->
-                        let constraints = List.concat (terms::gss)
+                        let constraints = new HashSet<_>(List.concat (terms::gss)) |> List.ofSeq
                         { constraints = constraints; body = filterBody constraints body; head = None })
                 let rules = Seq.map encodeRuleSchema schemas.Value.Keys
                 let result = List.concat (queries::rootContextRules::(List.ofSeq rules))
@@ -608,6 +612,7 @@ module internal Encode =
                 | UnOp(op, x) ->
                     let op =
                         match op with
+                        | OperationType.UnaryMinus -> "-"
                         | OperationType.LogicalNeg -> "not"
                         | _ -> __notImplemented__()
                     sprintf "(%s %s)" op (toStringE x)
@@ -722,6 +727,7 @@ module internal Encode =
                 | OperationType.Greater
                 | OperationType.GreaterOrEqual
                 | OperationType.Equal -> makeStrictBinary op args
+                | OperationType.UnaryMinus
                 | OperationType.LogicalNeg -> makeUnary op args
                 | _ -> __notImplemented__()
             | _ -> __notImplemented__()
@@ -791,23 +797,39 @@ module internal Encode =
                             let funcApp = schema.apps |> Seq.tryFind (fun sapp -> sapp.constant = t)
                             match funcApp with
                             | Some app ->
-                                encodeSchemaApp dbs app (fun (call, (definedVars, bodyGenerator)) ->
-                                k (var, (consSet t definedVars, fun restBody -> bodyGenerator (Let(ovar, call, restBody)))))
+                                encodeSchemaApp dbs app (fun (call, dbs) ->
+                                if Options.InlineOCaml()
+                                    then k (call, dbs)
+                                    else
+                                        let (definedVars, bodyGenerator) = dbs
+                                        k (var, (consSet t definedVars, fun restBody -> bodyGenerator (Let(ovar, call, restBody)))))
                             | None ->
                                 match schema.sosubsts |> Seq.tryFind (thd3 >> ((=) t)) with
                                 | None -> __unreachable__()
                                 | Some (argFuncName, argFuncArgs, _) ->
-                                    encodeList dbs argFuncArgs (fun (argFuncArgs, (definedVars, bodyGenerator)) ->
+                                    encodeList dbs argFuncArgs (fun (argFuncArgs, dbs) ->
                                     let call = Call(OVar argFuncName, [], [], argFuncArgs)
-                                    k (var, (consSet t definedVars, fun restBody -> bodyGenerator (Let(ovar, call, restBody)))))
+                                    if Options.InlineOCaml()
+                                        then k (call, dbs)
+                                        else
+                                            let (definedVars, bodyGenerator) = dbs
+                                            k (var, (consSet t definedVars, fun restBody -> bodyGenerator (Let(ovar, call, restBody)))))
 
                 and encodeTerm dbs t k =
+//                    let tt = (">>> Encode: " + toString t)
+
+//                    let tt2 = tt.Substring(0, min 100 tt.Length)
+//                    System.IO.File.AppendAllText("/tmp/log1.txt", "\n\n" + toString t)
+//                    System.IO.File.WriteAllText("/tmp/log1.txt", toString t)
+//                    printfn "%s" tt
+//                    System.Console.Out.Flush()
                     match t.term with
                     | Concrete(obj, typ) -> k (encodeConcrete obj typ, dbs)
                     | Constant(name, src, typ) -> encodeConstant src typ t dbs k
                     | Expression(op, args, typ) ->
                         encodeList dbs args (fun (args, dbs) ->
                         k (encodeExpression op args, dbs))
+                    | Union [] -> __notImplemented__()
                     | Union gvs ->
                         let ite (cond, thenBranch) elseBranch = IfThenElse(cond, thenBranch, elseBranch)
                         let gs, vs = List.unzip gvs
@@ -826,7 +848,7 @@ module internal Encode =
                         k (Var unionGenName, (definedVars, fun restBody -> bodyGenerator (Let(unionGenName, unionAsAValue, restBody))))))
                     | Ref(TopLevelHeap(tl, _, _), _) -> encodeTerm dbs tl k
                     | Ref(NullAddress, []) -> encodeTerm dbs (MakeZeroAddress ()) k
-                    | _ -> __notImplemented__()
+                    | _ -> internalfailf "Encode: %O" t
 
                 and encodeList (definedVars, definitions) ts k =
                     Cps.List.mapFoldk encodeTerm (definedVars, definitions) ts k
@@ -841,6 +863,7 @@ module internal Encode =
                     | [result] -> Some(TypeOf result)
                     | _::_ -> None // multiple results are not supported due to weak Tuple support in OCaml verifiers
                     | [] -> __unreachable__()
+//                System.IO.File.AppendAllText("/tmp/log1.txt", "\n\nschema: " + (schema.results |> List.map toString |> join " ; "))
                 encodeList (definedVars, id) schema.results (fun (results, (_, bodyGenerator)) ->
                 encodeList (definedVars, id) schema.parameterInputs (fun (parameters, _) ->
                 let parameters = parameters |> List.map (function Var v -> v | _ -> __unreachable__())
@@ -854,6 +877,8 @@ module internal Encode =
 
         let encodeQuery terms =
             let k (querySchema : schema) =
+                let x = schemas.Value
+                printfn "%d" x.Count
                 match encodeSchema querySchema with
                 | [] -> __unreachable__()
                 | (_, mainArgs, queries, mainBody, _)::functions ->
@@ -866,7 +891,12 @@ module internal Encode =
                         let okReturnCode = OConstant "0"
                         IfThenElse(BinOp(OperationType.LogicalAnd, queries), undefinedBehaviorCall okReturnCode, okReturnCode)
                     let main = OVar "main", mainArgs, mainBody query, None
+//                    System.IO.File.AppendAllText("/tmp/log1.txt", "\n\n" + "DONE ENCODING")
 //                    let main = OVar "main", mainArgs, Call(OVar "main2", [], List.map Var mainArgs), None
                     LetRecursive (main::functions @ [undefinedBehaviorBody])
 
+//            if List.contains (Union []) terms
+//                then
+//                    LetRecursive [(OVar "main", ([OVar "x"], [], []), Assert(BinOp(OperationType.Equal, [OConstant "0"; OConstant "0"]), OConstant "0"), None); undefinedBehaviorBody]
+//                else
             encodeQueryToSchema terms k

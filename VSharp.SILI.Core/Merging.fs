@@ -235,7 +235,7 @@ module internal Merging =
         | _, True -> state2
         | _, False -> state1
         | _ ->
-            assert(state1.pc = state2.pc)
+            if state1.pc <> state2.pc then assert(false)
             assert(state1.frames = state2.frames)
             let resolve = merge2Cells condition1 condition2
             let mergedStack = Utils.MappedStack.merge2 state1.stack state2.stack resolve (State.stackLazyInstantiator state1)
