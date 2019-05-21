@@ -1,3 +1,0 @@
-0 == a & a.VSharp.Test.Tests.A.Field < 100 | a.VSharp.Test.Tests.A.Field < 100 & a.VSharp.Test.Tests.A.Field < 100
-!(0 == a)
-!(0 == a)

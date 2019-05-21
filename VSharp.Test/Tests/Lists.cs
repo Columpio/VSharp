@@ -126,6 +126,15 @@ namespace VSharp.Test.Tests
             Add(tree, list.Key);
             return tree;
         }
+
+        public static int Max(BinTreeNode tree)
+        {
+            if (tree == null)
+                return -1;
+            if (tree.Right == null)
+                return tree.Key;
+            return Max(tree.Right);
+        }
     }
 
     internal static class SharedList
@@ -257,14 +266,14 @@ namespace VSharp.Test.Tests
             IncNwithN(l.Next, n - 1);
         }
 
-        public static void AtLeastHundreed(A a)
+        public static void AtLeastHundred(A a)
         {
             if (a == null)
                 return;
             if (a.Field >= 100)
                 return;
             a.Field++;
-            AtLeastHundreed(a);
+            AtLeastHundred(a);
         }
 
         public static void Fact(A a)
@@ -397,18 +406,6 @@ namespace VSharp.Test.Tests
         }
 
         [TestSvm]
-        public static void Test2(A a)
-        {
-            if (a == null)
-                return;
-            SharedList.AtLeastHundreed(a);
-            if (a.Field < 100)
-            {
-                throw new Exception();
-            }
-        }
-
-        [TestSvm]
         public static void Test3(A a)
         {
             if (a == null)
@@ -421,42 +418,6 @@ namespace VSharp.Test.Tests
             }
         }
 
-        [TestSvm]
-        public static void JustCallTest(A a)
-        {
-            if (a == null)
-                return;
-            a.Field = 42;
-            a.OtherField = 5;
-            SharedList.JustSetField(a);
-            if (a.Field != 5)
-                throw new Exception();
-        }
-
-        [TestSvm]
-        public static void JustCallTestSymbolic(A a)
-        {
-            if (a == null)
-                return;
-            int x = a.OtherField;
-            SharedList.JustSetField(a);
-            if (a.Field != x)
-                throw new Exception();
-        }
-
-        [TestSvm]
-        public static void StrangeSumTest(A a)
-        {
-            if (a == null)
-                return;
-            a.Field = 0;
-            if (a.OtherField > 0)
-            {
-                SharedList.StrangeSum(a);
-                if (a.Field < 0)
-                    throw new Exception();
-            }
-        }
 
         [TestSvm]
         public static void LastTest(ListNode l)
@@ -466,69 +427,9 @@ namespace VSharp.Test.Tests
         }
 
         [TestSvm]
-        public static void CreateLength(int n)
-        {
-            if (n >= 0 && SharedList.Length(SharedList.CreateList(n)) != n)
-                throw new Exception();
-        }
-
-        [TestSvm]
-        public static void LengthTest(ListNode l)
-        {
-            if (l == null)
-                return;
-            if (SharedList.Length(l) != SharedList.Length(l.Next) + 1)
-                throw new Exception();
-        }
-
-        [TestSvm]
-        public static void AddOtherTest(A a)
-        {
-            if (a == null)
-                return;
-            if (a.OtherField > 0 && a.Field == 0)
-            {
-                SharedList.AddOther(a, 3);
-                if (a.Field <= 0)
-                    throw new Exception();
-            }
-        }
-
-        [TestSvm]
-        public static void TestCreateDecreasingLast(int n)
-        {
-            if (n <= 0)
-                return;
-            var l = SharedList.CreateDecreasingList(n);
-            int x = SharedList.Last(l);
-            if (x != 1)
-                throw new Exception();
-        }
-
-        [TestSvm]
-        public static void SumAfterInc(ListNode l)
-        {
-            var s = SharedList.Sum(l);
-            SharedList.IncN(l);
-            var s2 = SharedList.Sum(l);
-            if (!(s <= s2))
-                throw new Exception();
-        }
-
-        [TestSvm]
         public static void TestReverseNull(ListNode l)
         {
             if (l != null && SharedList.Reverse(l) == null)
-                throw new Exception();
-        }
-
-        [TestSvm]
-        public static void TestCrop(ListNode l, int n)
-        {
-            if (n <= 0)
-                return;
-            SharedList.Crop(l, n);
-            if (SharedList.Length(l) > n)
                 throw new Exception();
         }
 
@@ -585,13 +486,6 @@ namespace VSharp.Test.Tests
         }
 
         [TestSvm]
-        public static void EqualLength(ListNode l1, ListNode l2)
-        {
-            if (l1 == l2 && SharedList.Length(l1) != SharedList.Length(l2))
-                throw new Exception();
-        }
-
-        [TestSvm]
         public static void TestLengthOfReverse(ListNode l)
         {
             if (SharedList.Length(l) != SharedList.Length(SharedList.Reverse(l)))
@@ -630,49 +524,6 @@ namespace VSharp.Test.Tests
         public static void TestCreate(int n)
         {
             if (n > 1 && SharedList.CreateList(n).Next.Key > 0)
-                throw new Exception();
-        }
-
-        [TestSvm]
-        public static void TestSumDecreasing(int n) // nobody supports multiplication
-        {
-            if (n <= 0)
-                return;
-            var l = SharedList.CreateDecreasingList(n);
-            var s = SharedList.Sum(l);
-            if (s + s != SharedList.Mult(n, n + 1))
-                throw new Exception();
-        }
-
-        [TestSvm]
-        public static void TestLastInc(ListNode l)
-        {
-            if (l == null)
-                return;
-            var x = SharedList.Last(l);
-            SharedList.IncN(l);
-            if (SharedList.Last(l) != x + 1)
-                throw new Exception();
-        }
-
-        [TestSvm]
-        public static void TestLastOnes(int n)
-        {
-            if (n <= 0)
-                return;
-            var l = SharedList.CreateOnes(n);
-            if (SharedList.Last(l) != 1)
-                throw new Exception();
-        }
-
-        [TestSvm]
-        public static void TestSumOnes(int n)
-        {
-            if (n <= 0)
-                return;
-            var l = SharedList.CreateOnes(n);
-            var s = SharedList.Sum(l);
-            if (s != n)
                 throw new Exception();
         }
 
@@ -776,6 +627,142 @@ namespace VSharp.Test.Tests
                 throw new Exception();
         }
 
+        [Ignore("Ultimate Timelimit")]
+        public static void TestTreeAddContains(BinTreeNode tree, int x)
+        {
+            if (!SharedTree.Contains(SharedTree.Add(tree, x), x))
+                throw new Exception();
+        }
+    }
+
+    [TestSvmFixture]
+    public static class TooHardForSolvers
+    {
+        [TestSvm]
+        public static void TestMaxContainsTree(BinTreeNode tree)
+        {
+            if (tree == null)
+                return;
+            if (!SharedTree.Contains(tree, SharedTree.Max(tree)))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void AddOtherTest(A a)
+        {
+            if (a == null)
+                return;
+            if (a.OtherField > 0 && a.Field == 0)
+            {
+                SharedList.AddOther(a, 3);
+                if (a.Field <= 0)
+                    throw new Exception();
+            }
+        }
+
+        [TestSvm]
+        public static void CreateLength(int n)
+        {
+            if (n >= 0 && SharedList.Length(SharedList.CreateList(n)) != n)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void EqualLength(ListNode l1, ListNode l2)
+        {
+            if (l1 == l2 && SharedList.Length(l1) != SharedList.Length(l2))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void JustCallTest(A a)
+        {
+            if (a == null)
+                return;
+            a.Field = 42;
+            a.OtherField = 5;
+            SharedList.JustSetField(a);
+            if (a.Field != 5)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void JustCallTestSymbolic(A a)
+        {
+            if (a == null)
+                return;
+            int x = a.OtherField;
+            SharedList.JustSetField(a);
+            if (a.Field != x)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void StrangeSumTest(A a)
+        {
+            if (a == null)
+                return;
+            a.Field = 0;
+            if (a.OtherField > 0)
+            {
+                SharedList.StrangeSum(a);
+                if (a.Field < 0)
+                    throw new Exception();
+            }
+        }
+
+        [TestSvm]
+        public static void LengthTest(ListNode l)
+        {
+            if (l == null)
+                return;
+            if (SharedList.Length(l) != SharedList.Length(l.Next) + 1)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void SumAfterInc(ListNode l)
+        {
+            var s = SharedList.Sum(l);
+            SharedList.IncN(l);
+            var s2 = SharedList.Sum(l);
+            if (!(s <= s2))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestAtLeastHundred(A a)
+        {
+            if (a == null)
+                return;
+            SharedList.AtLeastHundred(a);
+            if (a.Field < 100)
+            {
+                throw new Exception();
+            }
+        }
+
+        [TestSvm]
+        public static void TestCreateDecreasingLast(int n)
+        {
+            if (n <= 0)
+                return;
+            var l = SharedList.CreateDecreasingList(n);
+            int x = SharedList.Last(l);
+            if (x != 1)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestCrop(ListNode l, int n)
+        {
+            if (n <= 0)
+                return;
+            SharedList.Crop(l, n);
+            if (SharedList.Length(l) > n)
+                throw new Exception();
+        }
+
         [TestSvm]
         public static void TestItemLast(ListNode l)
         {
@@ -787,10 +774,46 @@ namespace VSharp.Test.Tests
                 throw new Exception();
         }
 
-        [Ignore("Ultimate Timelimit")]
-        public static void TestTreeAddContains(BinTreeNode tree, int x)
+        [TestSvm]
+        public static void TestSumDecreasing(int n) // nobody supports multiplication
         {
-            if (!SharedTree.Contains(SharedTree.Add(tree, x), x))
+            if (n <= 0)
+                return;
+            var l = SharedList.CreateDecreasingList(n);
+            var s = SharedList.Sum(l);
+            if (s + s != SharedList.Mult(n, n + 1))
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestLastInc(ListNode l)
+        {
+            if (l == null)
+                return;
+            var x = SharedList.Last(l);
+            SharedList.IncN(l);
+            if (SharedList.Last(l) != x + 1)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestLastOnes(int n)
+        {
+            if (n <= 0)
+                return;
+            var l = SharedList.CreateOnes(n);
+            if (SharedList.Last(l) != 1)
+                throw new Exception();
+        }
+
+        [TestSvm]
+        public static void TestSumOnes(int n)
+        {
+            if (n <= 0)
+                return;
+            var l = SharedList.CreateOnes(n);
+            var s = SharedList.Sum(l);
+            if (s != n)
                 throw new Exception();
         }
     }
@@ -798,7 +821,7 @@ namespace VSharp.Test.Tests
     [TestSvmFixture]
     public static class WIP
     {
-        [TestSvm]
+        [Ignore("Internal error: stack does not contain key (tree, LocalVariable:-1283898937)!")]
         public static void TestFromListContains(ListNode list)
         {
             if (list == null)
