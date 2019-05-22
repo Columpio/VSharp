@@ -588,6 +588,10 @@ module internal Terms =
         | Expression(Operator(OperationType.ShiftRight, isChecked), [x;y], t) -> Some(ShiftRight(x, y, isChecked, t))
         | _ -> None
 
+    let (|CastT|_|) = term >> function
+        | Expression(Cast(_, dstTyp, _), [t], dstTyp2) when dstTyp = dstTyp2 -> Some(t, dstTyp)
+        | _ -> None
+
     // TODO: can we already get rid of visited?
     let rec private foldChildren folder (visited : HashSet<term>) state term =
         match term.term with

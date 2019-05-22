@@ -123,10 +123,15 @@ module internal Pointers =
             List.map2 (equalPathSegment mtd) path1 path2 |> conjunction mtd
 
     let rec simplifyReferenceEqualityk mtd x y k =
+        let rec uncast = function
+            | CastT(t, _) -> uncast t
+            | t -> t
         simplifyGenericBinary "reference comparison" State.empty x y (fst >> k)
             (fun _ _ _ _ -> __unreachable__())
             (fun x y s k ->
                 let k = withSnd s >> k
+                let x = uncast x
+                let y = uncast y
                 match x.term, y.term with
                 | _ when x = y -> makeTrue mtd |> k
                 | Ref(topLevel1, path1), Ref(topLevel2, path2) -> compareTopLevel mtd (topLevel1, topLevel2) &&& comparePath mtd path1 path2 |> k

@@ -15,11 +15,11 @@ module internal TypeCasting =
             else k (CastConcrete value (Types.toDotNetType targetType) term.metadata, state)
         | Constant(_, _, t)
         | Expression(_, _, t) -> k (makeCast t targetType term isChecked mtd, state)
-        | Ref(NullAddress, _)
+        | Ref(NullAddress, _) -> k (Terms.makeNullRef mtd, state)
         | Ref(TopLevelHeap _, _)
         | Ptr(TopLevelHeap _, _, _, _) ->
             Common.statedConditionalExecution state
-                (fun state k -> k <| (Pointers.isNull mtd term, state))
+                (fun state k -> k (Pointers.isNull mtd term, state))
                 (fun state k -> k (Terms.makeNullRef mtd, state))
                 (fun state k -> hierarchyCast targetType state term k)
                 Merging.merge Merging.merge2Terms id k
