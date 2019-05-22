@@ -136,7 +136,7 @@ module internal Explorer =
         | _ -> state
 
     let functionApplicationResult mtd (funcId : IFunctionIdentifier) name state k =
-        let typ = funcId.ReturnType
+        let typ = Types.wrapReferenceType funcId.ReturnType
         let source = {id = funcId; state = state; name = {v=name}; typ = typ; location = None; extractor = IdTermExtractor(); typeExtractor = IdTypeExtractor()}
         Memory.makeSymbolicInstance mtd source source name None typ |> k
 
