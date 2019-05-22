@@ -76,7 +76,7 @@ def readResultFile(filename : str) -> DefaultDict[str, ColoredText]:
 
 def testResults(testFolder : str) -> List[DefaultDict[str, ColoredText]]:
 	queries = {}
-	for queryFile in os.scandir(filename.path):
+	for queryFile in os.scandir(testFolder):
 		if queryFile.name.endswith(".results"):
 			n = int(queryFile.name.partition('.')[0])
 			queries[n] = queryFile.path
@@ -156,15 +156,19 @@ def makeTable(tests : Dict[str, List[DefaultDict[str, ColoredText]]]):
 	print("Solver coverage:\t", coverage, sep='')
 	print("Best %s with score:\t%s" % (best_solver, best_solver_score))
 	
-if len(sys.argv) == 2:
-	folder = sys.argv[1]
+def printTestFolderResults(folder: str):
+	tests = {}
+	for filename in os.scandir(folder):
+		if filename.is_dir():
+			testName = filename.name.rsplit('.', 2)[0]
+			tests[testName] = testResults(filename.path)
+
+	makeTable(tests)
+
+if len(sys.argv) > 1:
+	folders = sys.argv[1:]
 else:
-	folder = os.path.join("VSharp.Test", "Golds", "VSharp", "Test", "Tests", "ListWorking")
+	folders = "ListWorking"
 
-tests = {}
-for filename in os.scandir(folder):
-	if filename.is_dir():
-		testName = filename.name.rsplit('.', 2)[0]
-		tests[testName] = testResults(filename.path)
-
-makeTable(tests)
+for folder in folders:
+	printTestFolderResults(os.path.join("VSharp.Test", "Golds", "VSharp", "Test", "Tests", folder))
