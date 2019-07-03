@@ -1,4 +1,3 @@
-HORUS	SmtSat null
-r_type	SmtSat null
-Mochi	SmtSat null
-Human	SmtUnsat
+r_type	(SmtSat null, 1224)
+Mochi	(SmtSat null, 13192)
+Human	(SmtUnsat, 0)

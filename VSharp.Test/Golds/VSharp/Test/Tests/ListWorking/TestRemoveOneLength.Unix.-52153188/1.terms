@@ -1,1 +1,0 @@
-!(0 == l) & (!(0 == l.VSharp.Test.Tests.ListNode.Next) | !(l.VSharp.Test.Tests.ListNode.Key == n)) & 1 + μ[Length]_1 == 2 + μ[Length]_1 | !(0 == l) & 0 == l.VSharp.Test.Tests.ListNode.Next & 1 == 1 + μ[Length]_1 & l.VSharp.Test.Tests.ListNode.Key == n

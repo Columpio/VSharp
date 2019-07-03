@@ -91,6 +91,7 @@ def generateHeader(tests : Dict[str, List[DefaultDict[str, ColoredText]]]) -> Li
 	tests = [[set(x.keys()) for x in t] for t in tests.values()]
 	solvers = list(set().union(*chain.from_iterable(tests)))
 	solvers.remove("Human")
+	solvers.sort()
 	solvers.append("Human")
 	return solvers
 
@@ -134,7 +135,7 @@ def collectStatistics(solvers : List[str], tests : List[List[ColoredText]]):
 	total_queries = len(tests)
 	return coverage, best_solver, best_solver_score, total_queries
 
-def makeTable(tests : Dict[str, List[DefaultDict[str, ColoredText]]]):
+def makeTable(prefix: str, tests : Dict[str, List[DefaultDict[str, ColoredText]]]):
 	solvers = generateHeader(tests)
 	tests = shapeHeader(solvers, tests)
 	tests = propagateTestName(tests)
@@ -148,6 +149,12 @@ def makeTable(tests : Dict[str, List[DefaultDict[str, ColoredText]]]):
 	line = '-' * len(header)
 	tests.sort(key=lambda r: r[0].text.strip())
 	table = '\n'.join(' '.join(res.colored() for res in row) for row in tests)
+	
+	n = len(header) - len(prefix)
+	d, m = divmod(n, 2)
+	l, r = d + m, d
+	print('=' * l, prefix, '=' * r, sep='')
+
 	print(header)
 	print(line)
 	print(table)
@@ -156,19 +163,49 @@ def makeTable(tests : Dict[str, List[DefaultDict[str, ColoredText]]]):
 	print("Solver coverage:\t", coverage, sep='')
 	print("Best %s with score:\t%s" % (best_solver, best_solver_score))
 	
-def printTestFolderResults(folder: str):
+def readTestFolderResults(folder: str) -> Dict[str, List[DefaultDict[str, ColoredText]]]:
 	tests = {}
 	for filename in os.scandir(folder):
 		if filename.is_dir():
 			testName = filename.name.rsplit('.', 2)[0]
 			tests[testName] = testResults(filename.path)
+	return tests
 
-	makeTable(tests)
+def printTestFolderResults(folder: str):
+	tests = readTestFolderResults(folder)
+	makeTable(folder, tests)
+	print()
+
+def printTeXTable(folder: str):
+	def resultToRussian(result: str) -> str:
+		if result == "sat":
+			return "Небезопасно"
+		elif result == "unsat":
+			return "Безопасно"
+		raise NotImplementedError
+
+	def texrow(test_name: str, query_number: int, solver_result: str, gold_result: str, time: str):
+		query_number = str(query_number)
+		prefix = r"\rowcolor{red} " if solver_result != gold_result else ""
+		solver_result = resultToRussian(solver_result)
+		gold_result = resultToRussian(gold_result)
+		row = [test_name, query_number, solver_result, gold_result, time]
+		return prefix + " & ".join(row) + r" \\"
+	
+	tests = readTestFolderResults(folder)
+	postfix = "Unsafe" if "unsafe" in folder.lower() else "Safe" if "safe" in folder.lower() else ""
+	for test_name, queries in tests.items():
+		test = [texrow(test_name+postfix, i, q["r_type"].text, q["Human"].text, q["r_type"].puretime) for i, q in enumerate(queries, start=1)]
+		for q in test:
+			print(q)
+
 
 if len(sys.argv) > 1:
 	folders = sys.argv[1:]
 else:
-	folders = "ListWorking"
+	folders = ["ListWorking"]
 
 for folder in folders:
-	printTestFolderResults(os.path.join("VSharp.Test", "Golds", "VSharp", "Test", "Tests", folder))
+	folder = os.path.join("VSharp.Test", "Golds", "VSharp", "Test", "Tests", folder)
+	# printTeXTable(folder)
+	printTestFolderResults(folder)

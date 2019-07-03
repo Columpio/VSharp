@@ -37,7 +37,7 @@ type public Z3Solver() =
 //            System.IO.File.AppendAllText("/tmp/log1.txt", "\n\n" + "BEFORE OCAML ENCODE")
             let ocamlProgram = Encode.OCaml.encodeQuery terms
 //            System.IO.File.AppendAllText("/tmp/log1.txt", "\n\n" + "AFTER OCAML ENCODE")
-            let sochcs = Encode.Relations.encodeQuery terms
+//            let sochcs = Encode.Relations.encodeQuery terms
 //            System.IO.File.AppendAllText("/tmp/log1.txt", "\n\n" + "AFTER ALL ENCODE")
 
             match ocamlProgram with
@@ -61,7 +61,7 @@ type public Z3Solver() =
 //                System.IO.File.AppendAllText("/tmp/log1.txt", "\n\n" + "AFTER TOSTRING")
                 System.IO.File.WriteAllText(System.IO.Path.ChangeExtension(termFile, "ml"), code)
 
-                System.IO.File.WriteAllText(System.IO.Path.ChangeExtension(termFile, "sochcs"), CHCs.dump sochcs)
+//                System.IO.File.WriteAllText(System.IO.Path.ChangeExtension(termFile, "sochcs"), CHCs.dump sochcs)
 
                 let results =
                     [
@@ -74,11 +74,17 @@ type public Z3Solver() =
                     ]
                 let resultsS = results |> List.map (fun (name, res) -> sprintf "%s\t%O" name res) |> Array.ofList
                 System.IO.File.WriteAllLines(System.IO.Path.ChangeExtension(termFile, "results"), resultsS)
-                let human = results |> List.last |> snd |> fst
-                let best = results |> List.find (fst >> (=) "r_type") |> snd |> fst
+                let results = results |> List.filter (snd >> fst >> function SmtUnknown _ -> false | _ -> true)
+                let human = results |> List.tryFind (fst >> (=) "Human")
                 match human with
-                | SmtUnknown _ -> best
-                | _ -> human
+                | Some (_, (human, _)) -> human
+                | None ->
+                    match results with
+                    | [] -> SmtUnknown ""
+                    | (_, (best, _))::results ->
+                        match results |> List.tryFind (fst >> (=) "r_type") with
+                        | Some (_, (best, _)) -> best
+                        | None -> best
             | _ -> MochiSolver().Solve ocamlProgram
 
 

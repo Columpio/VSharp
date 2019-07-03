@@ -544,16 +544,6 @@ namespace VSharp.Test.Tests
     [TestSvmFixture]
     public static class LinearWorkingUnsafe
     {
-        [TestSvm]
-        public static void TestMutateRecursive(int n)
-        {
-            if (n <= 0)
-                return;
-            var a = new A {Field = 0, OtherField = 0};
-            SharedA.IncField(a, n);
-            if (a.Field > 0)
-                throw new Exception();
-        }
 
         [TestSvm]
         public static void TestFactorialIsGreater(A a)
@@ -566,25 +556,6 @@ namespace VSharp.Test.Tests
             {
                 throw new Exception();
             }
-        }
-
-        [TestSvm]
-        public static void TestFieldIsGreater(A a)
-        {
-            if (a == null || a.OtherField < 0)
-                return;
-            bool isgr1 = a.Field == a.OtherField;
-            bool isgr2 = SharedA.IsFieldGreater(a);
-//            if (isgr1 || isgr2 || true)
-//                throw new Exception();
-            if (isgr1 || isgr2)
-                throw new Exception();
-//            if (!isgr2)
-//                throw new Exception();
-//            if (isgr2)
-//                throw new Exception();
-//            if (isgr1 && !isgr2 || !isgr1 && isgr2)
-//                throw new Exception();
         }
 
         [TestSvm]
@@ -719,17 +690,6 @@ namespace VSharp.Test.Tests
             if (l == null)
                 return;
             if (!SharedList.Contains(l, SharedList.Last(l)))
-                throw new Exception();
-        }
-
-        [TestSvm]
-        public static void TestReverseLast(ListNode l)
-        {
-            if (l == null)
-                return;
-            var x = SharedList.Last(l);
-            var y = SharedList.Reverse(l).Key;
-            if (x != y)
                 throw new Exception();
         }
 
@@ -897,6 +857,26 @@ namespace VSharp.Test.Tests
     [TestSvmFixture]
     public static class TooHardForSolvers
     {
+
+        [TestSvm]
+        public static void TestFieldIsGreater(A a)
+        {
+            if (a == null || a.OtherField < 0)
+                return;
+            bool isgr1 = a.Field == a.OtherField;
+            bool isgr2 = SharedA.IsFieldGreater(a);
+//            if (isgr1 || isgr2 || true)
+//                throw new Exception();
+            if (isgr1 || isgr2)
+                throw new Exception();
+//            if (!isgr2)
+//                throw new Exception();
+//            if (isgr2)
+//                throw new Exception();
+//            if (isgr1 && !isgr2 || !isgr1 && isgr2)
+//                throw new Exception();
+        }
+
         [TestSvm]
         public static void TestMutateRecursive(int n)
         {
@@ -1129,11 +1109,33 @@ namespace VSharp.Test.Tests
             if (s != n)
                 throw new Exception();
         }
+
+        [TestSvm]
+        public static void TestReverseLast(ListNode l)
+        {
+            if (l == null)
+                return;
+            var x = SharedList.Last(l);
+            var y = SharedList.Reverse(l).Key;
+            if (x != y)
+                throw new Exception();
+        }
     }
 
     [TestSvmFixture]
     public static class WIP
     {
+        [TestSvm]
+        public static void TestFieldIsGreater(A a)
+        {
+            if (a == null || a.OtherField < 0)
+                return;
+            bool isgr1 = a.Field > a.OtherField;
+            bool isgr2 = SharedA.IsFieldGreater(a);
+            if (isgr1 != isgr2)
+                throw new Exception();
+        }
+
         [Ignore("Error came to Encode")]
         public static void TestPositiveRecursion(int n)
         {

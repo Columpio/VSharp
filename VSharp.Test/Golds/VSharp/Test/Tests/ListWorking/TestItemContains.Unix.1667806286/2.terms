@@ -1,2 +1,0 @@
-!(-1 == μ[Item]_1) & !(0 == i) & !(0 == l) & !(l.VSharp.Test.Tests.ListNode.Key == μ[Item]_1) & !μ[Contains]_1
-!(0 == l) & (!(-1 == l.VSharp.Test.Tests.ListNode.Key) | !(0 == i)) & (!(-1 == μ[Item]_1) | 0 == i)

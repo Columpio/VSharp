@@ -663,7 +663,7 @@ module internal Encode =
                     |> List.rev
                     |> List.map functionToString
                     |> join "\nand "
-                    |> (+) "let rec "
+                    |> sprintf "let rec %s\n"
 //                    |> List.map (sprintf "let rec %s\n")
 //                    |> join "\n"
 //                    match List.map functionToString (List.rev lts) with
@@ -689,6 +689,7 @@ module internal Encode =
 
         let private makeBinary op = function
             | [] -> __unreachable__()
+            | [x] -> x
             | xs -> BinOp(op, xs)
 
         let private makeStrictBinary op = function
@@ -809,13 +810,22 @@ module internal Encode =
                                 | Some (argFuncName, argFuncArgs, _) ->
                                     encodeList dbs argFuncArgs (fun (argFuncArgs, dbs) ->
                                     let call = Call(OVar argFuncName, [], [], argFuncArgs)
-                                    if Options.InlineOCaml()
-                                        then k (call, dbs)
-                                        else
-                                            let (definedVars, bodyGenerator) = dbs
-                                            k (var, (consSet t definedVars, fun restBody -> bodyGenerator (Let(ovar, call, restBody)))))
+//                                    if Options.InlineOCaml()
+//                                        then k (call, dbs)
+//                                        else
+                                    let (definedVars, bodyGenerator) = dbs
+                                    k (var, (consSet t definedVars, fun restBody -> bodyGenerator (Let(ovar, call, restBody)))))
 
                 and encodeTerm dbs t k =
+                    let rec containsCall = function
+                        | Call _ -> true
+                        | UnOp(_, e) -> containsCall e
+                        | Assert(e1, e2) -> containsCall e1 || containsCall e2
+                        | Let(_, b, e) -> containsCall b || containsCall e
+                        | IfThenElse(c, t, e) -> containsCall c || containsCall t || containsCall e
+                        | Tuple es
+                        | BinOp(_, es) -> List.exists containsCall es
+                        | _ -> false
 //                    let tt = (">>> Encode: " + toString t)
 
 //                    let tt2 = tt.Substring(0, min 100 tt.Length)
@@ -828,6 +838,13 @@ module internal Encode =
                     | Constant(name, src, typ) -> encodeConstant src typ t dbs k
                     | Expression(op, args, typ) ->
                         encodeList dbs args (fun (args, dbs) ->
+                        let args =
+                            match op with
+                            | Operator(OperationType.LogicalAnd, _)
+                            | Operator(OperationType.LogicalOr, _) ->
+                                let withCalls, withoutCalls = List.partition containsCall args
+                                withoutCalls @ withCalls
+                            | _ -> args
                         k (encodeExpression op args, dbs))
                     | Union [] -> __notImplemented__()
                     | Union gvs ->
@@ -869,7 +886,8 @@ module internal Encode =
                 let parameters = parameters |> List.map (function Var v -> v | _ -> __unreachable__())
                 (OVar schema.id, (soArgsVars, foArgsVars, parameters), results, bodyGenerator, returnType)))
 
-            schemaQueueEnqueue schema
+            let query = Expression (Operator(OperationType.LogicalAnd, false)) schema.results Bool
+            schemaQueueEnqueue {schema with schema.results = [query]}
             seq {
                 while schemaQueue.Count <> 0 do
                     yield processSchema (schemaQueue.Dequeue())
@@ -880,8 +898,7 @@ module internal Encode =
                 let x = schemas.Value
                 printfn "%d" x.Count
                 match encodeSchema querySchema with
-                | [] -> __unreachable__()
-                | (_, mainArgs, queries, mainBody, _)::functions ->
+                | (_, mainArgs, [query], mainBody, _)::functions ->
                     let functions =
                         let substituteResult = function
                             | (name, args, [result], body, returnType) -> name, args, body result, returnType
@@ -889,11 +906,12 @@ module internal Encode =
                         List.map substituteResult functions
                     let query =
                         let okReturnCode = OConstant "0"
-                        IfThenElse(BinOp(OperationType.LogicalAnd, queries), undefinedBehaviorCall okReturnCode, okReturnCode)
+                        IfThenElse(query, undefinedBehaviorCall okReturnCode, okReturnCode)
                     let main = OVar "main", mainArgs, mainBody query, None
 //                    System.IO.File.AppendAllText("/tmp/log1.txt", "\n\n" + "DONE ENCODING")
 //                    let main = OVar "main", mainArgs, Call(OVar "main2", [], List.map Var mainArgs), None
                     LetRecursive (main::functions @ [undefinedBehaviorBody])
+                | _ -> __unreachable__()
 
 //            if List.contains (Union []) terms
 //                then

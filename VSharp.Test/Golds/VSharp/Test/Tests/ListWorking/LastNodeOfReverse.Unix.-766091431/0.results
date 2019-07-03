@@ -1,4 +1,3 @@
-HORUS	SmtSat null
-r_type	SmtUnsat
-Mochi	SmtUnknown "Incompleteness of the refinement type system"
-Human	SmtUnsat
+r_type	(SmtSat null, 7401)
+Mochi	(SmtUnknown "Incompleteness of the refinement type system", 3029)
+Human	(SmtUnsat, 0)
