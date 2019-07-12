@@ -2,6 +2,8 @@ using System;
 
 namespace VSharp.Test.Tests
 {
+    using static RecursionUnrollingMode;
+
     [TestSvmFixture]
     public static class Lambdas
     {
@@ -26,14 +28,14 @@ namespace VSharp.Test.Tests
         }
 
         // Expecting 18
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int Always18()
         {
             return Mult2(9);
         }
 
         // Expecting always true
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static bool DoubleValue(int n, bool flag)
         {
             int a = 0, b = 0, c = 0;

@@ -3,6 +3,8 @@ using NUnit.Framework;
 
 namespace VSharp.Test.Tests
 {
+    using static RecursionUnrollingMode;
+
     public class Tree
     {
         public int Key { get; set; }

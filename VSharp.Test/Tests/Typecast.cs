@@ -4,6 +4,8 @@ using VSharp.Test.Tests.Typecast;
 
 namespace VSharp.Test.Tests.Typecast
 {
+    using static RecursionUnrollingMode;
+
     public class Celsius
     {
         public Celsius(float temp)
@@ -47,7 +49,7 @@ namespace VSharp.Test.Tests.Typecast
             Y = y;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public double Norm()
         {
             //TODO: Incorrect printed string of elements in the array
@@ -58,14 +60,14 @@ namespace VSharp.Test.Tests.Typecast
     [TestSvmFixture]
     public static class Typecast
     {
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int DownCastObject(object obj)
         {
             bool a = obj is Piece;
             return a ? 5 : 6;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int DownCastObject2(object obj1, object obj2)
         {
             bool a = obj1 is Piece & obj2 is Pawn;
@@ -73,7 +75,7 @@ namespace VSharp.Test.Tests.Typecast
             return a | b ? 5 : 6;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int UpCast()
         {
             Pawn a = new Pawn(1, 1, 25);
@@ -82,21 +84,21 @@ namespace VSharp.Test.Tests.Typecast
             return DownCastObject(obj) + DownCastPiece(b);
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int DownCastPiece(Piece piece)
         {
             bool a = piece is Pawn;
             return a ? 10 : 20;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int CheckCastNullWithTrick()
         {
             return DownCastPiece(null);
         }
 
         // always 38, because the null reference is not assigned any type at all
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int CastAfterNull()
         {
             Piece a = new Piece(1, 3);
@@ -105,20 +107,20 @@ namespace VSharp.Test.Tests.Typecast
             return b is Object ? 33 : 38;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static Pawn TypeCast(Object obj)
         {
             Pawn pawn = (Pawn)obj;
             return pawn;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int Unboxing(Object obj)
         {
             return obj is int ? 13 : 23;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int TryCast(Object obj)
         {
             Piece a = obj as Piece;
@@ -129,7 +131,7 @@ namespace VSharp.Test.Tests.Typecast
             return 42;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int TryUpCast(Piece piece)
         {
             return TryCast(piece);
@@ -166,7 +168,7 @@ namespace VSharp.Test.Tests.Typecast
             _yCoord = coord.Y;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public Coord GetCoord()
         {
             Coord coord;
@@ -175,20 +177,20 @@ namespace VSharp.Test.Tests.Typecast
             return coord;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public int GetRate()
         {
             return Rate;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public int RetRate(object obj)
         {
             var a = (Piece)obj;
             return a.Rate;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public virtual IMovable MakeMove(Coord c)
         {
             _xCoord = c.X;
@@ -216,19 +218,19 @@ namespace VSharp.Test.Tests.Typecast
             Constructor(newField);
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public int GetNewField()
         {
             return _newField;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public void SetNewField(int field)
         {
             _newField = field;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public override IMovable MakeMove(Coord c)
         {
             _xCoord = c.X + c.Y;
@@ -248,7 +250,7 @@ namespace VSharp.Test.Tests.Typecast
         {
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public new IMovable MakeMove(Coord c)
         {
             _xCoord = c.X + c.Y;
@@ -271,7 +273,7 @@ namespace VSharp.Test.Tests.Typecast
     [TestSvmFixture]
     public class Knight : Piece
     {
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public new IMovable MakeMove(Coord c)
         {
             _xCoord = c.X + c.Y;

@@ -2,6 +2,8 @@ using System;
 
 namespace VSharp.Test.Tests
 {
+    using static RecursionUnrollingMode;
+
     [TestSvmFixture]
     public static class Conditional
     {
@@ -10,7 +12,7 @@ namespace VSharp.Test.Tests
             return Math.Max(x, Math.Max(y, z));
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static bool IsMaxEven(int x, int y, int z)
         {
             return Max3(2 * x, 2 * y, z) % 2 == 0;
@@ -24,7 +26,7 @@ namespace VSharp.Test.Tests
             return result;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int Always18()
         {
             return Mult2(9);
@@ -66,7 +68,7 @@ namespace VSharp.Test.Tests
             return 100500;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int FirstEvenGreaterThen7()
         {
             return FirstEvenGreaterThen(7);
@@ -74,7 +76,7 @@ namespace VSharp.Test.Tests
 
         // It's not a problem, that we got <VOID> < 5 or smth like that, because some path conditions are not achievable from program.
         // In case of TestSwitch method, we got <VOID> from dereferencing of not assigned variable.
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static bool TestSwitch(char c)
         {
             int result;
@@ -113,7 +115,7 @@ namespace VSharp.Test.Tests
             }
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int ExceptionInCondition1(NewBool nb)
         {
             int n = 0;
@@ -129,13 +131,13 @@ namespace VSharp.Test.Tests
             }
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int ExceptionInCondition2(NewBool nb)
         {
             return nb.BoolValue ? 42 : 56;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int ExceptionInCondition3(NewBool nb)
         {
             if (nb.ThrowException())
@@ -148,7 +150,7 @@ namespace VSharp.Test.Tests
             }
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int DeclareAfterReturn(bool flag, bool f, int x)
         {
             if (f)
@@ -161,7 +163,7 @@ namespace VSharp.Test.Tests
             return x;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int PreconditionLoop(int n)
         {
             var num = 0;
@@ -173,7 +175,7 @@ namespace VSharp.Test.Tests
             return num; // n > 0 ? n : 0
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int PostconditionLoop(int n)
         {
             var num = n;

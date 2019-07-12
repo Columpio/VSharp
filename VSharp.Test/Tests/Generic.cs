@@ -4,6 +4,8 @@ using VSharp.Test.Tests.Typecast;
 
 namespace VSharp.Test.Tests.Generic
 {
+    using static RecursionUnrollingMode;
+
     public interface IKeeper<in T>
     {
         void Keep(T obj);
@@ -33,19 +35,19 @@ namespace VSharp.Test.Tests.Generic
         where N : IKeeper<K>
         where Z : List<int>
     {
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static LinkedList<int> RetDictionary()
         {
             return new LinkedList<int>();
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static List<double> RetList()
         {
             return new List<double>();
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static T RetT(T t)
         {
             return t;
@@ -61,37 +63,37 @@ namespace VSharp.Test.Tests.Generic
         where N : IKeeper<K>
         where Z : List<int>
     {
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static T RetT(T t)
         {
             return t;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static U RetU(U u)
         {
             return u;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static P RetP(P p)
         {
             return p;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static K RetK(K k)
         {
             return k;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static N RetT(N n)
         {
             return n;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static Z RetU(Z z)
         {
             return z;
@@ -107,13 +109,13 @@ namespace VSharp.Test.Tests.Generic
         {
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public T GetFields()
         {
             return  _filed;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public void SetField(T f)
         {
             _filed = f;
@@ -123,14 +125,14 @@ namespace VSharp.Test.Tests.Generic
     [TestSvmFixture]
     public static class GenericMethod
     {
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int TestFoo(Foo<int, Piece> f)
         {
             if (f == null) return 0;
             return f.GetFields();
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int TestFoo(LinkedList<int> l)
         {
             if (l == null) return 0;
@@ -171,7 +173,7 @@ namespace VSharp.Test.Tests.Generic
 //            return obj;
 //        }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling)]
         public static int RetWorked(Object obj, int a)
         {
             if (obj as BlackPawn != null)
