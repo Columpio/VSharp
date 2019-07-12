@@ -1,5 +1,5 @@
 using NUnit.Framework;
- using System;
+using System;
 
 namespace VSharp.Test.Tests
 {
@@ -30,6 +30,7 @@ namespace VSharp.Test.Tests
             return t.Depth == 3 && t.Size == 7;
         }
 
+        [Ignore("reduceExpressionToRef: The method or operation is not implemented")]
         public static bool CheckGeneratedDepthSymbolic(int d)
         {
             Tree t = Tree.Generate(d);

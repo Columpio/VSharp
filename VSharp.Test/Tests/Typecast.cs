@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
- using System;
-using VSharp.Test.Tests.Typecast;
+using System;
 
 namespace VSharp.Test.Tests.Typecast
 {

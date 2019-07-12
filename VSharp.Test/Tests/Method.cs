@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using VSharp.Test.Tests.Typecast;
 
 namespace VSharp.Test.Tests.Methods
