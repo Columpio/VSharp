@@ -24,6 +24,7 @@ namespace VSharp.Test.Tests
     [TestSvmFixture]
     public static class TreeTest
     {
+        [TestSvm(SmartUnrolling)]
         public static bool CheckGeneratedDepthConcrete3()
         {
             Tree t = Tree.Generate(3);
