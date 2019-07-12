@@ -229,12 +229,24 @@ namespace VSharp.Test
         private const string MethodSeparator = "METHOD: ";
         private const string ResultSeparator = "RESULT: ";
         private const string GoldsDirectoryName = "Golds";
+        private static string _osGoldDirectoryName = Environment.OSVersion.Platform.ToString();
+        private static string _idealUnrollingOptionDirectoryName = IdealUnrollingOptionDirectoryName();
         private const string IdealTestFileExtension = ".gold";
         private const string IdealTemporaryFileExtension = ".tmp";
 
         private string _idealValuePath;
         public string ExpectedValue;
         private string _methodName;
+
+        private static string IdealUnrollingOptionDirectoryName()
+        {
+            var mode = Options.RecursionUnrollingMode();
+            if (mode.Equals(RecursionUnrollingModeType.SmartUnrolling))
+                return "SmartUnrolling";
+            if (mode.Equals(RecursionUnrollingModeType.NeverUnroll))
+                return "NeverUnroll";
+            throw new ArgumentException("Unknown unrolling mode");
+        }
 
         public IdealValuesHandler(MethodInfo methodInfo, [CallerFilePath] string currentFilePath = "")
         {
@@ -259,9 +271,14 @@ namespace VSharp.Test
             var typeName = methodInfo?.DeclaringType?.FullName?.Split('.');
             if (typeName == null)
                 return null;
-            var os = Environment.OSVersion.Platform.ToString();
-            var methodName = $"{methodInfo.Name}.{os}.{MethodHash(methodInfo)}{IdealTestFileExtension}";
-            var idealValuePath = Path.Combine(currentFolder, GoldsDirectoryName, Path.Combine(typeName), methodName);
+            var methodName = $"{methodInfo.Name}.{MethodHash(methodInfo)}{IdealTestFileExtension}";
+            var idealValuePath = Path.Combine(
+                currentFolder,
+                GoldsDirectoryName,
+                _osGoldDirectoryName,
+                _idealUnrollingOptionDirectoryName,
+                Path.Combine(typeName),
+                methodName);
             return idealValuePath;
         }
 
