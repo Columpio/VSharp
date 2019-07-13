@@ -1,5 +1,5 @@
 METHOD: System.Single VSharp.Test.Tests.Arithmetics.AbsSingleMethod()
-RESULT: 5.9
+RESULT: abs((System.Single)-5.9)
 HEAP:
 { heap = h0, statics = s1 } where
 ---------- h0 = ----------
@@ -413,5 +413,4 @@ System.Math ==> STRUCT System.Math[
 	| System.Math.roundPower10Double ~> UNION[
 		| !hasKey#1 ~> (HeapRef 1)
 		| hasKey#1 ~> (HeapRef System.Math.roundPower10Double)]]
-System.Object ==> STRUCT System.Object[]
 VSharp.Test.Tests.Arithmetics ==> STRUCT VSharp.Test.Tests.Arithmetics[]

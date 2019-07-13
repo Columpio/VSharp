@@ -14,7 +14,6 @@ HEAP:
 		| !(x <= 10) ~> x
 		| x <= 10 ~> VSharp.Test.Tests.Container.X]]
 ---------- s1 = ----------
-System.Object ==> STRUCT System.Object[]
 VSharp.Test.Tests.Bag ==> STRUCT VSharp.Test.Tests.Bag[]
 VSharp.Test.Tests.Container ==> STRUCT VSharp.Test.Tests.Container[
 	| VSharp.Test.Tests.Container.X ~> UNION[

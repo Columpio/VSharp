@@ -42,7 +42,7 @@ HEAP:
 	| System.String.m_StringLength ~> 4]
 ---------- s1 = ----------
 System.Collections.Generic.LinkedList`1[System.Int32] ==> UNION[
-	| !(System.Collections.Generic.LinkedList`1[System.Int32] <: VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z]) | !(VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z] <: System.Collections.Generic.LinkedList`1[System.Int32]) | !hasKey#1 ~> STRUCT System.Collections.Generic.LinkedList`1[System.Int32][
+	| (!(System.Collections.Generic.LinkedList`1[System.Int32] <: VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z]) | !(VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z] <: System.Collections.Generic.LinkedList`1[System.Int32]) | !hasKey#1) & (!(System.Object <: System.Collections.Generic.LinkedList`1[T]) | !hasKey#1) | (!(System.Collections.Generic.LinkedList`1[System.Int32] <: VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z]) | !(VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z] <: System.Collections.Generic.LinkedList`1[System.Int32]) | !hasKey#1) & (System.Object <: System.Collections.Generic.LinkedList`1[T]) & hasKey#1 ~> STRUCT System.Collections.Generic.LinkedList`1[System.Int32][
 		| System.Collections.Generic.LinkedList`1.CountName ~> UNION[
 			| !hasKey#1 ~> (HeapRef 3)
 			| (!(System.Collections.Generic.LinkedList`1[System.Int32] <: VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z]) | !(VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z] <: System.Collections.Generic.LinkedList`1[System.Int32])) & hasKey#1 ~> (HeapRef System.Collections.Generic.LinkedList`1.CountName)]
@@ -52,8 +52,5 @@ System.Collections.Generic.LinkedList`1[System.Int32] ==> UNION[
 		| System.Collections.Generic.LinkedList`1.VersionName ~> UNION[
 			| !hasKey#1 ~> (HeapRef 2)
 			| (!(System.Collections.Generic.LinkedList`1[System.Int32] <: VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z]) | !(VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z] <: System.Collections.Generic.LinkedList`1[System.Int32])) & hasKey#1 ~> (HeapRef System.Collections.Generic.LinkedList`1.VersionName)]]
-	| (System.Collections.Generic.LinkedList`1[System.Int32] <: VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z]) & (VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z] <: System.Collections.Generic.LinkedList`1[System.Int32]) & hasKey#1 ~> STRUCT VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z][]]
-System.Object ==> UNION[
-	| !(System.Object <: VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z]) | !hasKey#2 ~> STRUCT System.Object[]
-	| (System.Object <: VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z]) & hasKey#2 ~> STRUCT VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z][]]
+	| (!(System.Object <: System.Collections.Generic.LinkedList`1[T]) | !hasKey#1) & (System.Collections.Generic.LinkedList`1[System.Int32] <: VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z]) & (VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z] <: System.Collections.Generic.LinkedList`1[System.Int32]) & hasKey#1 | (System.Collections.Generic.LinkedList`1[System.Int32] <: VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z]) & (System.Object <: System.Collections.Generic.LinkedList`1[T]) & (VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z] <: System.Collections.Generic.LinkedList`1[System.Int32]) & hasKey#1 & hasKey#1 ~> STRUCT VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z][]]
 VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z] ==> STRUCT VSharp.Test.Tests.Generic.GenericInitialize`6[T,U,P,K,N,Z][]
