@@ -1,0 +1,70 @@
+METHOD: System.Boolean VSharp.Test.Tests.TreeTest.CheckGeneratedDepthConcrete3()
+RESULT: True
+HEAP:
+{ heap = h0, statics = s1 } where
+---------- h0 = ----------
+1 ==> STRUCT VSharp.Test.Tests.Tree[
+	| VSharp.Test.Tests.Tree.<Key>k__BackingField ~> 0
+	| VSharp.Test.Tests.Tree.<Left>k__BackingField ~> (HeapRef 2)
+	| VSharp.Test.Tests.Tree.<Right>k__BackingField ~> (HeapRef 5)]
+2 ==> STRUCT VSharp.Test.Tests.Tree[
+	| VSharp.Test.Tests.Tree.<Key>k__BackingField ~> 0
+	| VSharp.Test.Tests.Tree.<Left>k__BackingField ~> (HeapRef 3)
+	| VSharp.Test.Tests.Tree.<Right>k__BackingField ~> (HeapRef 4)]
+3 ==> STRUCT VSharp.Test.Tests.Tree[
+	| VSharp.Test.Tests.Tree.<Key>k__BackingField ~> 0
+	| VSharp.Test.Tests.Tree.<Left>k__BackingField ~> null
+	| VSharp.Test.Tests.Tree.<Right>k__BackingField ~> null]
+4 ==> STRUCT VSharp.Test.Tests.Tree[
+	| VSharp.Test.Tests.Tree.<Key>k__BackingField ~> 0
+	| VSharp.Test.Tests.Tree.<Left>k__BackingField ~> null
+	| VSharp.Test.Tests.Tree.<Right>k__BackingField ~> null]
+5 ==> STRUCT VSharp.Test.Tests.Tree[
+	| VSharp.Test.Tests.Tree.<Key>k__BackingField ~> 0
+	| VSharp.Test.Tests.Tree.<Left>k__BackingField ~> (HeapRef 6)
+	| VSharp.Test.Tests.Tree.<Right>k__BackingField ~> (HeapRef 7)]
+6 ==> STRUCT VSharp.Test.Tests.Tree[
+	| VSharp.Test.Tests.Tree.<Key>k__BackingField ~> 0
+	| VSharp.Test.Tests.Tree.<Left>k__BackingField ~> null
+	| VSharp.Test.Tests.Tree.<Right>k__BackingField ~> null]
+7 ==> STRUCT VSharp.Test.Tests.Tree[
+	| VSharp.Test.Tests.Tree.<Key>k__BackingField ~> 0
+	| VSharp.Test.Tests.Tree.<Left>k__BackingField ~> null
+	| VSharp.Test.Tests.Tree.<Right>k__BackingField ~> null]
+8 ==> [|
+	0: 1;
+	10: 10000000000;
+	11: 100000000000;
+	12: 1000000000000;
+	13: 10000000000000;
+	14: 100000000000000;
+	15: 1E+15;
+	1: 10;
+	2: 100;
+	3: 1000;
+	4: 10000;
+	5: 100000;
+	6: 1000000;
+	7: 10000000;
+	8: 100000000;
+	9: 1000000000;
+	 ... 16 ... |]
+---------- s1 = ----------
+System.Math ==> STRUCT System.Math[
+	| System.Math.E ~> UNION[
+		| !hasKey#2 ~> 2.71828182845905
+		| hasKey#2 ~> System.Math.E]
+	| System.Math.PI ~> UNION[
+		| !hasKey#2 ~> 3.14159265358979
+		| hasKey#2 ~> System.Math.PI]
+	| System.Math.doubleRoundLimit ~> UNION[
+		| !hasKey#2 ~> 1E+16
+		| hasKey#2 ~> System.Math.doubleRoundLimit]
+	| System.Math.maxRoundingDigits ~> UNION[
+		| !hasKey#2 ~> 15
+		| hasKey#2 ~> System.Math.maxRoundingDigits]
+	| System.Math.roundPower10Double ~> UNION[
+		| !hasKey#2 ~> (HeapRef 8)
+		| hasKey#2 ~> (HeapRef System.Math.roundPower10Double)]]
+VSharp.Test.Tests.Tree ==> STRUCT VSharp.Test.Tests.Tree[]
+VSharp.Test.Tests.TreeTest ==> STRUCT VSharp.Test.Tests.TreeTest[]
