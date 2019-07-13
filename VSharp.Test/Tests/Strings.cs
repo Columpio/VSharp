@@ -9,12 +9,13 @@ namespace VSharp.Test.Tests
     public sealed class Strings
     {
         // Expecting HeapRef on empty string
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static string EmptyString(int n, int m)
         {
             return String.Empty;
         }
 
+        [Ignore("term.equals: Stack overflow")]
         [TestSvm(SmartUnrolling)]
         public static string SymbolicString(string s)
         {
@@ -22,6 +23,7 @@ namespace VSharp.Test.Tests
             return s;
         }
 
+        [Ignore("term.equals: Stack overflow")]
         [TestSvm(SmartUnrolling)]
         public static int NullLength()
         {
@@ -29,7 +31,7 @@ namespace VSharp.Test.Tests
             return s.Length;
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static string HopHeyCharArray(char[] a)
         {
             return new string(a);

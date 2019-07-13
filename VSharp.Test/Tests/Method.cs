@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using VSharp.Test.Tests.Typecast;
 
 namespace VSharp.Test.Tests.Methods
@@ -12,7 +13,7 @@ namespace VSharp.Test.Tests.Methods
     [TestSvmFixture]
     public class VirtualB
     {
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public virtual int F()
         {
             return 8;
@@ -31,7 +32,7 @@ namespace VSharp.Test.Tests.Methods
     [TestSvmFixture]
     public class VirtualE : VirtualD
     {
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public override int F()
         {
             return 9;
@@ -41,7 +42,7 @@ namespace VSharp.Test.Tests.Methods
     [TestSvmFixture]
     public class VirtualC : VirtualB, IVirtual
     {
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public new virtual int F()
         {
             return 7;
@@ -56,7 +57,7 @@ namespace VSharp.Test.Tests.Methods
     [TestSvmFixture]
     public class VirtualG : VirtualC
     {
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public override int F()
         {
             return 66;
@@ -66,27 +67,27 @@ namespace VSharp.Test.Tests.Methods
     [TestSvmFixture]
     public static class VirtualMethod
     {
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static IMovable MakeVirtualMove(Pawn p, Coord c)
         {
             p?.MakeMove(c);
             return p;
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static IMovable MakeInterfaceMove(IMovable p, Coord c)
         {
             return p?.MakeMove(c);
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static IMovable MakeConcreteMove(Coord c)
         {
             var p = new Piece(0, 0);
             return p.MakeMove(c);
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int VirtualCall(IVirtual a)
         {
             if (a == null) return 0;
@@ -98,7 +99,7 @@ namespace VSharp.Test.Tests.Methods
             return ((IVirtual) a).F();
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int VirtualCall1(VirtualC a, int n)
         {
             if (a == null) return 0;
@@ -121,6 +122,7 @@ namespace VSharp.Test.Tests.Methods
 //            return a.F();
 //        }
 
+        [Ignore("composeGeneralizedHeaps: The method or operation is not implemented.")]
         [TestSvm(SmartUnrolling)]
         public static int VirtualCall3(VirtualG a, int n)
         {

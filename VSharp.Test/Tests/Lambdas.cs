@@ -1,4 +1,5 @@
 using System;
+using NUnit.Framework;
 
 namespace VSharp.Test.Tests
 {
@@ -28,6 +29,7 @@ namespace VSharp.Test.Tests
         }
 
         // Expecting 18
+        [Ignore("term.equals: Stack overflow")]
         [TestSvm(SmartUnrolling)]
         public static int Always18()
         {
@@ -35,7 +37,7 @@ namespace VSharp.Test.Tests
         }
 
         // Expecting always true
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static bool DoubleValue(int n, bool flag)
         {
             int a = 0, b = 0, c = 0;

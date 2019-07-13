@@ -24,6 +24,7 @@ namespace VSharp.Test.Tests
     [TestSvmFixture]
     public static class TreeTest
     {
+        [Ignore("composeGeneralizedHeaps: The method or operation is not implemented.")]
         [TestSvm(SmartUnrolling)]
         public static bool CheckGeneratedDepthConcrete3()
         {

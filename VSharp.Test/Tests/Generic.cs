@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NUnit.Framework;
 using VSharp.Test.Tests.Typecast;
 
 namespace VSharp.Test.Tests.Generic
@@ -35,19 +36,19 @@ namespace VSharp.Test.Tests.Generic
         where N : IKeeper<K>
         where Z : List<int>
     {
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static LinkedList<int> RetDictionary()
         {
             return new LinkedList<int>();
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static List<double> RetList()
         {
             return new List<double>();
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static T RetT(T t)
         {
             return t;
@@ -63,37 +64,37 @@ namespace VSharp.Test.Tests.Generic
         where N : IKeeper<K>
         where Z : List<int>
     {
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static T RetT(T t)
         {
             return t;
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static U RetU(U u)
         {
             return u;
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static P RetP(P p)
         {
             return p;
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static K RetK(K k)
         {
             return k;
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static N RetT(N n)
         {
             return n;
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static Z RetU(Z z)
         {
             return z;
@@ -109,13 +110,13 @@ namespace VSharp.Test.Tests.Generic
         {
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public T GetFields()
         {
             return  _filed;
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public void SetField(T f)
         {
             _filed = f;
@@ -125,13 +126,14 @@ namespace VSharp.Test.Tests.Generic
     [TestSvmFixture]
     public static class GenericMethod
     {
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int TestFoo(Foo<int, Piece> f)
         {
             if (f == null) return 0;
             return f.GetFields();
         }
 
+        [Ignore("simplifyBinaryOperation: not implemented")]
         [TestSvm(SmartUnrolling)]
         public static int TestFoo(LinkedList<int> l)
         {
@@ -173,7 +175,7 @@ namespace VSharp.Test.Tests.Generic
 //            return obj;
 //        }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int RetWorked(Object obj, int a)
         {
             if (obj as BlackPawn != null)

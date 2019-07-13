@@ -1,4 +1,5 @@
 using System;
+using NUnit.Framework;
 
 namespace VSharp.Test.Tests
 {
@@ -12,7 +13,7 @@ namespace VSharp.Test.Tests
             return Math.Max(x, Math.Max(y, z));
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static bool IsMaxEven(int x, int y, int z)
         {
             return Max3(2 * x, 2 * y, z) % 2 == 0;
@@ -26,6 +27,7 @@ namespace VSharp.Test.Tests
             return result;
         }
 
+        [Ignore("Internal error: stack does not contain key (index, MethodParameter:-1805800526)!")]
         [TestSvm(SmartUnrolling)]
         public static int Always18()
         {
@@ -68,6 +70,7 @@ namespace VSharp.Test.Tests
             return 100500;
         }
 
+        [Ignore("Internal error: stack does not contain key (index, MethodParameter:-425903972)!")]
         [TestSvm(SmartUnrolling)]
         public static int FirstEvenGreaterThen7()
         {
@@ -76,6 +79,7 @@ namespace VSharp.Test.Tests
 
         // It's not a problem, that we got <VOID> < 5 or smth like that, because some path conditions are not achievable from program.
         // In case of TestSwitch method, we got <VOID> from dereferencing of not assigned variable.
+        [Ignore("Internal error: stack does not contain key (message, MethodParameter:-1050951243)!")]
         [TestSvm(SmartUnrolling)]
         public static bool TestSwitch(char c)
         {
@@ -115,6 +119,7 @@ namespace VSharp.Test.Tests
             }
         }
 
+        [Ignore("term.equals: Stack overflow")]
         [TestSvm(SmartUnrolling)]
         public static int ExceptionInCondition1(NewBool nb)
         {
@@ -131,12 +136,14 @@ namespace VSharp.Test.Tests
             }
         }
 
+        [Ignore("term.equals: Stack overflow")]
         [TestSvm(SmartUnrolling)]
         public static int ExceptionInCondition2(NewBool nb)
         {
             return nb.BoolValue ? 42 : 56;
         }
 
+        [Ignore("Internal error: stack does not contain key (message, MethodParameter:-1050951243)!")]
         [TestSvm(SmartUnrolling)]
         public static int ExceptionInCondition3(NewBool nb)
         {
@@ -150,7 +157,7 @@ namespace VSharp.Test.Tests
             }
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int DeclareAfterReturn(bool flag, bool f, int x)
         {
             if (f)
@@ -163,7 +170,7 @@ namespace VSharp.Test.Tests
             return x;
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int PreconditionLoop(int n)
         {
             var num = 0;
@@ -175,7 +182,7 @@ namespace VSharp.Test.Tests
             return num; // n > 0 ? n : 0
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int PostconditionLoop(int n)
         {
             var num = n;

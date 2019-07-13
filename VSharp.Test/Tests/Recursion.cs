@@ -15,13 +15,13 @@ namespace VSharp.Test.Tests
             return FibRec(n - 1) + FibRec(n - 2);
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int Fib2()
         {
             return FibRec(2);
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int Fib5()
         {
             return FibRec(5);
@@ -47,7 +47,7 @@ namespace VSharp.Test.Tests
             }
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int FibUnbound(int n)
         {
             _c = 42;
@@ -69,13 +69,13 @@ namespace VSharp.Test.Tests
             return GcdRec(n, m - n);
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int Gcd1()
         {
             return GcdRec(15, 4);
         }
 
-        [TestSvm(SmartUnrolling)]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int Gcd15()
         {
             return GcdRec(30, 75);
