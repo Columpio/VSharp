@@ -230,7 +230,7 @@ namespace VSharp.Test
         private const string ResultSeparator = "RESULT: ";
         private const string GoldsDirectoryName = "Golds";
         private static string _osGoldDirectoryName = Environment.OSVersion.Platform.ToString();
-        private static string _idealUnrollingOptionDirectoryName = IdealUnrollingOptionDirectoryName();
+        internal static string IdealUnrollingOptionDirectoryName = GetIdealUnrollingOptionDirectoryName();
         private const string IdealTestFileExtension = ".gold";
         private const string IdealTemporaryFileExtension = ".tmp";
 
@@ -238,7 +238,7 @@ namespace VSharp.Test
         public string ExpectedValue;
         private string _methodName;
 
-        private static string IdealUnrollingOptionDirectoryName()
+        private static string GetIdealUnrollingOptionDirectoryName()
         {
             var mode = Options.RecursionUnrollingMode();
             if (mode.Equals(RecursionUnrollingModeType.SmartUnrolling))
@@ -276,7 +276,7 @@ namespace VSharp.Test
                 currentFolder,
                 GoldsDirectoryName,
                 _osGoldDirectoryName,
-                _idealUnrollingOptionDirectoryName,
+                IdealUnrollingOptionDirectoryName,
                 Path.Combine(typeName),
                 methodName);
             return idealValuePath;
@@ -363,16 +363,17 @@ namespace VSharp.Test
                 var methodInfo = innerCommand.Test.Method.MethodInfo;
                 var idealValue = new IdealValuesHandler(methodInfo);
                 var gotValue = SVM.ExploreOne(methodInfo);
+                var mode = $"// Explored in {IdealValuesHandler.IdealUnrollingOptionDirectoryName} mode\n";
 
                 if (string.Equals(idealValue.ExpectedValue, gotValue))
                 {
-                    context.CurrentResult.SetResult(ResultState.Success);
+                    context.CurrentResult.SetResult(ResultState.Success, mode);
                 }
                 else
                 {
                     idealValue.CreateTemporaryIdealFile(gotValue);
                     var diff = idealValue.DiffOfGotAndIdealValues(gotValue);
-                    context.CurrentResult.SetResult(ResultState.Failure, diff);
+                    context.CurrentResult.SetResult(ResultState.Failure, mode + diff);
                 }
                 return context.CurrentResult;
             }

@@ -1,5 +1,10 @@
 language: csharp
 solution: VSharp.sln
+
+env:
+  - VSHARPMODE=smart
+  - VSHARPMODE=never
+
 install:
   - nuget restore VSharp.sln
   - nuget install NUnit.Console -Version 3.10.0 -OutputDirectory testrunner
