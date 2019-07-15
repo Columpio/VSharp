@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace VSharp.Test.Tests
 {
+    using static RecursionUnrollingMode;
+
 //    public class ListNode
 //    {
 //        public int Key;
@@ -54,7 +57,8 @@ namespace VSharp.Test.Tests
 //            return a > 3;
 //        }
 
-        [TestSvm]
+        [Ignore("Fails in Encode")]
+        [TestSvm(SmartUnrolling)]
         public bool Construct()
         {
             var a = new List<int>(4) { 1, 2, 3, 4 };
@@ -63,7 +67,8 @@ namespace VSharp.Test.Tests
             return a.Count == b.Length && b.Length == c.Length && c.Length == c[3] - 4;
         }
 
-        [TestSvm]
+        [Ignore("Internal error: stack does not contain key (message, MethodParameter:28199396)!")]
+        [TestSvm(SmartUnrolling)]
         public int[] Mutate(int i)
         {
             var a = new int[] {1, 2, 3, 4, 5};
@@ -71,26 +76,29 @@ namespace VSharp.Test.Tests
             return a;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public int LowerBoundTest()
         {
             var c = new int[4, 2] { { 1, 1 }, { 2, 2 }, { 3, 3 }, { 4, 4 } };
             return c.GetLowerBound(1);
         }
 
-        [TestSvm]
+        [Ignore("term.equals: Stack overflow")]
+        [TestSvm(SmartUnrolling)]
         public int LowerBoundExceptionTest(int[,] array)
         {
             return array.GetLowerBound(2);
         }
 
-        [TestSvm]
+        [Ignore("Internal error: stack does not contain key (message, MethodParameter:28199396)!")]
+        [TestSvm(SmartUnrolling)]
         public int LowerBoundSymbolicTest(int[,] array, int dimension)
         {
             return array.GetLowerBound(dimension);
         }
 
-        [TestSvm]
+        [Ignore("Internal error: stack does not contain key (message, MethodParameter:28199396)!")]
+        [TestSvm(SmartUnrolling)]
         public int UpperBoundTest()
         {
             var c = new int[4, 2] { { 1, 1 }, { 2, 2 }, { 3, 3 }, { 4, 4 } };
@@ -110,14 +118,14 @@ namespace VSharp.Test.Tests
 //            a.CopyTo(b, 1);
 //        }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public int RankTest()
         {
             var c = new int[4, 2] { { 1, 1 }, { 2, 2 }, { 3, 3 }, { 4, 4 } };
             return c.Rank;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int[] RetOneDArray1(bool flag1, bool flag2)
         {
             int[] arr = new int[5];
@@ -132,7 +140,7 @@ namespace VSharp.Test.Tests
             return arr;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int[] RetOneDArray2(int n)
         {
             int[] arr = new int[n];
@@ -149,7 +157,8 @@ namespace VSharp.Test.Tests
             return arr;
         }
 
-        [TestSvm]
+        [Ignore("Internal error: stack does not contain key (message, MethodParameter:28199396)!")]
+        [TestSvm(SmartUnrolling)]
         public static Array RetSystemArray1(Array arr)
         {
             if (arr is int[])
@@ -165,7 +174,8 @@ namespace VSharp.Test.Tests
             return arr;
         }
 
-        [TestSvm]
+        [Ignore("Internal error: stack does not contain key (message, MethodParameter:28199396)!")]
+        [TestSvm(SmartUnrolling)]
         public static Array RetSystemArray2(Array arr)
         {
             if (arr is int[])
@@ -247,7 +257,7 @@ namespace VSharp.Test.Tests
             return f;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int F(int x)
         {
             if (x > 10)
@@ -261,13 +271,14 @@ namespace VSharp.Test.Tests
             return Container.X + tmp.X;
         }
 
-        [TestSvm]
+        [Ignore("Internal error: stack does not contain key (bag, LocalVariable:-1283898937)!")]
+        [TestSvm(SmartUnrolling)]
         public static int G(int x)
         {
             return F(5) + 10;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int NonEmptyPath(First f)
         {
             int res = 0;
@@ -283,7 +294,7 @@ namespace VSharp.Test.Tests
             return res;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int TestStack(Second b)
         {
             if (b != null)

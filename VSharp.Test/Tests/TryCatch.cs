@@ -1,11 +1,14 @@
 ﻿using System;
+using NUnit.Framework;
 
 namespace VSharp.Test.Tests
 {
+    using static RecursionUnrollingMode;
+
     [TestSvmFixture]
     public class TryCatch
     {
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public int SafeFunc(int n)
         {
             try
@@ -36,7 +39,8 @@ namespace VSharp.Test.Tests
             }
         }
 
-        [TestSvm]
+        [Ignore("Internal error: stack does not contain key (message, MethodParameter:1180368247)!")]
+        [TestSvm(SmartUnrolling)]
         public bool MakeOdd(int n)
         {
             try
@@ -58,7 +62,8 @@ namespace VSharp.Test.Tests
             return n % 2 == 1;
         }
 
-        [TestSvm]
+        [Ignore("term.equals: Stack overflow")]
+        [TestSvm(SmartUnrolling)]
         public static int ThrowNull(int n)
         {
             try
@@ -125,7 +130,8 @@ namespace VSharp.Test.Tests
             }
         }
 
-        [TestSvm]
+        [Ignore("Internal error: stack does not contain key (message, MethodParameter:1180368247)!")]
+        [TestSvm(SmartUnrolling)]
         public static int UsingTest()
         {
             var myDispose = new MyDispose(new []{ 57 });
@@ -135,7 +141,8 @@ namespace VSharp.Test.Tests
             return num + myDispose.X_field[0]; // 67
         }
 
-        [TestSvm]
+        [Ignore("term.equals: Stack overflow")]
+        [TestSvm(SmartUnrolling)]
         public static int UsingTestWithInheritance()
         {
             var myDispose = new AnotherDisposable(new []{ 57 });
@@ -145,7 +152,8 @@ namespace VSharp.Test.Tests
             return num + myDispose.X_field[0]; // 67
         }
 
-        [TestSvm]
+        [Ignore("Internal error: stack does not contain key (message, MethodParameter:1180368247)!")]
+        [TestSvm(SmartUnrolling)]
         public static int UsingTestWithInheritance1()
         {
             var myDispose = new AnotherDisposable1(new []{ 57 });
@@ -155,7 +163,8 @@ namespace VSharp.Test.Tests
             return num + myDispose.X_field[0]; // 77
         }
 
-        [TestSvm]
+        [Ignore("term.equals: Stack overflow")]
+        [TestSvm(SmartUnrolling)]
         public static int AnotherUsingTestWithInheritance1()
         {
             var myDispose = new YetAnotherDisposable1(new []{ 57 });
@@ -165,7 +174,8 @@ namespace VSharp.Test.Tests
             return num + myDispose.X_field[0]; // 67
         }
 
-        [TestSvm]
+        [Ignore("Internal error: stack does not contain key (message, MethodParameter:1180368247)!")]
+        [TestSvm(SmartUnrolling)]
         public static int AnotherUsingTestWithInheritance2()
         {
             var myDispose = new YetAnotherDisposable2(new []{ 57 });

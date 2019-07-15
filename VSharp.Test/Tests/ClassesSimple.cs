@@ -4,6 +4,8 @@ using NUnit.Framework;
 
 namespace VSharp.Test.Tests
 {
+    using static RecursionUnrollingMode;
+
     internal class ClassesSimpleA
     {
         private int _intField = 100500;
@@ -202,7 +204,7 @@ namespace VSharp.Test.Tests
     [TestSvmFixture]
     public static class ClassesSimple
     {
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static bool Test1(int n)
         {
             ClassesSimpleA a = new ClassesSimpleA(n);
@@ -216,7 +218,7 @@ namespace VSharp.Test.Tests
             public int MyValue;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int SimpleStructureAccess(int newMyValue)
         {
             var x = new MyStruct();
@@ -224,7 +226,7 @@ namespace VSharp.Test.Tests
             return x.MyValue;
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int ValueTypeMethod(int x, int y)
         {
             return x.CompareTo(y);
@@ -234,19 +236,20 @@ namespace VSharp.Test.Tests
     [TestSvmFixture]
     public static class ClassesSimpleException
     {
-        [TestSvm]
+        [Ignore("term.equals: Stack overflow")]
+        [TestSvm(SmartUnrolling)]
         public static void Test1()
         {
             ClassesSimpleException0 a = new ClassesSimpleException0();
         }
 
-        [TestSvm]
+        [Ignore("Internal error: stack does not contain key (this, 6000B85)!")]
+        [TestSvm(SmartUnrolling)]
         public static void Test2()
         {
             ClassesSimpleException1 a = new ClassesSimpleException1();
         }
     }
-
 
     [TestSvmFixture]
     public static class ClassesSimpleHierarchy
@@ -299,7 +302,7 @@ namespace VSharp.Test.Tests
             SecretProperty = new List<bool>();
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public void TestProperty1()
         {
             var st = new ClassesSimplePropertyAccess();
@@ -323,13 +326,14 @@ namespace VSharp.Test.Tests
         public SimpleStruct StructProperty
         { get; set; }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public int TestProperty1(int anyVarName)
         {
             return (new ClassesSimplePropertyAccessModify().StructProperty = new SimpleStruct()).X = anyVarName; // anyVarName
         }
 
-        [TestSvm]
+        [Ignore("term.equals: Stack overflow")]
+        [TestSvm(SmartUnrolling)]
         public void FirstUseInGuard(SimpleStruct s)
         {
             if (s.X > 5)

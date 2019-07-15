@@ -1,0 +1,40 @@
+METHOD: System.Void VSharp.Test.Tests.ClassesSimplePropertyAccessModify.FirstUseInGuard(VSharp.Test.Tests.ClassesSimplePropertyAccessModify+SimpleStruct)
+RESULT: UNION[
+	| !(0 == s) ~> <VOID>
+	| 0 == s ~> <ERROR: (HeapRef 1)>]
+HEAP:
+{ heap = merge[
+	(!(0 == s), h0),
+	(0 == s, { heap = h1, statics = s2 } ⚪ recapp(.ctor))], statics = merge[
+	(!(0 == s), s3),
+	(0 == s, { heap = h1, statics = s2 } ⚪ recapp(.ctor))] } where
+---------- h0 = ----------
+s ==> UNION[
+	| !(0 == s) ~> STRUCT TypeVariable{s}{VSharp.Test.Tests.ClassesSimplePropertyAccessModify+SimpleStruct}[
+		| VSharp.Test.Tests.ClassesSimplePropertyAccessModify+SimpleStruct.X ~> UNION[
+			| !(0 == s) & !(s.VSharp.Test.Tests.ClassesSimplePropertyAccessModify+SimpleStruct.X <= 5) ~> s.VSharp.Test.Tests.ClassesSimplePropertyAccessModify+SimpleStruct.X
+			| !(0 == s) & s.VSharp.Test.Tests.ClassesSimplePropertyAccessModify+SimpleStruct.X <= 5 ~> 42]]]
+---------- h1 = ----------
+1 ==> STRUCT System.NullReferenceException[
+	| System.Exception._HResult ~> 0
+	| System.Exception._className ~> null
+	| System.Exception._data ~> null
+	| System.Exception._dynamicMethods ~> null
+	| System.Exception._helpURL ~> null
+	| System.Exception._innerException ~> null
+	| System.Exception._message ~> null
+	| System.Exception._remoteStackIndex ~> 0
+	| System.Exception._remoteStackTraceString ~> null
+	| System.Exception._safeSerializationManager ~> null
+	| System.Exception._source ~> null
+	| System.Exception._stackTrace ~> null
+	| System.Exception._stackTraceString ~> null
+	| System.Exception.captured_traces ~> null
+	| System.Exception.native_trace_ips ~> null]
+---------- s2 = ----------
+System.NullReferenceException ==> STRUCT System.NullReferenceException[]
+VSharp.Test.Tests.ClassesSimplePropertyAccessModify+SimpleStruct ==> STRUCT VSharp.Test.Tests.ClassesSimplePropertyAccessModify+SimpleStruct[]
+VSharp.Test.Tests.ClassesSimplePropertyAccessModify ==> STRUCT VSharp.Test.Tests.ClassesSimplePropertyAccessModify[]
+---------- s3 = ----------
+VSharp.Test.Tests.ClassesSimplePropertyAccessModify+SimpleStruct ==> STRUCT VSharp.Test.Tests.ClassesSimplePropertyAccessModify+SimpleStruct[]
+VSharp.Test.Tests.ClassesSimplePropertyAccessModify ==> STRUCT VSharp.Test.Tests.ClassesSimplePropertyAccessModify[]

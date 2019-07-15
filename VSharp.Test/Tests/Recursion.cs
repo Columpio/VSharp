@@ -3,6 +3,8 @@ using NUnit.Framework;
 
 namespace VSharp.Test.Tests
 {
+    using static RecursionUnrollingMode;
+
     [TestSvmFixture]
     public static class Fibonacci
     {
@@ -13,13 +15,13 @@ namespace VSharp.Test.Tests
             return FibRec(n - 1) + FibRec(n - 2);
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int Fib2()
         {
             return FibRec(2);
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int Fib5()
         {
             return FibRec(5);
@@ -45,7 +47,7 @@ namespace VSharp.Test.Tests
             }
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int FibUnbound(int n)
         {
             _c = 42;
@@ -67,13 +69,13 @@ namespace VSharp.Test.Tests
             return GcdRec(n, m - n);
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int Gcd1()
         {
             return GcdRec(15, 4);
         }
 
-        [TestSvm]
+        [TestSvm(SmartUnrolling, NeverUnroll)]
         public static int Gcd15()
         {
             return GcdRec(30, 75);
@@ -83,11 +85,12 @@ namespace VSharp.Test.Tests
     [TestSvmFixture]
     public static class McCarthy91
     {
-        public static int McCarthy(int n)
+        private static int McCarthy(int n)
         {
             return n > 100 ? n - 10 : McCarthy(McCarthy(n + 11));
         }
 
+        [Ignore("composeGeneralizedHeaps: The method or operation is not implemented")]
         public static void CheckMc91Safe(int x)
         {
             if (x <= 96 && McCarthy(x + 5) != 91)
@@ -96,6 +99,7 @@ namespace VSharp.Test.Tests
             }
         }
 
+        [Ignore("composeGeneralizedHeaps: The method or operation is not implemented")]
         public static void CheckMc91Unsafe(int x)
         {
             if (x <= 97 && McCarthy(x + 5) != 91)

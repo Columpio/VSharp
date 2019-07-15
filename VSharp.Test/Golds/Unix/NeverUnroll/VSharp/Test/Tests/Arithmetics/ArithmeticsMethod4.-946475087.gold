@@ -1,0 +1,32 @@
+METHOD: System.Int32 VSharp.Test.Tests.Arithmetics.ArithmeticsMethod4(System.Int32, System.Int32)
+RESULT: UNION[
+	| !(0 == m * m * m) ~> -126826 + n + n + n + n + n + n
+	| 0 == m * m * m ~> <ERROR: (HeapRef 1)>]
+HEAP:
+{ heap = merge[
+	(!(0 == m * m * m), <empty>),
+	(0 == m * m * m, { heap = h0, statics = s1 } ⚪ recapp(.ctor))], statics = merge[
+	(!(0 == m * m * m), s2),
+	(0 == m * m * m, { heap = h0, statics = s1 } ⚪ recapp(.ctor))] } where
+---------- h0 = ----------
+1 ==> STRUCT System.DivideByZeroException[
+	| System.Exception._HResult ~> 0
+	| System.Exception._className ~> null
+	| System.Exception._data ~> null
+	| System.Exception._dynamicMethods ~> null
+	| System.Exception._helpURL ~> null
+	| System.Exception._innerException ~> null
+	| System.Exception._message ~> null
+	| System.Exception._remoteStackIndex ~> 0
+	| System.Exception._remoteStackTraceString ~> null
+	| System.Exception._safeSerializationManager ~> null
+	| System.Exception._source ~> null
+	| System.Exception._stackTrace ~> null
+	| System.Exception._stackTraceString ~> null
+	| System.Exception.captured_traces ~> null
+	| System.Exception.native_trace_ips ~> null]
+---------- s1 = ----------
+System.DivideByZeroException ==> STRUCT System.DivideByZeroException[]
+VSharp.Test.Tests.Arithmetics ==> STRUCT VSharp.Test.Tests.Arithmetics[]
+---------- s2 = ----------
+VSharp.Test.Tests.Arithmetics ==> STRUCT VSharp.Test.Tests.Arithmetics[]

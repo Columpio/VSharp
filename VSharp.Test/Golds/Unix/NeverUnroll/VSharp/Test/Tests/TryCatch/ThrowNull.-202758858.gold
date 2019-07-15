@@ -1,0 +1,28 @@
+METHOD: System.Int32 VSharp.Test.Tests.TryCatch.ThrowNull(System.Int32)
+RESULT: 1.System.Exception._HResult
+HEAP:
+{ heap = write({ heap = h0, statics = s1 } ⚪ recapp(.ctor), h2), statics = write({ heap = h0, statics = s1 } ⚪ recapp(.ctor), s3) } where
+---------- h0 = ----------
+1 ==> STRUCT System.NullReferenceException[
+	| System.Exception._HResult ~> 0
+	| System.Exception._className ~> null
+	| System.Exception._data ~> null
+	| System.Exception._dynamicMethods ~> null
+	| System.Exception._helpURL ~> null
+	| System.Exception._innerException ~> null
+	| System.Exception._message ~> null
+	| System.Exception._remoteStackIndex ~> 0
+	| System.Exception._remoteStackTraceString ~> null
+	| System.Exception._safeSerializationManager ~> null
+	| System.Exception._source ~> null
+	| System.Exception._stackTrace ~> null
+	| System.Exception._stackTraceString ~> null
+	| System.Exception.captured_traces ~> null
+	| System.Exception.native_trace_ips ~> null]
+---------- s1 = ----------
+System.NullReferenceException ==> STRUCT System.NullReferenceException[]
+VSharp.Test.Tests.TryCatch ==> STRUCT VSharp.Test.Tests.TryCatch[]
+---------- h2 = ----------
+
+---------- s3 = ----------
+System.Exception ==> STRUCT System.Exception[]

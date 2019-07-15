@@ -12,11 +12,12 @@ using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Builders;
 using NUnit.Framework.Internal.Commands;
+using VSharp.Core;
 using VSharp.Interpreter;
 
 namespace VSharp.Test
 {
-    public class DumpStackTraceListener : TraceListener
+    internal class DumpStackTraceListener : TraceListener
     {
         public override void Write(string message)
         {
@@ -57,7 +58,7 @@ namespace VSharp.Test
     }
 
     [SetUpFixture]
-    public class SetUpSvm
+    internal class SetUpSvm
     {
         [OneTimeSetUp]
         public void PrepareSvm()
@@ -78,7 +79,7 @@ namespace VSharp.Test
         }
     }
 
-    public class TestSvmFixtureAttribute : NUnitAttribute, IFixtureBuilder
+    internal class TestSvmFixtureAttribute : NUnitAttribute, IFixtureBuilder
     {
         private class DummyFilter : IPreFilter
         {
@@ -223,17 +224,29 @@ namespace VSharp.Test
         }
     }
 
-    public class IdealValuesHandler
+    internal class IdealValuesHandler
     {
         private const string MethodSeparator = "METHOD: ";
         private const string ResultSeparator = "RESULT: ";
         private const string GoldsDirectoryName = "Golds";
+        private static string _osGoldDirectoryName = Environment.OSVersion.Platform.ToString();
+        internal static string IdealUnrollingOptionDirectoryName = GetIdealUnrollingOptionDirectoryName();
         private const string IdealTestFileExtension = ".gold";
         private const string IdealTemporaryFileExtension = ".tmp";
 
         private string _idealValuePath;
         public string ExpectedValue;
         private string _methodName;
+
+        private static string GetIdealUnrollingOptionDirectoryName()
+        {
+            var mode = Options.RecursionUnrollingMode();
+            if (mode.Equals(RecursionUnrollingModeType.SmartUnrolling))
+                return "SmartUnrolling";
+            if (mode.Equals(RecursionUnrollingModeType.NeverUnroll))
+                return "NeverUnroll";
+            throw new ArgumentException("Unknown unrolling mode");
+        }
 
         public IdealValuesHandler(MethodInfo methodInfo, [CallerFilePath] string currentFilePath = "")
         {
@@ -258,9 +271,14 @@ namespace VSharp.Test
             var typeName = methodInfo?.DeclaringType?.FullName?.Split('.');
             if (typeName == null)
                 return null;
-            var os = Environment.OSVersion.Platform.ToString();
-            var methodName = $"{methodInfo.Name}.{os}.{MethodHash(methodInfo)}{IdealTestFileExtension}";
-            var idealValuePath = Path.Combine(currentFolder, GoldsDirectoryName, Path.Combine(typeName), methodName);
+            var methodName = $"{methodInfo.Name}.{MethodHash(methodInfo)}{IdealTestFileExtension}";
+            var idealValuePath = Path.Combine(
+                currentFolder,
+                GoldsDirectoryName,
+                _osGoldDirectoryName,
+                IdealUnrollingOptionDirectoryName,
+                Path.Combine(typeName),
+                methodName);
             return idealValuePath;
         }
 
@@ -299,32 +317,63 @@ namespace VSharp.Test
         }
     }
 
-    public class TestSvmAttribute : NUnitAttribute, IWrapTestMethod, ISimpleTestBuilder
+    internal enum RecursionUnrollingMode
     {
+        SmartUnrolling,
+        NeverUnroll
+    }
+
+    internal class TestSvmAttribute : NUnitAttribute, IWrapTestMethod, ISimpleTestBuilder
+    {
+        private bool _ignoreTest;
+
+        private static Dictionary<RecursionUnrollingModeType, RecursionUnrollingMode> _recursionUnrollingModes = new Dictionary<RecursionUnrollingModeType, RecursionUnrollingMode>
+        {
+            [RecursionUnrollingModeType.NeverUnroll] = RecursionUnrollingMode.NeverUnroll,
+            [RecursionUnrollingModeType.SmartUnrolling] = RecursionUnrollingMode.SmartUnrolling
+        };
+
+        public TestSvmAttribute(params RecursionUnrollingMode[] options)
+        {
+            _ignoreTest = !options.Contains(_recursionUnrollingModes[Options.RecursionUnrollingMode()]);
+        }
+
         public TestCommand Wrap(TestCommand command)
         {
-            return new TestSvmCommand(command);
+            return new TestSvmCommand(command, _ignoreTest);
         }
 
         private class TestSvmCommand : DelegatingTestCommand
         {
-            public TestSvmCommand(TestCommand innerCommand) : base(innerCommand) {}
+            private bool _ignoreTest;
+
+            public TestSvmCommand(TestCommand innerCommand, bool ignoreTest) : base(innerCommand)
+            {
+                _ignoreTest = ignoreTest;
+            }
 
             public override TestResult Execute(TestExecutionContext context)
             {
+                if (_ignoreTest)
+                {
+                    context.CurrentResult.SetResult(ResultState.Ignored, "Test doesn't match SVM options");
+                    return context.CurrentResult;
+                }
+
                 var methodInfo = innerCommand.Test.Method.MethodInfo;
                 var idealValue = new IdealValuesHandler(methodInfo);
                 var gotValue = SVM.ExploreOne(methodInfo);
+                var mode = $"// Explored in {IdealValuesHandler.IdealUnrollingOptionDirectoryName} mode\n";
 
                 if (string.Equals(idealValue.ExpectedValue, gotValue))
                 {
-                    context.CurrentResult.SetResult(ResultState.Success);
+                    context.CurrentResult.SetResult(ResultState.Success, mode);
                 }
                 else
                 {
                     idealValue.CreateTemporaryIdealFile(gotValue);
                     var diff = idealValue.DiffOfGotAndIdealValues(gotValue);
-                    context.CurrentResult.SetResult(ResultState.Failure, diff);
+                    context.CurrentResult.SetResult(ResultState.Failure, mode + diff);
                 }
                 return context.CurrentResult;
             }

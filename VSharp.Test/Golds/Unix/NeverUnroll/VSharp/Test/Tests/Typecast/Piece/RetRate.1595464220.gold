@@ -1,0 +1,6 @@
+METHOD: System.Int32 VSharp.Test.Tests.Typecast.Piece.RetRate(System.Object)
+RESULT: μ[RetRate]_1
+HEAP:
+{ heap = { heap = <empty>, statics = s0 } ⚪ recapp(RetRate), statics = { heap = <empty>, statics = s0 } ⚪ recapp(RetRate) } where
+---------- s0 = ----------
+VSharp.Test.Tests.Typecast.Piece ==> STRUCT VSharp.Test.Tests.Typecast.Piece[]

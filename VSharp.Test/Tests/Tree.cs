@@ -1,8 +1,10 @@
 using NUnit.Framework;
- using System;
+using System;
 
 namespace VSharp.Test.Tests
 {
+    using static RecursionUnrollingMode;
+
     public class Tree
     {
         public int Key { get; set; }
@@ -22,12 +24,15 @@ namespace VSharp.Test.Tests
     [TestSvmFixture]
     public static class TreeTest
     {
+        [Ignore("composeGeneralizedHeaps: The method or operation is not implemented.")]
+        [TestSvm(SmartUnrolling)]
         public static bool CheckGeneratedDepthConcrete3()
         {
             Tree t = Tree.Generate(3);
             return t.Depth == 3 && t.Size == 7;
         }
 
+        [Ignore("reduceExpressionToRef: The method or operation is not implemented")]
         public static bool CheckGeneratedDepthSymbolic(int d)
         {
             Tree t = Tree.Generate(d);

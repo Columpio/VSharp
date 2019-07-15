@@ -1,0 +1,66 @@
+METHOD: VSharp.Test.Tests.Typecast.Pawn VSharp.Test.Tests.Typecast.Typecast.TypeCast(System.Object)
+RESULT: UNION[
+	| !(0 == obj) & !(TypeVariable{obj}{System.Object} <: VSharp.Test.Tests.Typecast.Pawn) ~> <ERROR: (HeapRef 2)>
+	| !(0 == obj) & (TypeVariable{obj}{System.Object} <: VSharp.Test.Tests.Typecast.Pawn) ~> (HeapRef obj)
+	| 0 == obj ~> null]
+HEAP:
+{ heap = merge[
+	((TypeVariable{obj}{System.Object} <: VSharp.Test.Tests.Typecast.Pawn) | 0 == obj, <empty>),
+	(!(0 == obj) & !(TypeVariable{obj}{System.Object} <: VSharp.Test.Tests.Typecast.Pawn), { heap = h0, statics = s1 } ⚪ recapp(.ctor))], statics = merge[
+	((TypeVariable{obj}{System.Object} <: VSharp.Test.Tests.Typecast.Pawn) | 0 == obj, s2),
+	(!(0 == obj) & !(TypeVariable{obj}{System.Object} <: VSharp.Test.Tests.Typecast.Pawn), { heap = h0, statics = s1 } ⚪ recapp(.ctor))] } where
+---------- h0 = ----------
+1 ==> STRUCT System.String[
+	| System.String.m_FirstChar ~> [|
+		0: 'S';
+		10: 'c';
+		11: 'a';
+		12: 's';
+		13: 't';
+		14: ' ';
+		15: 'i';
+		16: 's';
+		17: ' ';
+		18: 'n';
+		19: 'o';
+		1: 'p';
+		20: 't';
+		21: ' ';
+		22: 'v';
+		23: 'a';
+		24: 'l';
+		25: 'i';
+		26: 'd';
+		27: '.';
+		28: '\000';
+		2: 'e';
+		3: 'c';
+		4: 'i';
+		5: 'f';
+		6: 'i';
+		7: 'e';
+		8: 'd';
+		9: ' ';
+		 ... 29 ... |]
+	| System.String.m_StringLength ~> 28]
+2 ==> STRUCT System.InvalidCastException[
+	| System.Exception._HResult ~> 0
+	| System.Exception._className ~> null
+	| System.Exception._data ~> null
+	| System.Exception._dynamicMethods ~> null
+	| System.Exception._helpURL ~> null
+	| System.Exception._innerException ~> null
+	| System.Exception._message ~> null
+	| System.Exception._remoteStackIndex ~> 0
+	| System.Exception._remoteStackTraceString ~> null
+	| System.Exception._safeSerializationManager ~> null
+	| System.Exception._source ~> null
+	| System.Exception._stackTrace ~> null
+	| System.Exception._stackTraceString ~> null
+	| System.Exception.captured_traces ~> null
+	| System.Exception.native_trace_ips ~> null]
+---------- s1 = ----------
+System.InvalidCastException ==> STRUCT System.InvalidCastException[]
+VSharp.Test.Tests.Typecast.Typecast ==> STRUCT VSharp.Test.Tests.Typecast.Typecast[]
+---------- s2 = ----------
+VSharp.Test.Tests.Typecast.Typecast ==> STRUCT VSharp.Test.Tests.Typecast.Typecast[]
