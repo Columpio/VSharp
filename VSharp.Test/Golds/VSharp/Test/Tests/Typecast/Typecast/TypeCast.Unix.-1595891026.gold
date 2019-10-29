@@ -19,7 +19,7 @@ HEAP:
 	| System::Exception::_message ~> (HeapRef 1)
 	| System::Exception::_remoteStackIndex ~> 0
 	| System::Exception::_remoteStackTraceString ~> null
-	| System::Exception::_safeSerializationManager ~> (HeapRef 4)
+	| System::Exception::_safeSerializationManager ~> (HeapRef 5)
 	| System::Exception::_source ~> null
 	| System::Exception::_stackTrace ~> null
 	| System::Exception::_stackTraceString ~> null
@@ -27,14 +27,14 @@ HEAP:
 	| System::Exception::caught_in_unmanaged ~> 0
 	| System::Exception::native_trace_ips ~> null]
 3 ==> System.Object CLASS []
-4 ==> System.Runtime.Serialization.SafeSerializationManager CLASS [
+4 ==> System.String CLASS [
+	| System::String::m_FirstChar ~> [| 0 ~> 'C'; 1 ~> 'L'; 2 ~> 'R'; 3 ~> '_'; 4 ~> 'S'; 5 ~> 'a'; 6 ~> 'f'; 7 ~> 'e'; 8 ~> 'S'; 9 ~> 'e'; 10 ~> 'r'; 11 ~> 'i'; 12 ~> 'a'; 13 ~> 'l'; 14 ~> 'i'; 15 ~> 'z'; 16 ~> 'a'; 17 ~> 't'; 18 ~> 'i'; 19 ~> 'o'; 20 ~> 'n'; 21 ~> 'M'; 22 ~> 'a'; 23 ~> 'n'; 24 ~> 'a'; 25 ~> 'g'; 26 ~> 'e'; 27 ~> 'r'; 28 ~> '_'; 29 ~> 'R'; 30 ~> 'e'; 31 ~> 'a'; 32 ~> 'l'; 33 ~> 'T'; 34 ~> 'y'; 35 ~> 'p'; 36 ~> 'e'; 37 ~> '\000' ... 38 ... |]
+	| System::String::m_StringLength ~> 37]
+5 ==> System.Runtime.Serialization.SafeSerializationManager CLASS [
 	| System::Runtime::Serialization::SafeSerializationManager::m_realObject ~> null
 	| System::Runtime::Serialization::SafeSerializationManager::m_realType ~> null
 	| System::Runtime::Serialization::SafeSerializationManager::m_savedSerializationInfo ~> null
 	| System::Runtime::Serialization::SafeSerializationManager::m_serializedStates ~> null]
-5 ==> System.String CLASS [
-	| System::String::m_FirstChar ~> [| 0 ~> 'C'; 1 ~> 'L'; 2 ~> 'R'; 3 ~> '_'; 4 ~> 'S'; 5 ~> 'a'; 6 ~> 'f'; 7 ~> 'e'; 8 ~> 'S'; 9 ~> 'e'; 10 ~> 'r'; 11 ~> 'i'; 12 ~> 'a'; 13 ~> 'l'; 14 ~> 'i'; 15 ~> 'z'; 16 ~> 'a'; 17 ~> 't'; 18 ~> 'i'; 19 ~> 'o'; 20 ~> 'n'; 21 ~> 'M'; 22 ~> 'a'; 23 ~> 'n'; 24 ~> 'a'; 25 ~> 'g'; 26 ~> 'e'; 27 ~> 'r'; 28 ~> '_'; 29 ~> 'R'; 30 ~> 'e'; 31 ~> 'a'; 32 ~> 'l'; 33 ~> 'T'; 34 ~> 'y'; 35 ~> 'p'; 36 ~> 'e'; 37 ~> '\000' ... 38 ... |]
-	| System::String::m_StringLength ~> 37]
 ---------- s1 = ----------
 System.Exception ==> CLASS [
 	| _COMPlusExceptionCode ~> UNION[
@@ -47,7 +47,7 @@ System.InvalidCastException ==> CLASS []
 System.Object ==> CLASS []
 System.Runtime.Serialization.SafeSerializationManager ==> CLASS [
 	| RealTypeSerializationName ~> UNION[
-		| !((HeapRef obj) <: VSharp.Test.Tests.Typecast.Pawn) & !(0 == obj) & !hasKey#5 ~> (HeapRef 5)
+		| !((HeapRef obj) <: VSharp.Test.Tests.Typecast.Pawn) & !(0 == obj) & !hasKey#5 ~> (HeapRef 4)
 		| ((HeapRef obj) <: VSharp.Test.Tests.Typecast.Pawn) | 0 == obj | hasKey#5 ~> (HeapRef System.Runtime.Serialization.SafeSerializationManager.RealTypeSerializationName)]]
 System.SystemException ==> CLASS []
 VSharp.Test.Tests.Typecast.Typecast ==> CLASS []

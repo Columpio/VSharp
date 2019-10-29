@@ -40,7 +40,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="FSharp.Core">
-      <HintPath>..\packages\FSharp.Core.4.1.17\lib\net45\FSharp.Core.dll</HintPath>
+      <HintPath>..\packages\FSharp.Core.4.2.2\lib\net45\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.ValueTuple">
       <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
@@ -68,14 +68,13 @@
     <Compile Include="Pointers.fs" />
     <Compile Include="Operators.fs" />
     <Compile Include="Substitution.fs" />
-    <Compile Include="ControlFlow.fs" />
-    <Compile Include="Lambdas.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="Memory.fs" />
     <Compile Include="TypeCasting.fs" />
     <Compile Include="Explorer.fs" />
     <Compile Include="API.fsi" />
     <Compile Include="API.fs" />
+    <Compile Include="InterpreterBase.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -10,5 +10,4 @@ HEAP:
 ---------- s1 = ----------
 System.Object ==> CLASS []
 VSharp.Test.Tests.Methods.VirtualMethod ==> CLASS []
-VSharp.Test.Tests.Typecast.Coord ==> VSharp.Test.Tests.Typecast.Coord STRUCT []
 VSharp.Test.Tests.Typecast.Piece ==> CLASS []

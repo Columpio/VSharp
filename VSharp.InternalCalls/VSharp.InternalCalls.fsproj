@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\packages\FSharp.Compiler.Tools.10.0.2\build\FSharp.Compiler.Tools.props" Condition="Exists('..\packages\FSharp.Compiler.Tools.10.0.2\build\FSharp.Compiler.Tools.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6065D986-596D-4495-9547-70B36A84189C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>InternalCalls</RootNamespace>
+    <AssemblyName>VSharp.InternalCalls</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <Tailcalls>false</Tailcalls>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <OtherFlags>--warnon:1182</OtherFlags>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <Tailcalls>true</Tailcalls>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <OtherFlags>--warnon:1182</OtherFlags>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FSharpx.Collections, Version=1.17.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\FSharpx.Collections.1.17.0\lib\net40\FSharpx.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="FSharp.Core">
+      <HintPath>..\packages\FSharp.Core.4.2.2\lib\net45\FSharp.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="String.fsi" />
+    <Compile Include="String.fs" />
+    <Compile Include="SystemArray.fsi" />
+    <Compile Include="SystemArray.fs" />
+    <Compile Include="Math.fsi" />
+    <Compile Include="Math.fs" />
+    <Compile Include="Environment.fsi" />
+    <Compile Include="Environment.fs" />
+    <Compile Include="Thread.fsi" />
+    <Compile Include="Thread.fs" />
+    <Compile Include="Runtime.CompilerServices.RuntimeHelpers.fsi" />
+    <Compile Include="Runtime.CompilerServices.RuntimeHelpers.fs" />
+    <Compile Include="Type.fsi" />
+    <Compile Include="Type.fs" />
+    <Compile Include="Loader.fs" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VSharp.CSharpUtils\VSharp.CSharpUtils.csproj">
+      <Project>{783ca74c-2a2d-4866-9007-10b51f529423}</Project>
+      <Name>VSharp.CSharpUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VSharp.SILI.Core\VSharp.SILI.Core.fsproj">
+      <Project>{270acd61-be60-4d72-85ad-d9385fd84c8e}</Project>
+      <Name>VSharp.SILI.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VSharp.Utils\VSharp.Utils.fsproj">
+      <Project>{6f686b61-8105-42f2-950e-bd6aec0887ca}</Project>
+      <Name>VSharp.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
+</Project>

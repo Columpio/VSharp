@@ -7,9 +7,11 @@ HEAP:
 ---------- s1 = ----------
 System.Array ==> CLASS [
 	| MaxArrayLength ~> UNION[
-		| !hasKey#1 ~> 2146435071
-		| hasKey#1 ~> System.Array.MaxArrayLength]
+		| !hasKey#3 ~> 2146435071
+		| hasKey#3 ~> System.Array.MaxArrayLength]
 	| MaxByteArrayLength ~> UNION[
-		| !hasKey#1 ~> 2147483591
-		| hasKey#1 ~> System.Array.MaxByteArrayLength]]
+		| !hasKey#3 ~> 2147483591
+		| hasKey#3 ~> System.Array.MaxByteArrayLength]]
+System.Int32[,] ==> CLASS []
+System.Runtime.CompilerServices.RuntimeHelpers ==> CLASS []
 VSharp.Test.Tests.Lists ==> CLASS []

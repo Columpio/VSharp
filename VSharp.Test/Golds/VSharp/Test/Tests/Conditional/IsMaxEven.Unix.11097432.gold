@@ -1,5 +1,5 @@
 METHOD: System.Boolean VSharp.Test.Tests.Conditional.IsMaxEven(System.Int32, System.Int32, System.Int32)
-RESULT: !(2 * x < 2 * y) & !(2 * y < z) | !(2 * x < z) & 2 * y < z | !(2 * y < z) & (!(2 * y < z) & 2 * x < 2 * y | 2 * x < z & 2 * y < z) | (!(2 * y < z) & 2 * x < 2 * y | 2 * x < z & 2 * y < z) & 0 == z % 2
+RESULT: (!(2 * y < z) & (!(2 * y < z) & 2 * x < 2 * y | 2 * x < z & 2 * y < z) | (!(2 * x < 2 * y) | 2 * y < z) & (!(2 * x < z) | !(2 * y < z)) | (!(2 * y < z) & 2 * x < 2 * y | 2 * x < z & 2 * y < z) & 0 == z % 2) & (!(2 * y < z) & 2 * x < 2 * y | (!(2 * x < 2 * y) | 2 * y < z) & (!(2 * x < z) | !(2 * y < z)) | 2 * x < z & 2 * y < z)
 HEAP:
 { heap = h0, statics = s1 } where
 ---------- h0 = ----------
@@ -21,4 +21,5 @@ System.Math ==> CLASS [
 	| roundPower10Double ~> UNION[
 		| !hasKey#1 ~> (HeapRef 1)
 		| hasKey#1 ~> (HeapRef System.Math.roundPower10Double)]]
+System.Runtime.CompilerServices.RuntimeHelpers ==> CLASS []
 VSharp.Test.Tests.Conditional ==> CLASS []

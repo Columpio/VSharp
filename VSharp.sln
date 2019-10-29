@@ -5,8 +5,6 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSharp.CSharpUtils", "VSharp.CSharpUtils\VSharp.CSharpUtils.csproj", "{783CA74C-2A2D-4866-9007-10B51F529423}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VSharp.SILI", "VSharp.SILI\VSharp.SILI.fsproj", "{6A6742B3-E86E-4FA5-AFE1-361F38DCE4C3}"
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VSharp.Utils", "VSharp.Utils\VSharp.Utils.fsproj", "{6F686B61-8105-42F2-950E-BD6AEC0887CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSharp.Test", "VSharp.Test\VSharp.Test.csproj", "{A52177E6-B792-4866-A520-645173F1206A}"
@@ -17,7 +15,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VSharp.SILI.Core", "VSharp.SILI.Core\VSharp.SILI.Core.fsproj", "{270ACD61-BE60-4D72-85AD-D9385FD84C8E}"
+EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VSharp.Solver", "VSharp.Solver\VSharp.Solver.fsproj", "{DB460DAE-4CAB-4AC6-9DDA-99CBA541839E}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VSharp.SILI", "VSharp.SILI\VSharp.SILI.fsproj", "{67C931DE-7CE5-4575-8494-18BA63FDCA20}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VSharp.InternalCalls", "VSharp.InternalCalls\VSharp.InternalCalls.fsproj", "{6065D986-596D-4495-9547-70B36A84189C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +52,14 @@ Global
 		{DB460DAE-4CAB-4AC6-9DDA-99CBA541839E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB460DAE-4CAB-4AC6-9DDA-99CBA541839E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB460DAE-4CAB-4AC6-9DDA-99CBA541839E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67C931DE-7CE5-4575-8494-18BA63FDCA20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67C931DE-7CE5-4575-8494-18BA63FDCA20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67C931DE-7CE5-4575-8494-18BA63FDCA20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67C931DE-7CE5-4575-8494-18BA63FDCA20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6065D986-596D-4495-9547-70B36A84189C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6065D986-596D-4495-9547-70B36A84189C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6065D986-596D-4495-9547-70B36A84189C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6065D986-596D-4495-9547-70B36A84189C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

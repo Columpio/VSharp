@@ -25,4 +25,5 @@ System.Math ==> CLASS [
 	| roundPower10Double ~> UNION[
 		| !hasKey#1 ~> (HeapRef 1)
 		| hasKey#1 ~> (HeapRef System.Math.roundPower10Double)]]
+System.Runtime.CompilerServices.RuntimeHelpers ==> CLASS []
 VSharp.Test.Tests.Arithmetics ==> CLASS []

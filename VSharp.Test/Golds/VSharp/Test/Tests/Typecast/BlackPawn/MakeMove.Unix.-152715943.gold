@@ -8,4 +8,3 @@ this ==> VSharp.Test.Tests.Typecast.BlackPawn CLASS [
 	| VSharp::Test::Tests::Typecast::Piece::_yCoord ~> -c.VSharp::Test::Tests::Typecast::Coord::Y + c.VSharp::Test::Tests::Typecast::Coord::X]
 ---------- s1 = ----------
 VSharp.Test.Tests.Typecast.BlackPawn ==> CLASS []
-VSharp.Test.Tests.Typecast.Coord ==> VSharp.Test.Tests.Typecast.Coord STRUCT []

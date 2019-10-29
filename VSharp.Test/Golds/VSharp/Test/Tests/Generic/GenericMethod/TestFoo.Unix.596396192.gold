@@ -23,12 +23,12 @@ l.System::Collections::Generic::LinkedList`1::head ==> System.Collections.Generi
 System.Collections.Generic.LinkedListNode`1[System.Int32] ==> CLASS []
 System.Collections.Generic.LinkedList`1[System.Int32] ==> CLASS [
 	| CountName ~> UNION[
-		| !(0 == l) & !hasKey#1 ~> (HeapRef 2)
-		| 0 == l | hasKey#1 ~> (HeapRef System.Collections.Generic.LinkedList`1[System.Int32].CountName)]
+		| !(0 == l) & !(0 == l.System::Collections::Generic::LinkedList`1::head) & hasKey#1 | (0 == l | 0 == l.System::Collections::Generic::LinkedList`1::head & hasKey#1) & (0 == l | 0 == l.System::Collections::Generic::LinkedList`1::head) ~> (HeapRef System.Collections.Generic.LinkedList`1[System.Int32].CountName)
+		| !(0 == l) & !hasKey#1 ~> (HeapRef 2)]
 	| ValuesName ~> UNION[
-		| !(0 == l) & !hasKey#1 ~> (HeapRef 3)
-		| 0 == l | hasKey#1 ~> (HeapRef System.Collections.Generic.LinkedList`1[System.Int32].ValuesName)]
+		| !(0 == l) & !(0 == l.System::Collections::Generic::LinkedList`1::head) & hasKey#1 | (0 == l | 0 == l.System::Collections::Generic::LinkedList`1::head & hasKey#1) & (0 == l | 0 == l.System::Collections::Generic::LinkedList`1::head) ~> (HeapRef System.Collections.Generic.LinkedList`1[System.Int32].ValuesName)
+		| !(0 == l) & !hasKey#1 ~> (HeapRef 3)]
 	| VersionName ~> UNION[
-		| !(0 == l) & !hasKey#1 ~> (HeapRef 1)
-		| 0 == l | hasKey#1 ~> (HeapRef System.Collections.Generic.LinkedList`1[System.Int32].VersionName)]]
+		| !(0 == l) & !(0 == l.System::Collections::Generic::LinkedList`1::head) & hasKey#1 | (0 == l | 0 == l.System::Collections::Generic::LinkedList`1::head & hasKey#1) & (0 == l | 0 == l.System::Collections::Generic::LinkedList`1::head) ~> (HeapRef System.Collections.Generic.LinkedList`1[System.Int32].VersionName)
+		| !(0 == l) & !hasKey#1 ~> (HeapRef 1)]]
 VSharp.Test.Tests.Generic.GenericMethod ==> CLASS []

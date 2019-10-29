@@ -27,6 +27,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=4.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\FSharp.Core.4.2.2\lib\net45\FSharp.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Z3, Version=4.6.0.0, Culture=neutral, PublicKeyToken=9c8d792caae602a2">
       <HintPath>..\lib\Microsoft.Z3.dll</HintPath>
     </Reference>
@@ -40,8 +44,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tests\ControlFlow.cs" />
     <Compile Include="SiliTests.cs" />
+    <Compile Include="SVM.cs" />
     <Compile Include="Tests\Arithmetics.cs" />
+    <Compile Include="Tests\BoxUnbox.cs" />
     <Compile Include="Tests\Generic.cs" />
     <Compile Include="Tests\Logics.cs" />
     <Compile Include="Tests\ClassesSimple.cs" />
@@ -65,7 +72,7 @@
       <Name>VSharp.SILI.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\VSharp.SILI\VSharp.SILI.fsproj">
-      <Project>{6A6742B3-E86E-4FA5-AFE1-361F38DCE4C3}</Project>
+      <Project>{67c931de-7ce5-4575-8494-18ba63fdca20}</Project>
       <Name>VSharp.SILI</Name>
     </ProjectReference>
     <ProjectReference Include="..\VSharp.Solver\VSharp.Solver.fsproj">

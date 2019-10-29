@@ -14,12 +14,12 @@ HEAP:
 	| System::Exception::_innerException ~> null
 	| System::Exception::_ipForWatsonBuckets ~> System.UIntPtr STRUCT [
 		| System::UIntPtr::m_value ~> UNION[
-			| !hasKey#9 ~> null
-			| hasKey#9 ~> (HeapPtr System.UIntPtr.Zero.System::UIntPtr::m_value as System.Void)]]
+			| !hasKey#8 ~> null
+			| hasKey#8 ~> (HeapPtr System.UIntPtr.Zero.System::UIntPtr::m_value as System.Void)]]
 	| System::Exception::_message ~> (HeapRef 3)
 	| System::Exception::_remoteStackIndex ~> 0
 	| System::Exception::_remoteStackTraceString ~> null
-	| System::Exception::_safeSerializationManager ~> (HeapRef 5)
+	| System::Exception::_safeSerializationManager ~> (HeapRef 6)
 	| System::Exception::_source ~> null
 	| System::Exception::_stackTrace ~> null
 	| System::Exception::_stackTraceString ~> null
@@ -34,14 +34,14 @@ HEAP:
 	| System::String::m_FirstChar ~> [| 0 ~> 'G'; 1 ~> 'e'; 2 ~> 't'; 3 ~> 't'; 4 ~> 'i'; 5 ~> 'n'; 6 ~> 'g'; 7 ~> ' '; 8 ~> 'r'; 9 ~> 'e'; 10 ~> 's'; 11 ~> 'o'; 12 ~> 'u'; 13 ~> 'r'; 14 ~> 'c'; 15 ~> 'e'; 16 ~> ' '; 17 ~> 's'; 18 ~> 't'; 19 ~> 'r'; 20 ~> 'i'; 21 ~> 'n'; 22 ~> 'g'; 23 ~> 's'; 24 ~> ' '; 25 ~> 'c'; 26 ~> 'u'; 27 ~> 'r'; 28 ~> 'r'; 29 ~> 'e'; 30 ~> 'n'; 31 ~> 't'; 32 ~> 'l'; 33 ~> 'y'; 34 ~> ' '; 35 ~> 'n'; 36 ~> 'o'; 37 ~> 't'; 38 ~> ' '; 39 ~> 's'; 40 ~> 'u'; 41 ~> 'p'; 42 ~> 'p'; 43 ~> 'o'; 44 ~> 'r'; 45 ~> 't'; 46 ~> 'e'; 47 ~> 'd'; 48 ~> '!'; 49 ~> '\000' ... 50 ... |]
 	| System::String::m_StringLength ~> 49]
 4 ==> System.Object CLASS []
-5 ==> System.Runtime.Serialization.SafeSerializationManager CLASS [
+5 ==> System.String CLASS [
+	| System::String::m_FirstChar ~> [| 0 ~> 'C'; 1 ~> 'L'; 2 ~> 'R'; 3 ~> '_'; 4 ~> 'S'; 5 ~> 'a'; 6 ~> 'f'; 7 ~> 'e'; 8 ~> 'S'; 9 ~> 'e'; 10 ~> 'r'; 11 ~> 'i'; 12 ~> 'a'; 13 ~> 'l'; 14 ~> 'i'; 15 ~> 'z'; 16 ~> 'a'; 17 ~> 't'; 18 ~> 'i'; 19 ~> 'o'; 20 ~> 'n'; 21 ~> 'M'; 22 ~> 'a'; 23 ~> 'n'; 24 ~> 'a'; 25 ~> 'g'; 26 ~> 'e'; 27 ~> 'r'; 28 ~> '_'; 29 ~> 'R'; 30 ~> 'e'; 31 ~> 'a'; 32 ~> 'l'; 33 ~> 'T'; 34 ~> 'y'; 35 ~> 'p'; 36 ~> 'e'; 37 ~> '\000' ... 38 ... |]
+	| System::String::m_StringLength ~> 37]
+6 ==> System.Runtime.Serialization.SafeSerializationManager CLASS [
 	| System::Runtime::Serialization::SafeSerializationManager::m_realObject ~> null
 	| System::Runtime::Serialization::SafeSerializationManager::m_realType ~> null
 	| System::Runtime::Serialization::SafeSerializationManager::m_savedSerializationInfo ~> null
 	| System::Runtime::Serialization::SafeSerializationManager::m_serializedStates ~> null]
-6 ==> System.String CLASS [
-	| System::String::m_FirstChar ~> [| 0 ~> 'C'; 1 ~> 'L'; 2 ~> 'R'; 3 ~> '_'; 4 ~> 'S'; 5 ~> 'a'; 6 ~> 'f'; 7 ~> 'e'; 8 ~> 'S'; 9 ~> 'e'; 10 ~> 'r'; 11 ~> 'i'; 12 ~> 'a'; 13 ~> 'l'; 14 ~> 'i'; 15 ~> 'z'; 16 ~> 'a'; 17 ~> 't'; 18 ~> 'i'; 19 ~> 'o'; 20 ~> 'n'; 21 ~> 'M'; 22 ~> 'a'; 23 ~> 'n'; 24 ~> 'a'; 25 ~> 'g'; 26 ~> 'e'; 27 ~> 'r'; 28 ~> '_'; 29 ~> 'R'; 30 ~> 'e'; 31 ~> 'a'; 32 ~> 'l'; 33 ~> 'T'; 34 ~> 'y'; 35 ~> 'p'; 36 ~> 'e'; 37 ~> '\000' ... 38 ... |]
-	| System::String::m_StringLength ~> 37]
 ---------- s1 = ----------
 System.ArithmeticException ==> CLASS []
 System.Environment ==> CLASS [
@@ -91,13 +91,12 @@ System.Object ==> CLASS []
 System.OverflowException ==> CLASS []
 System.Runtime.Serialization.SafeSerializationManager ==> CLASS [
 	| RealTypeSerializationName ~> UNION[
-		| !hasKey#10 ~> (HeapRef 6)
-		| hasKey#10 ~> (HeapRef System.Runtime.Serialization.SafeSerializationManager.RealTypeSerializationName)]]
+		| !hasKey#9 ~> (HeapRef 5)
+		| hasKey#9 ~> (HeapRef System.Runtime.Serialization.SafeSerializationManager.RealTypeSerializationName)]]
 System.SystemException ==> CLASS []
 System.UIntPtr ==> System.UIntPtr STRUCT [
 	| Zero ~> System.UIntPtr STRUCT [
 		| System::UIntPtr::m_value ~> UNION[
-			| !hasKey#9 ~> null
-			| hasKey#9 ~> (HeapPtr System.UIntPtr.Zero.System::UIntPtr::m_value as System.Void)]]]
-System.ValueType ==> CLASS []
+			| !hasKey#8 ~> null
+			| hasKey#8 ~> (HeapPtr System.UIntPtr.Zero.System::UIntPtr::m_value as System.Void)]]]
 VSharp.Test.Tests.Arithmetics ==> CLASS []

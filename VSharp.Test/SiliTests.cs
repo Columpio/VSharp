@@ -12,7 +12,7 @@ using NUnit.Framework.Interfaces;
 using NUnit.Framework.Internal;
 using NUnit.Framework.Internal.Builders;
 using NUnit.Framework.Internal.Commands;
-using VSharp.Interpreter;
+using VSharp.Interpreter.IL;
 
 namespace VSharp.Test
 {
@@ -73,8 +73,10 @@ namespace VSharp.Test
             };
             Thread.CurrentThread.CurrentCulture = ci;
 
+            var svm = new SVM(new ILInterpreter());
             // SVM.ConfigureSimplifier(new Z3Simplifier()); can be used to enable Z3-based simplification (not recommended)
-            SVM.ConfigureSolver(new SmtSolverWrapper<Microsoft.Z3.AST>(new Z3Solver()));
+            svm.ConfigureSolver(new SmtSolverWrapper<Microsoft.Z3.AST>(new Z3Solver()));
+            TestSvmAttribute.SetUpSVM(svm);
         }
     }
 
@@ -301,6 +303,13 @@ namespace VSharp.Test
 
     public class TestSvmAttribute : NUnitAttribute, IWrapTestMethod, ISimpleTestBuilder
     {
+        private static SVM _svm;
+
+        public static void SetUpSVM(SVM svm)
+        {
+            _svm = svm;
+        }
+
         public TestCommand Wrap(TestCommand command)
         {
             return new TestSvmCommand(command);
@@ -314,7 +323,7 @@ namespace VSharp.Test
             {
                 var methodInfo = innerCommand.Test.Method.MethodInfo;
                 var idealValue = new IdealValuesHandler(methodInfo);
-                var gotValue = SVM.ExploreOne(methodInfo);
+                var gotValue = _svm.ExploreOne(methodInfo);
 
                 if (string.Equals(idealValue.ExpectedValue, gotValue))
                 {

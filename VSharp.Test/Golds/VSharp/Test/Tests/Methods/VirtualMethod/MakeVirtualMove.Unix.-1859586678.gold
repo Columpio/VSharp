@@ -18,5 +18,5 @@ p ==> VSharp.Test.Tests.Typecast.Pawn CLASS [
 		| 0 == p ~> p.VSharp::Test::Tests::Typecast::Piece::_yCoord]]
 ---------- s1 = ----------
 VSharp.Test.Tests.Methods.VirtualMethod ==> CLASS []
-VSharp.Test.Tests.Typecast.Coord ==> VSharp.Test.Tests.Typecast.Coord STRUCT []
+VSharp.Test.Tests.Typecast.Pawn ==> CLASS []
 VSharp.Test.Tests.Typecast.Piece ==> CLASS []

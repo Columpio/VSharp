@@ -36,12 +36,6 @@
     <Reference Include="FSharpx.Collections, Version=1.17.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\FSharpx.Collections.1.17.0\lib\net40\FSharpx.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="JetBrains.Decompiler.Core, Version=105.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
-      <HintPath>..\packages\JetBrains.Psi.Features.Core.105.0.20160523.140224\DotFiles\JetBrains.Decompiler.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="JetBrains.Platform.Metadata, Version=105.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
-      <HintPath>..\packages\JetBrains.Platform.Core.Shell.105.0.20160520.92915\DotFiles\JetBrains.Platform.Metadata.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Z3, Version=4.6.0.0, Culture=neutral, PublicKeyToken=9c8d792caae602a2">
       <HintPath>..\lib\Microsoft.Z3.dll</HintPath>
     </Reference>
@@ -50,7 +44,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="FSharp.Core">
-      <HintPath>..\packages\FSharp.Core.4.1.17\lib\net45\FSharp.Core.dll</HintPath>
+      <HintPath>..\packages\FSharp.Core.4.2.2\lib\net45\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.ValueTuple">
       <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
@@ -68,10 +62,6 @@
     <ProjectReference Include="..\VSharp.SILI.Core\VSharp.SILI.Core.fsproj">
       <Project>{270acd61-be60-4d72-85ad-d9385fd84c8e}</Project>
       <Name>VSharp.SILI.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VSharp.SILI\VSharp.SILI.fsproj">
-      <Project>{6a6742b3-e86e-4fa5-afe1-361f38dce4c3}</Project>
-      <Name>VSharp.SILI</Name>
     </ProjectReference>
     <ProjectReference Include="..\VSharp.Utils\VSharp.Utils.fsproj">
       <Project>{6f686b61-8105-42f2-950e-bd6aec0887ca}</Project>

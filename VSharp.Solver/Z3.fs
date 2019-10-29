@@ -61,7 +61,6 @@ module internal Z3 =
             | Numeric _ as t when Types.IsReal t -> (ctx()).MkRealSort() :> Sort
             | Numeric t -> (ctx()).MkEnumSort(t.FullName, t.GetEnumNames()) :> Sort
             | ArrayType _
-            | Func _
             | Void
             | Bottom
             | Null
