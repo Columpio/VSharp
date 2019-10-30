@@ -215,7 +215,7 @@ type termNode =
             let sortKeyFromIndex index = // TODO: change when index will be term list
                 let stringIndex = keyMapper index
                 let id = ref 0
-                let parseOne str = if Int32.TryParse(str, id) then !id else Int32.MaxValue
+                let parseOne (str : string) = if Int32.TryParse(str, id) then !id else Int32.MaxValue
                 Array.foldBack (parseOne >> cons) (stringIndex.Split(',')) List.empty
             let stringResult = Heap.toString "%s ~> %s" heapSeparator keyMapper (always mapper) sortKeyFromIndex contents
             let format contents = sprintf "%s%s%s" separator contents separator
