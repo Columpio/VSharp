@@ -56,8 +56,8 @@ module internal NumberCreator =
         ilBytes.[pos]
     let public extractFloat64 (ilBytes : byte []) pos =
         System.BitConverter.ToDouble(ilBytes, pos)
-    let public extractFloat32 (_ : byte []) _ =
-        __notImplemented__()
+    let public extractFloat32 (ilBytes : byte []) pos =
+        System.BitConverter.ToSingle(ilBytes, pos)
 
 module internal Instruction =
 

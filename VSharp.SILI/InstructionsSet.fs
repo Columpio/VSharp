@@ -57,8 +57,6 @@ module internal TypeUtils =
         | Numeric typ when typ = typedefof<double> -> float64TermType
         | t -> t
     let integers = [int8Type; int16Type; int32Type; int64Type; uint8Type; uint16Type; uint32Type; uint64Type]
-    let zeroTerm = Terms.Concrete 0 int32Type
-    let oneTerm = Terms.Concrete 1 int32Type
 
     let isIntegerTermType typ   = integers |> List.contains typ
     let isFloatTermType typ = typ = float32TermType || typ = float64TermType
@@ -78,6 +76,24 @@ module internal TypeUtils =
     let (|Float32|_|) t = if Terms.TypeOf t = float32TermType then Some(t) else None
     let (|Float64|_|) t = if Terms.TypeOf t = float64TermType then Some(t) else None
     let (|Float|_|) t   = if Terms.TypeOf t |> isFloatTermType then Some(t) else None
+
+    module Int32 =
+        let Zero = MakeNumber 0
+        let One = MakeNumber 1
+        let MinusOne = MakeNumber -1
+        let MinValue = MakeNumber Int32.MinValue
+        let MaxValue = MakeNumber Int32.MaxValue
+    module UInt32 =
+        let Zero = MakeNumber 0u
+        let MaxValue = MakeNumber UInt32.MaxValue
+    module Int64 =
+        let Zero = MakeNumber 0L
+        let MinusOne = MakeNumber -1L
+        let MinValue = MakeNumber Int64.MinValue
+        let MaxValue = MakeNumber Int64.MaxValue
+    module UInt64 =
+        let Zero = MakeNumber 0UL
+        let MaxValue = MakeNumber UInt64.MaxValue
 
 module internal InstructionsSet =
 
@@ -185,13 +201,10 @@ module internal InstructionsSet =
         match cilState.opStack with
         | t :: ts -> Some t, {cilState with opStack = ts}
         | [] -> None, cilState
-    let ldc numberCreator (cfg : cfgData) shiftedOffset (cilState : cilState) =
-        let num, typ =
-            match numberCreator cfg.ilBytes shiftedOffset with
-            | Choice1Of3 num -> num, TypeUtils.int32Type
-            | Choice2Of3 num -> num, TypeUtils.int64Type
-            | Choice3Of3 num -> num, TypeUtils.float64TermType
-        { cilState with opStack = Concrete num typ :: cilState.opStack } :: []
+    let ldc numberCreator t (cfg : cfgData) shiftedOffset (cilState : cilState) =
+        let num = numberCreator cfg.ilBytes shiftedOffset
+        let termType = Types.FromDotNetType cilState.state t
+        { cilState with opStack = Concrete num termType :: cilState.opStack } :: []
 
     let ldloc numberCreator (cfg : cfgData) shiftedOffset (cilState : cilState) =
         let index = numberCreator cfg.ilBytes shiftedOffset
@@ -302,7 +315,7 @@ module internal InstructionsSet =
     let ConcreteTerm2BooleanTerm (term : term) =
         match TypeOf term with
         | Bool -> term
-        | t when t = TypeUtils.int32Type -> term !== TypeUtils.zeroTerm
+        | t when t = TypeUtils.int32Type -> term !== TypeUtils.Int32.Zero
         | Reference _ -> term !== MakeNullRef()
         | _ -> __notImplemented__()
     let ceq (cilState : cilState) =
@@ -357,7 +370,7 @@ module internal InstructionsSet =
                 performCILBinaryOperation op false operand1Transformation operand2Transformation idTransformation cilState
         | _ -> __notImplemented__()
     let boolToInt (cilState : cilState) b =
-        BranchExpressions cilState.state (fun k -> k b) (fun k -> k TypeUtils.oneTerm) (fun k -> k TypeUtils.zeroTerm) id
+        BranchExpressions cilState.state (fun k -> k b) (fun k -> k TypeUtils.Int32.One) (fun k -> k TypeUtils.Int32.Zero) id
     let bitwiseOperation op (cilState : cilState) =
         match cilState.opStack with
         | arg2 :: arg1 :: _ ->
@@ -451,7 +464,7 @@ module internal InstructionsSet =
             let casesAndOffsets = List.mapi (fun i offset -> value === MakeNumber i, offset) newOffsets
             let fallThroughGuard = // TODO: [cast int :> uint] `value` should be compared as uint
                 let cond1 = Arithmetics.(>>=) value (List.length newOffsets |> MakeNumber)
-                let cond2 = Arithmetics.(<<) value TypeUtils.zeroTerm // TODO: so no need to check this
+                let cond2 = Arithmetics.(<<) value TypeUtils.Int32.Zero // TODO: so no need to check this
                 cond1 ||| cond2
             Cps.List.foldrk checkOneCase cilState ((fallThroughGuard, fallThroughOffset)::casesAndOffsets) (fun _ k -> k []) id
         | _ -> __notImplemented__()
@@ -584,7 +597,8 @@ module internal InstructionsSet =
         let newOffset = List.head newOffsets
         let cilStates = op cfgData offset cilState
         List.map (withFst newOffset) cilStates
-    let opcode2Function : (cfgData -> offset -> destination list -> cilState -> (destination * cilState) list) [] = Array.create 300 (fun _ _ _ -> __notImplemented__())
+
+    let opcode2Function : (cfgData -> offset -> destination list -> cilState -> (destination * cilState) list) [] = Array.create 300 (fun _ _ _ -> internalfail "Interpreter is not ready")
     opcode2Function.[hashFunction OpCodes.Br]                 <- zipWithOneOffset <| fun _ _ cilState -> cilState :: []
     opcode2Function.[hashFunction OpCodes.Br_S]               <- zipWithOneOffset <| fun _ _ cilState -> cilState :: []
     opcode2Function.[hashFunction OpCodes.Add]                <- zipWithOneOffset <| fun _ _ -> standardPerformBinaryOperation OperationType.Add false
@@ -621,21 +635,21 @@ module internal InstructionsSet =
     opcode2Function.[hashFunction OpCodes.Stloc_S]            <- zipWithOneOffset <| stloc (fun ilBytes offset -> NumberCreator.extractUnsignedInt8 ilBytes (offset + OpCodes.Stloc_S.Size) |> int)
     opcode2Function.[hashFunction OpCodes.Starg]              <- zipWithOneOffset <| starg (fun ilBytes offset -> NumberCreator.extractUnsignedInt16 ilBytes (offset + OpCodes.Starg.Size) |> int)
     opcode2Function.[hashFunction OpCodes.Starg_S]            <- zipWithOneOffset <| starg (fun ilBytes offset -> NumberCreator.extractUnsignedInt8 ilBytes (offset + OpCodes.Starg_S.Size) |> int)
-    opcode2Function.[hashFunction OpCodes.Ldc_I4]             <- zipWithOneOffset <| ldc (fun ilBytes offset -> NumberCreator.extractInt32 ilBytes (offset + OpCodes.Ldc_I4.Size) |> Choice1Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_I4_0]           <- zipWithOneOffset <| ldc (fun _ _ -> 0 |> Choice1Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_I4_1]           <- zipWithOneOffset <| ldc (fun _ _ -> 1 |> Choice1Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_I4_2]           <- zipWithOneOffset <| ldc (fun _ _ -> 2 |> Choice1Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_I4_3]           <- zipWithOneOffset <| ldc (fun _ _ -> 3 |> Choice1Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_I4_4]           <- zipWithOneOffset <| ldc (fun _ _ -> 4 |> Choice1Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_I4_5]           <- zipWithOneOffset <| ldc (fun _ _ -> 5 |> Choice1Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_I4_6]           <- zipWithOneOffset <| ldc (fun _ _ -> 6 |> Choice1Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_I4_7]           <- zipWithOneOffset <| ldc (fun _ _ -> 7 |> Choice1Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_I4_8]           <- zipWithOneOffset <| ldc (fun _ _ -> 8 |> Choice1Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_I4_M1]          <- zipWithOneOffset <| ldc (fun _ _ -> -1 |> Choice1Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_I4_S]           <- zipWithOneOffset <| ldc (fun ilBytes offset -> NumberCreator.extractInt8 ilBytes (offset + OpCodes.Ldc_I4_S.Size) |> Choice1Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_I8]             <- zipWithOneOffset <| ldc (fun ilBytes offset -> NumberCreator.extractInt64 ilBytes (offset + OpCodes.Ldc_I8.Size) |> Choice2Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_R4]             <- zipWithOneOffset <| ldc (fun ilBytes offset -> NumberCreator.extractFloat32 ilBytes (offset + OpCodes.Ldc_R4.Size) |> Choice3Of3)
-    opcode2Function.[hashFunction OpCodes.Ldc_R8]             <- zipWithOneOffset <| ldc (fun ilBytes offset -> NumberCreator.extractFloat64 ilBytes (offset + OpCodes.Ldc_R8.Size) |> Choice3Of3)
+    opcode2Function.[hashFunction OpCodes.Ldc_I4]             <- zipWithOneOffset <| ldc (fun ilBytes offset -> NumberCreator.extractInt32 ilBytes (offset + OpCodes.Ldc_I4.Size)) typedefof<int32>
+    opcode2Function.[hashFunction OpCodes.Ldc_I4_0]           <- zipWithOneOffset <| ldc (fun _ _ -> 0) typedefof<int32>
+    opcode2Function.[hashFunction OpCodes.Ldc_I4_1]           <- zipWithOneOffset <| ldc (fun _ _ -> 1) typedefof<int32>
+    opcode2Function.[hashFunction OpCodes.Ldc_I4_2]           <- zipWithOneOffset <| ldc (fun _ _ -> 2) typedefof<int32>
+    opcode2Function.[hashFunction OpCodes.Ldc_I4_3]           <- zipWithOneOffset <| ldc (fun _ _ -> 3) typedefof<int32>
+    opcode2Function.[hashFunction OpCodes.Ldc_I4_4]           <- zipWithOneOffset <| ldc (fun _ _ -> 4) typedefof<int32>
+    opcode2Function.[hashFunction OpCodes.Ldc_I4_5]           <- zipWithOneOffset <| ldc (fun _ _ -> 5) typedefof<int32>
+    opcode2Function.[hashFunction OpCodes.Ldc_I4_6]           <- zipWithOneOffset <| ldc (fun _ _ -> 6) typedefof<int32>
+    opcode2Function.[hashFunction OpCodes.Ldc_I4_7]           <- zipWithOneOffset <| ldc (fun _ _ -> 7) typedefof<int32>
+    opcode2Function.[hashFunction OpCodes.Ldc_I4_8]           <- zipWithOneOffset <| ldc (fun _ _ -> 8) typedefof<int32>
+    opcode2Function.[hashFunction OpCodes.Ldc_I4_M1]          <- zipWithOneOffset <| ldc (fun _ _ -> -1) typedefof<int32>
+    opcode2Function.[hashFunction OpCodes.Ldc_I4_S]           <- zipWithOneOffset <| ldc (fun ilBytes offset -> NumberCreator.extractInt8 ilBytes (offset + OpCodes.Ldc_I4_S.Size)) typedefof<int32>
+    opcode2Function.[hashFunction OpCodes.Ldc_I8]             <- zipWithOneOffset <| ldc (fun ilBytes offset -> NumberCreator.extractInt64 ilBytes (offset + OpCodes.Ldc_I8.Size)) typedefof<int64>
+    opcode2Function.[hashFunction OpCodes.Ldc_R4]             <- zipWithOneOffset <| ldc (fun ilBytes offset -> NumberCreator.extractFloat32 ilBytes (offset + OpCodes.Ldc_R4.Size)) typedefof<float32>
+    opcode2Function.[hashFunction OpCodes.Ldc_R8]             <- zipWithOneOffset <| ldc (fun ilBytes offset -> NumberCreator.extractFloat64 ilBytes (offset + OpCodes.Ldc_R8.Size)) typedefof<double>
     opcode2Function.[hashFunction OpCodes.Ldarg]              <- zipWithOneOffset <| ldarg (fun ilBytes offset -> NumberCreator.extractUnsignedInt16 ilBytes (offset + OpCodes.Ldarg.Size) |> int)
     opcode2Function.[hashFunction OpCodes.Ldarg_0]            <- zipWithOneOffset <| ldarg (fun _ _ -> 0)
     opcode2Function.[hashFunction OpCodes.Ldarg_1]            <- zipWithOneOffset <| ldarg (fun _ _ -> 1)
@@ -814,12 +828,3 @@ module internal InstructionsSet =
     opcode2Function.[hashFunction OpCodes.Unaligned]          <- zipWithOneOffset <| (fun _ _ _ -> Prelude.__notImplemented__())
     opcode2Function.[hashFunction OpCodes.Volatile]           <- zipWithOneOffset <| (fun _ _ _ -> Prelude.__notImplemented__())
     opcode2Function.[hashFunction OpCodes.Initblk]            <- zipWithOneOffset <| (fun _ _ _ -> Prelude.__notImplemented__())
-    opcode2Function.[hashFunction OpCodes.Call]               <- fun _ _ _ _ -> internalfail "Interpreter is not ready"
-    opcode2Function.[hashFunction OpCodes.Callvirt]           <- fun _ _ _ _ -> internalfail "Interpreter is not ready"
-    opcode2Function.[hashFunction OpCodes.Newobj]             <- fun _ _ _ _ -> internalfail "Interpreter is not ready"
-    opcode2Function.[hashFunction OpCodes.Ldsfld]             <- fun _ _ _ _ -> internalfail "Interpreter is not ready"
-    opcode2Function.[hashFunction OpCodes.Ldsflda]            <- fun _ _ _ _ -> internalfail "Interpreter is not ready"
-    opcode2Function.[hashFunction OpCodes.Stsfld]             <- fun _ _ _ _ -> internalfail "Interpreter is not ready"
-    opcode2Function.[hashFunction OpCodes.Box]                <- fun _ _ _ _ -> internalfail "Interpreter is not ready"
-    opcode2Function.[hashFunction OpCodes.Unbox]              <- fun _ _ _ _ -> internalfail "Interpreter is not ready"
-    opcode2Function.[hashFunction OpCodes.Unbox_Any]          <- fun _ _ _ _ -> internalfail "Interpreter is not ready"
