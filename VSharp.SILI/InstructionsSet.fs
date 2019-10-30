@@ -48,6 +48,14 @@ module internal TypeUtils =
         | Numeric typ when typ = typedefof<int64> || typ = typedefof<uint64> -> uint64Type
         | Numeric typ when typ = typedefof<double> -> float64TermType
         | _ -> __unreachable__()
+    let unsigned2signedOrId = function
+        | Bool -> int32Type
+        | Numeric typ when typ = typedefof<int32> || typ = typedefof<uint32> -> int32Type
+        | Numeric typ when typ = typedefof<int8>  || typ = typedefof<uint8> -> int8Type
+        | Numeric typ when typ = typedefof<int16> || typ = typedefof<uint16> -> int16Type
+        | Numeric typ when typ = typedefof<int64> || typ = typedefof<uint64> -> int64Type
+        | Numeric typ when typ = typedefof<double> -> float64TermType
+        | t -> t
     let integers = [int8Type; int16Type; int32Type; int64Type; uint8Type; uint16Type; uint32Type; uint64Type]
     let zeroTerm = Terms.Concrete 0 int32Type
     let oneTerm = Terms.Concrete 1 int32Type
@@ -239,9 +247,15 @@ module internal InstructionsSet =
             API.PerformBinaryOperation op isChecked state arg1 arg2 (fun (interimRes, state) ->
             resultTransform interimRes state (fun (res, state) -> {cilState with state = state; opStack = res :: stack } :: []))))
         | _ -> __notImplemented__()
-
+    let makeSignedInteger term state k =
+        let typ = Terms.TypeOf term
+        let signedTyp = TypeUtils.unsigned2signedOrId typ
+        if TypeUtils.isIntegerTermType typ && typ <> signedTyp then
+            let isChecked = false // no specs found about overflows
+            castToType isChecked signedTyp term state k
+        else k (term, state)
     let standardPerformBinaryOperation op isChecked =
-        performCILBinaryOperation op isChecked idTransformation idTransformation idTransformation
+        performCILBinaryOperation op isChecked makeSignedInteger makeSignedInteger idTransformation
     let shiftOperation op (cilState : cilState) =
         match cilState.opStack with
         | _ :: value :: _ ->

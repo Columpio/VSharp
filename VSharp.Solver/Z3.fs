@@ -129,6 +129,7 @@ module internal Z3 =
                     | :? StandardFunctionIdentifier as sf -> (ctx()).MkConstDecl(sf.Function |> toString |> IdGenerator.startingWith, type2Sort typ)
                     | _ -> __notImplemented__()
                 (ctx()).MkApp(decl, encodeTerms stopper args)
+            | Cast(Numeric _, Numeric _, false) -> encodeTermExt stopper (List.head args)
             | Cast _ ->
                 __notImplemented__())
 
