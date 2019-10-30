@@ -381,7 +381,7 @@ and public ILInterpreter() as this =
                     (fun cilState k -> x.BoxNullable t v cilState |> k)
                     (fun cilState k -> allocateValueTypeInHeap v cilState |> k)
             StatedConditionalExecutionCIL cilState
-                (fun state k -> k (Types.TypeIsValueType termType, state))
+                (fun state k -> k (Types.IsValueType termType, state))
                 boxValueType
                 (fun cilState k -> k [cilState])
                 id
@@ -402,8 +402,7 @@ and public ILInterpreter() as this =
                 let nullableConstructor = t.GetConstructor([| Nullable.GetUnderlyingType(t) |])
                 let modifyResults results = mapAndPushFunctionResultsk (fun (_, state) -> address, state) results k
                 x.ReduceMethodBaseCall nullableConstructor {cilState with opStack = stack; state = state} (Some address) (Specified [value]) modifyResults
-            StatedConditionalExecutionCIL cilState
-                (fun state k -> k (obj === MakeNullRef(), state))
+            BranchOnNull cilState obj
                 nullCase
                 nonNullCase
                 id
@@ -427,15 +426,14 @@ and public ILInterpreter() as this =
                         let err, state = x.NullReferenceException cilState.state
                         k [{cilState with state = state; exceptionFlag = Some err}]
                     StatedConditionalExecutionCIL cilState
-                        (fun state k -> k (Types.TypeIsValueType typeTok, state))
+                        (fun state k -> k (Types.IsValueType typeTok, state))
                         throwNRE
                         (fun cilState k -> castclass cfg offset cilState |> k)
                 StatedConditionalExecutionCIL cilState
                     (fun state k -> k (Types.TypeIsNullable typeTok, state))
                     unboxBoxedFormOfValueType
                     nonNullableCase
-            StatedConditionalExecutionCIL cilState
-                (fun state k -> k (ref === MakeNullRef(), state))
+            BranchOnNull cilState ref
                 nullCase
                 nonNullCase
                 id

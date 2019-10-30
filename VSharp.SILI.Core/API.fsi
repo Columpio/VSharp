@@ -89,7 +89,6 @@ module API =
         val elementType : termType -> termType
 
         val TypeIsType : termType -> termType -> term
-        val TypeIsValueType : termType -> term
         val TypeIsNullable : termType -> term
         val TypeIsRef : termType -> term -> term
         val RefIsType : term -> termType -> term

@@ -100,7 +100,6 @@ module API =
         let elementType arrayType = Types.elementType arrayType
 
         let TypeIsType leftType rightType = Common.typeIsType m.Value leftType rightType
-        let TypeIsValueType typ = Common.isValueType m.Value typ
         let TypeIsNullable typ = Common.isNullable m.Value typ
         let TypeIsRef typ ref = Common.typeIsRef m.Value typ ref
         let RefIsType ref typ = Common.refIsType m.Value ref typ
