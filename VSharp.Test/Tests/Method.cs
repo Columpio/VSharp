@@ -271,7 +271,7 @@ namespace VSharp.Test.Tests.Methods
             return a.F<float, int>();
         }
 
-        [TestSvm]
+        [Ignore("Reinterpretation is not implemented")]
         public static int VirtualCall9(A a)
         {
             if (a is B)

@@ -260,8 +260,7 @@ namespace VSharp.Test
             var typeName = methodInfo?.DeclaringType?.FullName?.Split('.');
             if (typeName == null)
                 return null;
-            var os = Environment.OSVersion.Platform.ToString();
-            var methodName = $"{methodInfo.Name}.{os}.{MethodHash(methodInfo)}{IdealTestFileExtension}";
+            var methodName = $"{methodInfo.Name}.{MethodHash(methodInfo)}{IdealTestFileExtension}";
             var idealValuePath = Path.Combine(currentFolder, GoldsDirectoryName, Path.Combine(typeName), methodName);
             return idealValuePath;
         }
