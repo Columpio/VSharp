@@ -13,13 +13,9 @@ HEAP:
 		| !hasKey#2 ~> (HeapRef 2)
 		| hasKey#2 ~> (HeapRef System.Collections.Generic.List`1[System.Boolean].s_emptyArray)]
 	| System::Collections::Generic::List`1::_size ~> 0
-	| System::Collections::Generic::List`1::_syncRoot ~> null
 	| System::Collections::Generic::List`1::_version ~> 0]
 ---------- s1 = ----------
 System.Collections.Generic.List`1[System.Boolean] ==> CLASS [
-	| DefaultCapacity ~> UNION[
-		| !hasKey#2 ~> 4
-		| hasKey#2 ~> System.Collections.Generic.List`1[System.Boolean].DefaultCapacity]
 	| s_emptyArray ~> UNION[
 		| !hasKey#2 ~> (HeapRef 2)
 		| hasKey#2 ~> (HeapRef System.Collections.Generic.List`1[System.Boolean].s_emptyArray)]]

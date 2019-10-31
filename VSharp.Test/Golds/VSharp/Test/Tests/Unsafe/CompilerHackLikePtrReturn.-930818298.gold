@@ -5,7 +5,7 @@ HEAP:
 ---------- s0 = ----------
 System.IntPtr ==> System.IntPtr STRUCT [
 	| Zero ~> System.IntPtr STRUCT [
-		| System::IntPtr::m_value ~> UNION[
+		| System::IntPtr::_value ~> UNION[
 			| !hasKey#1 ~> null
-			| hasKey#1 ~> (HeapPtr System.IntPtr.Zero.System::IntPtr::m_value as System.Void)]]]
+			| hasKey#1 ~> (HeapPtr System.IntPtr.Zero.System::IntPtr::_value as System.Void)]]]
 VSharp.Test.Tests.Unsafe ==> CLASS []

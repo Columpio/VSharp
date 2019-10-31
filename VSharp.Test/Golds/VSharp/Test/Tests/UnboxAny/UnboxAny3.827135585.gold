@@ -1,5 +1,5 @@
 METHOD: System.Object VSharp.Test.Tests.UnboxAny.UnboxAny3()
-RESULT: <ERROR: (HeapRef 9)>
+RESULT: <ERROR: (HeapRef 8)>
 HEAP:
 { heap = h0, statics = s1 } where
 ---------- h0 = ----------
@@ -10,70 +10,61 @@ HEAP:
 	| System::String::m_StringLength ~> 28]
 3 ==> System.InvalidCastException CLASS [
 	| System::Exception::_HResult ~> -2147467262
-	| System::Exception::_className ~> null
 	| System::Exception::_data ~> null
 	| System::Exception::_dynamicMethods ~> null
+	| System::Exception::_exceptionMethod ~> null
 	| System::Exception::_helpURL ~> null
 	| System::Exception::_innerException ~> null
+	| System::Exception::_ipForWatsonBuckets ~> System.UIntPtr STRUCT [
+		| System::UIntPtr::_value ~> null]
 	| System::Exception::_message ~> (HeapRef 2)
-	| System::Exception::_remoteStackIndex ~> 0
 	| System::Exception::_remoteStackTraceString ~> null
-	| System::Exception::_safeSerializationManager ~> (HeapRef 6)
 	| System::Exception::_source ~> null
 	| System::Exception::_stackTrace ~> null
 	| System::Exception::_stackTraceString ~> null
-	| System::Exception::captured_traces ~> null
-	| System::Exception::caught_in_unmanaged ~> 0
-	| System::Exception::native_trace_ips ~> null]
-4 ==> System.Object CLASS []
-5 ==> System.String CLASS [
-	| System::String::m_FirstChar ~> [| 0 ~> 'C'; 1 ~> 'L'; 2 ~> 'R'; 3 ~> '_'; 4 ~> 'S'; 5 ~> 'a'; 6 ~> 'f'; 7 ~> 'e'; 8 ~> 'S'; 9 ~> 'e'; 10 ~> 'r'; 11 ~> 'i'; 12 ~> 'a'; 13 ~> 'l'; 14 ~> 'i'; 15 ~> 'z'; 16 ~> 'a'; 17 ~> 't'; 18 ~> 'i'; 19 ~> 'o'; 20 ~> 'n'; 21 ~> 'M'; 22 ~> 'a'; 23 ~> 'n'; 24 ~> 'a'; 25 ~> 'g'; 26 ~> 'e'; 27 ~> 'r'; 28 ~> '_'; 29 ~> 'R'; 30 ~> 'e'; 31 ~> 'a'; 32 ~> 'l'; 33 ~> 'T'; 34 ~> 'y'; 35 ~> 'p'; 36 ~> 'e'; 37 ~> '\000' ... 38 ... |]
-	| System::String::m_StringLength ~> 37]
-6 ==> System.Runtime.Serialization.SafeSerializationManager CLASS [
-	| System::Runtime::Serialization::SafeSerializationManager::m_realObject ~> null
-	| System::Runtime::Serialization::SafeSerializationManager::m_realType ~> null
-	| System::Runtime::Serialization::SafeSerializationManager::m_savedSerializationInfo ~> null
-	| System::Runtime::Serialization::SafeSerializationManager::m_serializedStates ~> null]
-7 ==> <ERROR: (HeapRef 3)>
-8 ==> System.String CLASS [
+	| System::Exception::_watsonBuckets ~> null
+	| System::Exception::_xcode ~> -532462766
+	| System::Exception::_xptrs ~> System.IntPtr STRUCT [
+		| System::IntPtr::_value ~> null]]
+4 ==> System.String CLASS [
+	| System::String::m_FirstChar ~> [| 0 ~> ' '; 1 ~> '-'; 2 ~> '-'; 3 ~> '-'; 4 ~> '>'; 5 ~> ' '; 6 ~> '\000' ... 7 ... |]
+	| System::String::m_StringLength ~> 6]
+5 ==> System.Object CLASS []
+6 ==> <ERROR: (HeapRef 3)>
+7 ==> System.String CLASS [
 	| System::String::m_FirstChar ~> [| 0 ~> 'S'; 1 ~> 'p'; 2 ~> 'e'; 3 ~> 'c'; 4 ~> 'i'; 5 ~> 'f'; 6 ~> 'i'; 7 ~> 'e'; 8 ~> 'd'; 9 ~> ' '; 10 ~> 'c'; 11 ~> 'a'; 12 ~> 's'; 13 ~> 't'; 14 ~> ' '; 15 ~> 'i'; 16 ~> 's'; 17 ~> ' '; 18 ~> 'n'; 19 ~> 'o'; 20 ~> 't'; 21 ~> ' '; 22 ~> 'v'; 23 ~> 'a'; 24 ~> 'l'; 25 ~> 'i'; 26 ~> 'd'; 27 ~> '.'; 28 ~> '\000' ... 29 ... |]
 	| System::String::m_StringLength ~> 28]
-9 ==> System.InvalidCastException CLASS [
+8 ==> System.InvalidCastException CLASS [
 	| System::Exception::_HResult ~> -2147467262
-	| System::Exception::_className ~> null
 	| System::Exception::_data ~> null
 	| System::Exception::_dynamicMethods ~> null
+	| System::Exception::_exceptionMethod ~> null
 	| System::Exception::_helpURL ~> null
 	| System::Exception::_innerException ~> null
-	| System::Exception::_message ~> (HeapRef 8)
-	| System::Exception::_remoteStackIndex ~> 0
+	| System::Exception::_ipForWatsonBuckets ~> System.UIntPtr STRUCT [
+		| System::UIntPtr::_value ~> null]
+	| System::Exception::_message ~> (HeapRef 7)
 	| System::Exception::_remoteStackTraceString ~> null
-	| System::Exception::_safeSerializationManager ~> (HeapRef 10)
 	| System::Exception::_source ~> null
 	| System::Exception::_stackTrace ~> null
 	| System::Exception::_stackTraceString ~> null
-	| System::Exception::captured_traces ~> null
-	| System::Exception::caught_in_unmanaged ~> 0
-	| System::Exception::native_trace_ips ~> null]
-10 ==> System.Runtime.Serialization.SafeSerializationManager CLASS [
-	| System::Runtime::Serialization::SafeSerializationManager::m_realObject ~> null
-	| System::Runtime::Serialization::SafeSerializationManager::m_realType ~> null
-	| System::Runtime::Serialization::SafeSerializationManager::m_savedSerializationInfo ~> null
-	| System::Runtime::Serialization::SafeSerializationManager::m_serializedStates ~> null]
+	| System::Exception::_watsonBuckets ~> null
+	| System::Exception::_xcode ~> -532462766
+	| System::Exception::_xptrs ~> System.IntPtr STRUCT [
+		| System::IntPtr::_value ~> null]]
 ---------- s1 = ----------
 System.Exception ==> CLASS [
+	| InnerExceptionPrefix ~> UNION[
+		| !hasKey#5 ~> (HeapRef 4)
+		| hasKey#5 ~> (HeapRef System.Exception.InnerExceptionPrefix)]
 	| _COMPlusExceptionCode ~> UNION[
 		| !hasKey#5 ~> -532462766
 		| hasKey#5 ~> System.Exception._COMPlusExceptionCode]
-	| s_EDILock ~> UNION[
-		| !hasKey#5 ~> (HeapRef 4)
-		| hasKey#5 ~> (HeapRef System.Exception.s_EDILock)]]
+	| s_DispatchStateLock ~> UNION[
+		| !hasKey#5 ~> (HeapRef 5)
+		| hasKey#5 ~> (HeapRef System.Exception.s_DispatchStateLock)]]
 System.InvalidCastException ==> CLASS []
 System.Object ==> CLASS []
-System.Runtime.Serialization.SafeSerializationManager ==> CLASS [
-	| RealTypeSerializationName ~> UNION[
-		| !hasKey#6 ~> (HeapRef 5)
-		| hasKey#6 ~> (HeapRef System.Runtime.Serialization.SafeSerializationManager.RealTypeSerializationName)]]
 System.SystemException ==> CLASS []
 VSharp.Test.Tests.UnboxAny ==> CLASS []
 VSharp.Test.Tests.UnboxAny+A ==> CLASS []

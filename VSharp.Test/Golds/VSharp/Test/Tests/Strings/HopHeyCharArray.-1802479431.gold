@@ -23,17 +23,5 @@ HEAP:
 System.String ==> CLASS [
 	| Empty ~> UNION[
 		| !hasKey#1 ~> (HeapRef 1)
-		| hasKey#1 ~> (HeapRef System.String.Empty)]
-	| PROBABILISTICMAP_BLOCK_INDEX_MASK ~> UNION[
-		| !hasKey#1 ~> 7
-		| hasKey#1 ~> System.String.PROBABILISTICMAP_BLOCK_INDEX_MASK]
-	| PROBABILISTICMAP_BLOCK_INDEX_SHIFT ~> UNION[
-		| !hasKey#1 ~> 3
-		| hasKey#1 ~> System.String.PROBABILISTICMAP_BLOCK_INDEX_SHIFT]
-	| PROBABILISTICMAP_SIZE ~> UNION[
-		| !hasKey#1 ~> 8
-		| hasKey#1 ~> System.String.PROBABILISTICMAP_SIZE]
-	| StackallocIntBufferSizeLimit ~> UNION[
-		| !hasKey#1 ~> 128
-		| hasKey#1 ~> System.String.StackallocIntBufferSizeLimit]]
+		| hasKey#1 ~> (HeapRef System.String.Empty)]]
 VSharp.Test.Tests.Strings ==> CLASS []
