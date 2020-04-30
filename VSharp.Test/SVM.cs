@@ -13,7 +13,6 @@ namespace VSharp.Test
     public class SVM
     {
         private ExplorerBase _explorer;
-        private Statistics _statistics = new Statistics();
 
         public SVM(ExplorerBase explorer)
         {
@@ -24,7 +23,7 @@ namespace VSharp.Test
             MethodInfo m,
             Func<IMethodIdentifier, FSharpFunc<codeLocationSummary, codeLocationSummary>, codeLocationSummary> invoke)
         {
-            _statistics.SetupBeforeMethod(m);
+            Statistics.SetupBeforeMethod(m);
             IMethodIdentifier methodIdentifier = _explorer.MakeMethodIdentifier(m);
             if (methodIdentifier == null)
             {
@@ -38,7 +37,7 @@ namespace VSharp.Test
             dict?.Add(m, null);
             var id = FSharpFunc<codeLocationSummary, codeLocationSummary>.FromConverter(x => x);
             var summary = invoke(methodIdentifier, id);
-            _statistics.AddSucceededMethod(m);
+            Statistics.AddSucceededMethod(m);
             if (dict != null)
             {
                 dict[m] = summary;
@@ -56,7 +55,7 @@ namespace VSharp.Test
             }
             catch (Exception e)
             {
-                _statistics.AddException(e, m);
+                Statistics.AddException(e, m);
             }
 
             return null;
@@ -140,7 +139,7 @@ namespace VSharp.Test
                 InterpretEntryPoint(dictionary, ep);
             }
 
-            _statistics.PrintExceptionsStats();
+            Statistics.PrintExceptionsStats();
 
             return dictionary.ToDictionary(kvp => kvp.Key, kvp => ResultToString(kvp.Value));
         }

@@ -559,7 +559,7 @@ module internal Terms =
                 List.forall ((=) t) ts
                 || List.forall Types.concreteIsReferenceType nonEmptyTypes // TODO: unhack this hack (goes from TryCatch.MakeOdd)
             if allSame then t
-            else internalfailf "evaluating type of unexpected union %O!" gvs
+            else internalfail "evaluating type of unexpected union!"
 
     let commonTypeOf getType term =
         match term.term with
@@ -571,7 +571,7 @@ module internal Terms =
         let getTypeOfRef = term >> function
             | Ref(tl, path) when needBaseType -> baseTypeOfFQL (tl, path)
             | Ref(tl, path) -> sightTypeOfFQL (tl, path)
-            | term -> internalfailf "expected reference, but got %O" term
+            | _ -> internalfail "expected reference, but got term"
         commonTypeOf getTypeOfRef
 
     let sightTypeOfRef = commonTypeOfRef false
@@ -581,7 +581,7 @@ module internal Terms =
         let getTypeOfPtr = term >> function
             | Ptr(tl, path, _, _) when baseType -> baseTypeOfFQL (tl, path)
             | Ptr(_, _, typ, _) -> typ
-            | term -> internalfailf "expected pointer, but got %O" term
+            | _ -> internalfail "expected pointer, but got term"
         commonTypeOf getTypeOfPtr
 
     let sightTypeOfPtr = commonTypeOfPtr false
@@ -649,9 +649,7 @@ module internal Terms =
             elif t.IsAssignableFrom(actualType) then
                 Concrete metadata value (fromDotNetType t)
             else raise(new InvalidCastException(sprintf "Cannot cast %s to %s!" t.FullName actualType.FullName))
-        with
-        | _ ->
-            internalfailf "cannot cast %s to %s!" actualType.FullName t.FullName
+        with _ -> internalfail "cannot cast concrete value!"
 
     let makeTrue metadata =
         Concrete metadata (box true) Bool

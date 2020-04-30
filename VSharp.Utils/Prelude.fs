@@ -2,13 +2,12 @@
 open VSharp.CSharpUtils
 
 exception UnreachableException of string
-exception InternalException of string
+type InternalException (msg : string) = inherit System.Exception(msg)
 
 [<AutoOpen>]
 module public Prelude =
-//    let public internalfail message = "Internal error: " + message |> failwith
-    let public internalfail message = raise (InternalException <| "Internal error: " + message)
-    let public internalfailf format = Printf.ksprintf internalfail format
+    let inline public internalfail message = raise (InternalException <| "Internal error: " + message)
+    let inline public internalfailf format = Printf.ksprintf internalfail format
     let inline public __notImplemented__() = raise (new System.NotImplementedException())
     let inline public __unreachable__() = raise (UnreachableException "unreachable branch hit!") //internalfail "unreachable branch hit!"
 

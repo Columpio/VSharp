@@ -407,7 +407,7 @@ module internal InstructionsSet =
             | typ1, Bool when TypeUtils.isIntegerTermType typ1 ->
                 let newArg2 = boolToInt cilState arg2
                 performCILBinaryOperation op idTransformation (fun _ _ k -> k newArg2) idTransformation cilState
-            | typ1, typ2 -> internalfailf "unhandled case for Bitwise operation %O and types: %O %O" op typ1 typ2
+            | _ -> internalfailf "unhandled case for Bitwise operation"
         | _ -> __notImplemented__()
     let retrieveActualParameters (methodBase : MethodBase) (cilState : cilState) =
         let paramsNumber = methodBase.GetParameters().Length
@@ -738,5 +738,5 @@ module internal InstructionsSet =
     opcode2Function.[hashFunction OpCodes.Rethrow]            <- zipWithOneOffset <| (fun _ _ _ -> Prelude.__notImplemented__())
     opcode2Function.[hashFunction OpCodes.Tailcall]           <- zipWithOneOffset <| (fun _ _ _ -> Prelude.__notImplemented__())
     opcode2Function.[hashFunction OpCodes.Unaligned]          <- zipWithOneOffset <| (fun _ _ _ -> Prelude.__notImplemented__())
-    opcode2Function.[hashFunction OpCodes.Volatile]           <- zipWithOneOffset <| (fun _ _ _ -> Prelude.__notImplemented__())
+    opcode2Function.[hashFunction OpCodes.Volatile]           <- zipWithOneOffset <| fun _ _ cilState -> [cilState]
     opcode2Function.[hashFunction OpCodes.Initblk]            <- zipWithOneOffset <| (fun _ _ _ -> Prelude.__notImplemented__())

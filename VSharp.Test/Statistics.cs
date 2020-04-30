@@ -1,133 +1,130 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using CsvHelper;
 
 namespace VSharp.Test
 {
-    public class Statistics
+    class ExceptionInfo : IComparable<ExceptionInfo>
     {
-        private int _methodsNumber;
-        private readonly Dictionary<Type, List<Exception>> _allExceptions = new Dictionary<Type, List<Exception>>();
-
-        private readonly Dictionary<string, List<MethodBase>> _notImplementedExceptions =
-            new Dictionary<string, List<MethodBase>>();
-
-        private readonly Dictionary<string, List<MethodBase>> _unreachableExceptions =
-            new Dictionary<string, List<MethodBase>>();
-
-        private readonly Dictionary<string, List<MethodBase>> _internalFailExceptions =
-            new Dictionary<string, List<MethodBase>>();
-
-        private readonly Dictionary<string, List<MethodBase>> _unhandledExceptions =
-            new Dictionary<string, List<MethodBase>>();
-
-        public void SetupBeforeMethod(MethodBase m)
+        public string Type { get; }
+        public string Message { get; }
+        public string Location { get; }
+        public int Count { get; }
+        public string ExampleMethod { get; }
+        public ExceptionInfo(string type, string message, string location, int count, string exampleMethod)
         {
-            // UNCOMMENT THIS FOR DEBUGGING AND FINDING METHODS NAME THAT FAILS WITH StackOverflowException
-            // METHOD == via binary search try to find vary constant, and just brute force it when range is small
+            Type = type;
+            Message = message;
+            Location = location;
+            Count = count;
+            ExampleMethod = exampleMethod;
+        }
 
-            // const int maxNumber = 2520;
-            // if (_methodsNumber > maxNumber)
-            // {
-            //     return;
-            // }
-            //
-            // if (_methodsNumber == maxNumber - 1)
-            // {
-            //     Console.WriteLine($@"Got it: {m.Name}");
-            // }
+        public int CompareTo(ExceptionInfo other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            var typeComparison = string.Compare(Type, other.Type, StringComparison.Ordinal);
+            if (typeComparison != 0) return typeComparison;
+            var countComparison = other.Count.CompareTo(Count);
+            if (countComparison != 0) return countComparison;
+            return string.Compare(Message, other.Message, StringComparison.Ordinal);
+        }
+    }
 
+    public static class Statistics
+    {
+        private static int _methodsNumber;
+        private static int _succeededMethodsNumber;
+        private static Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>> _allExceptions = new Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>();
+
+        public static void SetupBeforeMethod(MethodBase m)
+        {
             _methodsNumber++;
         }
 
-        public void AddSucceededMethod(MethodBase m)
+        public static void AddSucceededMethod(MethodBase m)
         {
             Console.WriteLine("DONE: {0}", m);
+            _succeededMethodsNumber += 1;
         }
 
-        public void AddException(Exception e, MethodBase m)
+        private static string MethodName(MethodBase m)
         {
-            Type t = e.GetType();
-            if (t == typeof(NotImplementedException))
-            {
-                Console.WriteLine("NotImplementedException in {0} occured: {1}", m, e.StackTrace);
-                AddException(_notImplementedExceptions, e, m);
-            }
-            else if (t == typeof(UnreachableException))
-            {
-                Console.WriteLine("Unreachable Exception in {0} occured: {1}", m, e.Message);
-                AddException(_unreachableExceptions, e, m);
-            }
-            else if (t == typeof(InternalException))
-            {
-                Console.WriteLine("InternalFail Exception in {0} occured: {1}", m, e.Message);
-                AddException(_internalFailExceptions, e, m);
-            }
-            else
-            {
-                Console.WriteLine($@"Unhandled Exception occured:
-                                      method = {m.Name}
-                                      message = {e.Message}
-                                      StackTrace: {e.StackTrace}");
-                AddException(_unhandledExceptions, e, m);
-            }
+            return $"{m.DeclaringType.FullName}.{m.Name}";
         }
 
-        private void Print(Type type, string exceptionName, Dictionary<string, List<MethodBase>> exceptions)
+        public static void AddException(Exception e, MethodBase m)
         {
-            if (_allExceptions.ContainsKey(type))
-            {
-                Console.WriteLine(exceptionName + "Exceptions");
-                Console.WriteLine($"INFO: {exceptionName} number: {_allExceptions[type].Count.ToString()}");
-                Console.WriteLine($"INFO: {exceptionName} Types: {exceptions.Keys.Count.ToString()}");
-                foreach (var message in exceptions.Keys.OrderByDescending(message => exceptions[message].Count))
-                {
-                    Console.WriteLine(message);
-                    Console.WriteLine("CNT = " + exceptions[message].Count);
-                    string fullName = Reflection.GetFullMethodName(exceptions[message][0]);
-                    Console.WriteLine($@"Method For Debugging = {fullName}");
-                    Console.WriteLine("");
-                }
-                Console.WriteLine("END");
-            }
-            else
-            {
-                Console.WriteLine("No " + exceptionName + " exceptions found");
-            }
+            var type = e.GetType().Name;
+            var eMessage = e.Message;
+            var frame = new StackTrace(e, true).GetFrame(0);
+            var line = frame.GetFileLineNumber();
+            var eLocation = $"{MethodName(frame.GetMethod())} at line {line}";
+
+            if (!_allExceptions.ContainsKey(type))
+                _allExceptions[type] = new Dictionary<string,Dictionary<string, List<string>>>();
+
+            var typedExceptions = _allExceptions[type];
+            if (!typedExceptions.ContainsKey(eMessage))
+                typedExceptions[eMessage] = new Dictionary<string, List<string>>();
+
+            var typedExceptionsWithMessage = typedExceptions[eMessage];
+            if (!typedExceptionsWithMessage.ContainsKey(eLocation))
+                typedExceptionsWithMessage[eLocation] = new List<string>();
+
+            typedExceptionsWithMessage[eLocation].Add(Reflection.GetFullMethodName(m));
         }
 
-        public void PrintExceptionsStats()
+        private static List<ExceptionInfo> AllExceptionsDictionaryToExceptionInfos()
         {
-            Console.WriteLine($"INFO: exceptions types number: {_allExceptions.Keys.Count.ToString()}");
-            Console.WriteLine($"INFO: methods number: {_methodsNumber}");
-            Print(typeof(NotImplementedException), "NOT_IMPL ", _notImplementedExceptions);
-            Print(typeof(UnreachableException), "UNREACHABLE ", _unreachableExceptions);
-            Print(typeof(InternalException), "Internal ", _internalFailExceptions);
+            var res = new List<ExceptionInfo>();
+            foreach (var (type, typedExceptions) in _allExceptions)
+                foreach (var (message, typedExceptionsWithMessage) in typedExceptions)
+                    foreach (var (location, methods) in typedExceptionsWithMessage)
+                        res.Add(new ExceptionInfo(type, message, location, methods.Count, methods.First()));
+            res.Sort();
+            return res;
         }
 
-        private void AddException(Dictionary<string, List<MethodBase>> exceptions, Exception e, MethodBase m)
+        private static string SaveExceptionsShortStats(List<ExceptionInfo> exceptionInfos)
         {
-            Type t = e.GetType();
-            if (!_allExceptions.ContainsKey(t))
-            {
-                _allExceptions[t] = new List<Exception>();
-            }
+            var filename = Path.ChangeExtension(Path.GetTempFileName(), "csv");
+            using var writer = new StreamWriter(filename);
+            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+            csv.WriteHeader<ExceptionInfo>();
+            csv.Flush();
+            writer.WriteLine();
+            csv.WriteRecords(exceptionInfos);
+            return filename;
+        }
 
-            _allExceptions[t].Add(e);
-            string stackTrace = e.StackTrace;
-            if (stackTrace == null)
-            {
-                Console.WriteLine($@"While analyzing {m.Name} occured exception with null stackTrace");
-                return;
-            }
+        private static void PrintLine()
+        {
+            Console.WriteLine("<--------------------------------------------------------------------------------------------------->");
+        }
 
-            if (!exceptions.ContainsKey(stackTrace))
-            {
-                exceptions[stackTrace] = new List<MethodBase>();
-            }
+        public static void PrintExceptionsStats()
+        {
+            var exceptionInfos = AllExceptionsDictionaryToExceptionInfos();
+            Console.WriteLine($"STATISTICS: Total methods number: {_methodsNumber}");
+            Console.WriteLine($"STATISTICS: Succeeded methods number: {_succeededMethodsNumber}");
+            Console.WriteLine($"Exploration statistics has been saved in {SaveExceptionsShortStats(exceptionInfos)}");
+            PrintLine();
 
-            exceptions[stackTrace].Add(m);
+            foreach (var exceptionInfo in exceptionInfos)
+            {
+                Console.WriteLine($"STATISTICS: {exceptionInfo.Message}");
+                Console.WriteLine($"STATISTICS: Occured in {exceptionInfo.Location}");
+                Console.WriteLine($"STATISTICS: Number of occurrences: {exceptionInfo.Count}");
+                Console.WriteLine($"STATISTICS: Method for debugging: {exceptionInfo.ExampleMethod}");
+                PrintLine();
+            }
         }
     }
 }
